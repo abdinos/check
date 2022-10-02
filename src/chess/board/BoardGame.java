@@ -79,7 +79,7 @@ public class BoardGame extends JComponent {
             }
             index ++;
             blackChessPiece.iterator().next();
-        }
+    }
         return null;
     }
 
