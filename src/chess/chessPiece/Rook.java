@@ -26,25 +26,25 @@ public class Rook extends ChessPiece{
     public Collection<Movement> findLegalMovements(final BoardGame boardGame) {
         final List<Movement> legalMovements = new ArrayList<>();
 
-        for(final int futurePosition : POSSIBLE_MOVEMENT_POSITION_VECTOR){
-            int possiblePosition = this.getPiecePosition();
+        for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION_VECTOR){
+            int futurePosition = this.getPiecePosition();
 
-            while(BoardGame.isValidPosition(possiblePosition)){
-                if(isFirstColumnExclusionPosition(this.getPiecePosition(), futurePosition) ||
-                        isEightColumnExclusionPosition(this.getPiecePosition(), futurePosition)){
+            while(BoardGame.isValidPosition(futurePosition)){
+                if(isFirstColumnExclusionPosition(this.getPiecePosition(), vectorPosition) ||
+                        isEightColumnExclusionPosition(this.getPiecePosition(), vectorPosition)){
                     break;
                 }
 
-                possiblePosition += futurePosition;
-                if(BoardGame.isValidPosition(possiblePosition)){
-                    if (!boardGame.isCaseOccupied(possiblePosition)) {
-                        legalMovements.add(new NormalMovement(boardGame, this, possiblePosition));
+                futurePosition += vectorPosition;
+                if(BoardGame.isValidPosition(futurePosition)){
+                    if (!boardGame.isCaseOccupied(futurePosition)) {
+                        legalMovements.add(new NormalMovement(boardGame, this, futurePosition));
                     }
                     else{
-                        final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(possiblePosition);
+                        final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(futurePosition);
                         if(chessPiece != null) {
                             if (this.getPieceColor() != chessPiece.getPieceColor()) {
-                                legalMovements.add(new AttackMovement(boardGame, this, possiblePosition, chessPiece));
+                                legalMovements.add(new AttackMovement(boardGame, this, futurePosition, chessPiece));
                             }
                         }
                         break;
@@ -55,11 +55,11 @@ public class Rook extends ChessPiece{
         return legalMovements;
     }
 
-    private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int possiblePosition){
-        return (BoardGame.FIRST_COLUMN[currentPosition] && (possiblePosition == -1));
+    private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+        return (BoardGame.FIRST_COLUMN[currentPosition] && (vectorPosition == -1));
     }
 
-    private static boolean isEightColumnExclusionPosition(final int currentPosition, final int possiblePosition){
-        return (BoardGame.EIGHT_COLUMN[currentPosition] && (possiblePosition == 1));
+    private static boolean isEightColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+        return (BoardGame.EIGHT_COLUMN[currentPosition] && (vectorPosition == 1));
     }
 }

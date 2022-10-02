@@ -27,13 +27,13 @@ public class Knight extends ChessPiece{
     public Collection<Movement> findLegalMovements(final BoardGame boardGame){
         final List<Movement> legalMovements = new ArrayList<>();
 
-        for(final int possiblePosition : POSSIBLE_MOVEMENT_POSITION){
-            final int futurePosition = this.getPiecePosition() + possiblePosition;
+        for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION){
+            final int futurePosition = this.getPiecePosition() + vectorPosition;
             if(BoardGame.isValidPosition(futurePosition)) {
-                if(isFirstColumnExclusionPosition(this.getPiecePosition(), possiblePosition) ||
-                        isSecondColumnExclusionPosition(this.getPiecePosition(), possiblePosition) ||
-                        isSeventhColumnExclusionPosition(this.getPiecePosition(), possiblePosition) ||
-                        isEightColumnExclusionPosition(this.getPiecePosition(), possiblePosition)){
+                if(isFirstColumnExclusionPosition(this.getPiecePosition(), vectorPosition) ||
+                        isSecondColumnExclusionPosition(this.getPiecePosition(), vectorPosition) ||
+                        isSeventhColumnExclusionPosition(this.getPiecePosition(), vectorPosition) ||
+                        isEightColumnExclusionPosition(this.getPiecePosition(), vectorPosition)){
                     continue;
                 }
                 if (!boardGame.isCaseOccupied(futurePosition)) {
@@ -52,21 +52,21 @@ public class Knight extends ChessPiece{
         return legalMovements;
     }
 
-    private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int possiblePosition){
-         return (BoardGame.FIRST_COLUMN[currentPosition] && (possiblePosition == -17 || possiblePosition == -10 ||
-                 possiblePosition == 6 || possiblePosition == 15));
+    private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+         return (BoardGame.FIRST_COLUMN[currentPosition] && (vectorPosition == -17 || vectorPosition == -10 ||
+                 vectorPosition == 6 || vectorPosition == 15));
     }
 
-    private static boolean isSecondColumnExclusionPosition(final int currentPosition, final int possiblePosition){
-        return (BoardGame.SECOND_COLUMN[currentPosition] && (possiblePosition == -10 || possiblePosition == 6));
+    private static boolean isSecondColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+        return (BoardGame.SECOND_COLUMN[currentPosition] && (vectorPosition == -10 || vectorPosition == 6));
     }
 
-    private static boolean isSeventhColumnExclusionPosition(final int currentPosition, final int possiblePosition){
-        return (BoardGame.SEVENTH_COLUMN[currentPosition] && (possiblePosition == -6 || possiblePosition == 10));
+    private static boolean isSeventhColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+        return (BoardGame.SEVENTH_COLUMN[currentPosition] && (vectorPosition == -6 || vectorPosition == 10));
     }
 
-    private static boolean isEightColumnExclusionPosition(final int currentPosition, final int possiblePosition){
-        return (BoardGame.EIGHT_COLUMN[currentPosition] && (possiblePosition == -15 || possiblePosition == -6 ||
-                possiblePosition == 10 || possiblePosition == 17));
+    private static boolean isEightColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+        return (BoardGame.EIGHT_COLUMN[currentPosition] && (vectorPosition == -15 || vectorPosition == -6 ||
+                vectorPosition == 10 || vectorPosition == 17));
     }
 }

@@ -26,22 +26,22 @@ public class King extends ChessPiece{
     public Collection<Movement> findLegalMovements(final BoardGame boardGame) {
         final List<Movement> legalMovements = new ArrayList<>();
 
-        for(final int futurePosition : POSSIBLE_MOVEMENT_POSITION){
-            final int possiblePosition = this.getPiecePosition() + futurePosition;
+        for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION){
+            final int futurePosition = this.getPiecePosition() + vectorPosition;
 
-            if(BoardGame.isValidPosition(possiblePosition)){
-                if(isFirstColumnExclusionPosition(possiblePosition, futurePosition) ||
-                        isHeightColumnExclusionPosition(possiblePosition, futurePosition)){
+            if(BoardGame.isValidPosition(futurePosition)){
+                if(isFirstColumnExclusionPosition(futurePosition, vectorPosition) ||
+                        isHeightColumnExclusionPosition(futurePosition, vectorPosition)){
                     continue;
                 }
-                if (!boardGame.isCaseOccupied(possiblePosition)) {
-                    legalMovements.add(new NormalMovement(boardGame, this, possiblePosition));
+                if (!boardGame.isCaseOccupied(futurePosition)) {
+                    legalMovements.add(new NormalMovement(boardGame, this, futurePosition));
                 }
                 else{
-                    final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(possiblePosition);
+                    final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(futurePosition);
                     if(chessPiece != null) {
                         if (this.getPieceColor() != chessPiece.getPieceColor()) {
-                            legalMovements.add(new AttackMovement(boardGame, this, possiblePosition, chessPiece));
+                            legalMovements.add(new AttackMovement(boardGame, this, futurePosition, chessPiece));
                         }
                     }
                 }
@@ -51,13 +51,13 @@ public class King extends ChessPiece{
         return legalMovements;
     }
 
-    private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int futurePosition){
-        return (BoardGame.FIRST_COLUMN[currentPosition] && (futurePosition == -9 || futurePosition == -1 ||
-                futurePosition == 7));
+    private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+        return (BoardGame.FIRST_COLUMN[currentPosition] && (vectorPosition == -9 || vectorPosition == -1 ||
+                vectorPosition == 7));
     }
 
-    private static boolean isHeightColumnExclusionPosition(final int currentPosition, final int possiblePosition){
-        return (BoardGame.EIGHT_COLUMN[currentPosition] && (possiblePosition == -7 || possiblePosition == 1) ||
-                possiblePosition == 9);
+    private static boolean isHeightColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+        return (BoardGame.EIGHT_COLUMN[currentPosition] && (vectorPosition == -7 || vectorPosition == 1) ||
+                vectorPosition == 9);
     }
 }

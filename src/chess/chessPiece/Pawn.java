@@ -25,38 +25,38 @@ public class Pawn extends ChessPiece{
     public Collection<Movement> findLegalMovements(final BoardGame boardGame) {
         final List<Movement> legalMovements = new ArrayList<>();
 
-        for(final int futurePosition: POSSIBLE_MOVEMENT_POSITION){
-            final int possiblePosition = this.getPiecePosition() + (futurePosition * this.getPieceColor().getDirection());
+        for(final int vectorPosition: POSSIBLE_MOVEMENT_POSITION){
+            final int futurePosition = this.getPiecePosition() + (vectorPosition * this.getPieceColor().getDirection());
 
-            if(!BoardGame.isValidPosition(possiblePosition)){
+            if(!BoardGame.isValidPosition(futurePosition)){
                 continue;
             }
-            if(futurePosition == 8 && !boardGame.isCaseOccupied(possiblePosition)){
+            if(vectorPosition == 8 && !boardGame.isCaseOccupied(futurePosition)){
                 // TODO
-                legalMovements.add(new NormalMovement(boardGame,this,possiblePosition));
-            }else if(futurePosition == 16 && !this.isPieceMove() && ((this.getPiecePosition() >= 48 && this.getPieceColor().isWhite())
+                legalMovements.add(new NormalMovement(boardGame,this,futurePosition));
+            }else if(vectorPosition == 16 && !this.isPieceMove() && ((this.getPiecePosition() >= 48 && this.getPieceColor().isWhite())
                     || (this.getPiecePosition() <= 15 && this.getPieceColor().isBlack()))){
                 final int behindFuturePosition = this.getPiecePosition() + (this.getPieceColor().getDirection() * 8);
-                if(!boardGame.isCaseOccupied(behindFuturePosition) && !boardGame.isCaseOccupied(possiblePosition)){
-                    legalMovements.add(new NormalMovement(boardGame,this,possiblePosition));
+                if(!boardGame.isCaseOccupied(behindFuturePosition) && !boardGame.isCaseOccupied(futurePosition)){
+                    legalMovements.add(new NormalMovement(boardGame,this,futurePosition));
                 }
             }
-            else if(futurePosition == 7 && !((BoardGame.EIGHT_COLUMN[this.getPiecePosition()] && this.getPieceColor().isWhite())
+            else if(vectorPosition == 7 && !((BoardGame.EIGHT_COLUMN[this.getPiecePosition()] && this.getPieceColor().isWhite())
                     || (BoardGame.FIRST_COLUMN[this.getPiecePosition()] && this.getPieceColor().isBlack()))){
-                if(!boardGame.isCaseOccupied(futurePosition)){
-                    final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(futurePosition);
+                if(!boardGame.isCaseOccupied(vectorPosition)){
+                    final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(vectorPosition);
                     if(this.getPieceColor() != chessPiece.getPieceColor()){
                         // TODO
-                        legalMovements.add(new NormalMovement(boardGame, this, possiblePosition));
+                        legalMovements.add(new NormalMovement(boardGame, this, futurePosition));
                     }
                 }
-            } else if(futurePosition == 9 && !((BoardGame.EIGHT_COLUMN[this.getPiecePosition()] && this.getPieceColor().isBlack())
+            } else if(vectorPosition == 9 && !((BoardGame.EIGHT_COLUMN[this.getPiecePosition()] && this.getPieceColor().isBlack())
                     || (BoardGame.FIRST_COLUMN[this.getPiecePosition()] && this.getPieceColor().isWhite()))){
-                if(!boardGame.isCaseOccupied(futurePosition)){
-                    final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(futurePosition);
+                if(!boardGame.isCaseOccupied(vectorPosition)){
+                    final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(vectorPosition);
                     if(this.getPieceColor() != chessPiece.getPieceColor()){
                         // TODO
-                        legalMovements.add(new NormalMovement(boardGame, this, possiblePosition));
+                        legalMovements.add(new NormalMovement(boardGame, this, futurePosition));
                     }
                 }
             }
