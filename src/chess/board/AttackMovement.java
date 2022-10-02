@@ -2,7 +2,7 @@ package chess.board;
 
 import chess.chessPiece.ChessPiece;
 
-public final class AttackMovement extends Movement{
+public class AttackMovement extends Movement{
 
     private final ChessPiece attackPiece;
 

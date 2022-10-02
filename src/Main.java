@@ -8,6 +8,8 @@ public class Main {
         BoardGame boardGame = new BoardGame();
         boardGame.createBoard();
         boardGame.initChessPieceOnBoard();
+        boardGame.createPlayers();
+
         System.out.println(boardGame);
 
         for (Iterator<Movement> it = boardGame.getLegalMove().iterator(); it.hasNext(); ) {

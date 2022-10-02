@@ -16,9 +16,10 @@ public class BoardGame extends JComponent {
     public static final boolean[] EIGHT_COLUMN = initColumn(7);
 
     private Map<Integer, ChessPiece> board;
-    private PieceColor nextColorPiece;
+    private Player currentPlayer;
     private Collection<ChessPiece> blackChessPiece;
     private Collection<ChessPiece> whiteChessPiece;
+    private List<Player> players;
 
     //============================= Partie GUI ==========================================
     ImageIcon white_rook, black_rook;
@@ -62,69 +63,11 @@ public class BoardGame extends JComponent {
 
         white_pawn = new ImageIcon("images/white_pawn.png");
         black_pawn = new ImageIcon("images/black_pawn.png");
-
-
-
-
-
     }
 
-    public Collection<Movement> getLegalMove(){
-        int index = 0;
-        for (Iterator<ChessPiece> it = blackChessPiece.iterator(); it.hasNext(); ) {
-            ChessPiece chessPiece = it.next();
-            if(index == 4){
-                System.out.println("\n" + chessPiece.getName() + "/" + chessPiece.getPieceColor() + "/position : " + chessPiece.getPiecePosition());
-                return chessPiece.findLegalMovements(this);
-            }
-            index ++;
-            blackChessPiece.iterator().next();
-    }
-        return null;
-    }
-
-    @Override
-    public String toString(){
-        final StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < 64; i++){
-            final String text;
-            if(board.get(i) == null){
-                text = "-";
-            }
-            else {
-                text = board.get(i).toString();
-            }
-            builder.append(text + "  ");
-            if((i + 1) % 8 == 0){
-                builder.append("\n");
-            }
-        }
-        return builder.toString();
-    }
-
-    private Collection<ChessPiece> findActiveChessPieces(final PieceColor pieceColor){
-        Collection<ChessPiece> chessPieces = new ArrayList<>();
-        for (Iterator<ChessPiece> it = board.values().iterator(); it.hasNext(); ) {
-            ChessPiece chessPiece = it.next();
-            if(chessPiece != null) {
-                if (chessPiece.getPieceColor() == pieceColor) {
-                    chessPieces.add(chessPiece);
-                }
-            }
-        }
-        return chessPieces;
-    }
-
-    private Collection<Movement> findChessPieceLegalMovements(Collection<ChessPiece> chessPieces){
-        List<Movement> chessPieceLegalMovements = new ArrayList<>();
-
-        for(ChessPiece chessPiece : chessPieces){
-            //chessPieceLegalMovements.addAll(chessPiece.findLegalMovements(this));
-        }
-
-        return chessPieceLegalMovements;
-    }
-
+    /**
+     * Initialize the map.
+     */
     public void createBoard(){
         board = new HashMap<>();
         for(int i = 0; i < 64; i++){
@@ -132,6 +75,9 @@ public class BoardGame extends JComponent {
         }
     }
 
+    /**
+     * Create all chess pieces and put them on the board.
+     */
     public void initChessPieceOnBoard(){
         if(board == null){
             createBoard();
@@ -181,6 +127,89 @@ public class BoardGame extends JComponent {
 
     }
 
+    /**
+     * Create all player.
+     */
+    public void createPlayers(){
+        players = new ArrayList<>();
+        players.add(new Player("White",PieceColor.WHITE));
+        players.add(new Player("Black", PieceColor.BLACK));
+        currentPlayer = players.get(0);
+    }
+
+    /**
+     * Méthode test
+     * TO DELETE
+     */
+    public Collection<Movement> getLegalMove(){
+        int index = 0;
+        for (Iterator<ChessPiece> it = blackChessPiece.iterator(); it.hasNext(); ) {
+            ChessPiece chessPiece = it.next();
+            if(index == 4){
+                System.out.println("\n" + chessPiece.getName() + "/" + chessPiece.getPieceColor() + "/position : " + chessPiece.getPiecePosition());
+                return chessPiece.findLegalMovements(this);
+            }
+            index ++;
+            blackChessPiece.iterator().next();
+        }
+        return null;
+    }
+
+    @Override
+    /**
+     * Pour afficher
+     * TO DELETE
+     */
+    public String toString(){
+        final StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < 64; i++){
+            final String text;
+            if(board.get(i) == null){
+                text = "-";
+            }
+            else {
+                text = board.get(i).toString();
+            }
+            builder.append(text + "  ");
+            if((i + 1) % 8 == 0){
+                builder.append("\n");
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Find all chess pieces alive for a color piece.
+     */
+    private Collection<ChessPiece> findActiveChessPieces(final PieceColor pieceColor){
+        Collection<ChessPiece> chessPieces = new ArrayList<>();
+        for (Iterator<ChessPiece> it = board.values().iterator(); it.hasNext(); ) {
+            ChessPiece chessPiece = it.next();
+            if(chessPiece != null) {
+                if (chessPiece.getPieceColor() == pieceColor) {
+                    chessPieces.add(chessPiece);
+                }
+            }
+        }
+        return chessPieces;
+    }
+
+    /**
+     * Find all legal movements for a color piece
+     */
+    private Collection<Movement> findChessPieceLegalMovements(Collection<ChessPiece> chessPieces){
+        List<Movement> chessPieceLegalMovements = new ArrayList<>();
+
+        for(ChessPiece chessPiece : chessPieces){
+            //chessPieceLegalMovements.addAll(chessPiece.findLegalMovements(this));
+        }
+
+        return chessPieceLegalMovements;
+    }
+
+    /**
+     * Check if a case is occupied by a chess piece.
+     */
     public boolean isCaseOccupied(int casePosition){
         return board.get(casePosition) != null;
     }
@@ -192,8 +221,43 @@ public class BoardGame extends JComponent {
         return null;
     }
 
-    public static boolean isValidPosition(int position){
-        return (position >= 0 && position < 64);
+    /**
+     * Verify if the case position is in the limit of the map (between 0 and 63).
+     */
+    public static boolean isValidPosition(int casePosition){
+        return (casePosition >= 0 && casePosition < 64);
+    }
+
+    /**
+     * Verify if an attack on a king is possible.
+     */
+    public Collection<Movement> VerifyAttackCheckMovement(Collection<Movement> chessPieceLegalMovement, Player player){
+        Map<Integer, ChessPiece> boardCopy = new HashMap<>(board);
+        List<Movement> finalListOfChessPieces = new ArrayList<>();
+        PieceColor enemyColor;
+
+        if(currentPlayer.getPlayerColor().isWhite()){
+            enemyColor = PieceColor.WHITE;
+        }
+        else {
+            enemyColor = PieceColor.BLACK;
+        }
+
+        if(player == currentPlayer){
+            for (Iterator<Movement> it = chessPieceLegalMovement.iterator(); it.hasNext(); ) {
+                Movement movement = it.next();
+                boardCopy.put(movement.getFuturePosition(), movement.getChessPiece());
+                Collection<ChessPiece> newActiveChessPieces = findActiveChessPieces(enemyColor);
+                Collection<Movement> newChessPieceLegalMovements = findChessPieceLegalMovements(newActiveChessPieces);
+                for(Iterator<Movement> newIt = newChessPieceLegalMovements.iterator(); newIt.hasNext();){
+                    Movement newMovement = newIt.next();
+                    if(!(newMovement instanceof AttackCheckMovement)){
+                        finalListOfChessPieces.add(movement);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     //============================= Partie GUI ==========================================

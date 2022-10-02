@@ -1,6 +1,7 @@
 package chess.board;
 
 import chess.chessPiece.ChessPiece;
+import chess.chessPiece.PieceColor;
 
 public abstract class Movement {
 
@@ -15,6 +16,10 @@ public abstract class Movement {
     }
 
     public int getFuturePosition(){ return futurePosition; }
+
+    public ChessPiece getChessPiece(){
+        return chessPiece;
+    }
 
 
 }
