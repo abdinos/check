@@ -6,6 +6,7 @@ public class Player {
 
     private String name;
     private PieceColor playerColor;
+    private boolean isKingCheck = false;
 
     public Player(String name, PieceColor playerColor){
         this.name = name;
@@ -18,5 +19,13 @@ public class Player {
 
     public PieceColor getPlayerColor(){
         return playerColor;
+    }
+
+    public boolean isKingCheck(){
+        return isKingCheck;
+    }
+
+    public void setKingCheck(boolean isKingCheck){
+        this.isKingCheck = isKingCheck;
     }
 }

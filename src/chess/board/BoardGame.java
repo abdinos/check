@@ -16,7 +16,7 @@ public class BoardGame extends JComponent {
     public static final boolean[] EIGHT_COLUMN = initColumn(7);
 
     private Map<Integer, ChessPiece> board;
-    private Player currentPlayer;
+    private int indexCurrentPlayer;
     private Collection<ChessPiece> blackChessPiece;
     private Collection<ChessPiece> whiteChessPiece;
     private List<Player> players;
@@ -122,8 +122,8 @@ public class BoardGame extends JComponent {
         blackChessPiece = findActiveChessPieces(PieceColor.BLACK);
         whiteChessPiece = findActiveChessPieces(PieceColor.WHITE);
 
-        final Collection<Movement> whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPiece);
-        final Collection<Movement> blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPiece);
+        final Map<ChessPiece,Collection<Movement>> whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPiece);
+        final Map<ChessPiece,Collection<Movement>> blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPiece);
 
     }
 
@@ -134,7 +134,7 @@ public class BoardGame extends JComponent {
         players = new ArrayList<>();
         players.add(new Player("White",PieceColor.WHITE));
         players.add(new Player("Black", PieceColor.BLACK));
-        currentPlayer = players.get(0);
+        indexCurrentPlayer = 0;
     }
 
     /**
@@ -197,11 +197,11 @@ public class BoardGame extends JComponent {
     /**
      * Find all legal movements for a color piece
      */
-    private Collection<Movement> findChessPieceLegalMovements(Collection<ChessPiece> chessPieces){
-        List<Movement> chessPieceLegalMovements = new ArrayList<>();
+    private Map<ChessPiece,Collection<Movement>> findChessPieceLegalMovements(Collection<ChessPiece> chessPieces){
+        Map<ChessPiece, Collection<Movement>> chessPieceLegalMovements = new HashMap<>();
 
         for(ChessPiece chessPiece : chessPieces){
-            //chessPieceLegalMovements.addAll(chessPiece.findLegalMovements(this));
+            chessPieceLegalMovements.put(chessPiece, chessPiece.findLegalMovements(this));
         }
 
         return chessPieceLegalMovements;
@@ -231,33 +231,68 @@ public class BoardGame extends JComponent {
     /**
      * Verify if an attack on a king is possible.
      */
-    public Collection<Movement> VerifyAttackCheckMovement(Collection<Movement> chessPieceLegalMovement, Player player){
+    public void VerifyAttackCheckMovement(Map<ChessPiece,Collection<Movement>> chessPieceLegalMovement, boolean piecePlayed){
         Map<Integer, ChessPiece> boardCopy = new HashMap<>(board);
         List<Movement> finalListOfChessPieces = new ArrayList<>();
         PieceColor enemyColor;
 
-        if(currentPlayer.getPlayerColor().isWhite()){
+        if(players.get(indexCurrentPlayer).getPlayerColor().isWhite()){
             enemyColor = PieceColor.WHITE;
         }
         else {
             enemyColor = PieceColor.BLACK;
         }
 
-        if(player == currentPlayer){
-            for (Iterator<Movement> it = chessPieceLegalMovement.iterator(); it.hasNext(); ) {
-                Movement movement = it.next();
+        for(ChessPiece chessPiece : findActiveChessPieces(players.get(indexCurrentPlayer).getPlayerColor())){
+            for(Iterator<Movement> iteratorMovement = chessPieceLegalMovement.get(chessPiece).iterator(); iteratorMovement.hasNext();) {
+                Movement movement = iteratorMovement.next();
                 boardCopy.put(movement.getFuturePosition(), movement.getChessPiece());
-                Collection<ChessPiece> newActiveChessPieces = findActiveChessPieces(enemyColor);
-                Collection<Movement> newChessPieceLegalMovements = findChessPieceLegalMovements(newActiveChessPieces);
-                for(Iterator<Movement> newIt = newChessPieceLegalMovements.iterator(); newIt.hasNext();){
-                    Movement newMovement = newIt.next();
-                    if(!(newMovement instanceof AttackCheckMovement)){
-                        finalListOfChessPieces.add(movement);
-                    }
+                boolean isKingCheck = false;
+                Collection<ChessPiece> newActiveChessPieces;
+                if (!piecePlayed) {
+                    newActiveChessPieces = findActiveChessPieces(enemyColor);
                 }
+                else {
+                    newActiveChessPieces = findActiveChessPieces(players.get(indexCurrentPlayer).getPlayerColor());
+                }
+                    Map<ChessPiece, Collection<Movement>> newChessPieceLegalMovements = findChessPieceLegalMovements(newActiveChessPieces);
+
+                    for (Iterator<Collection<Movement>> it = newChessPieceLegalMovements.values().iterator(); it.hasNext(); ) {
+                        Collection<Movement> newMovements = it.next();
+                        if (!isCheckMovement(newMovements)) {
+                            if(!piecePlayed) {
+                                finalListOfChessPieces.add(movement);
+                            }
+                            else {
+                                isKingCheck = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(!piecePlayed) {
+                        chessPieceLegalMovement.put(chessPiece, finalListOfChessPieces);
+                    }
+                    else if(isKingCheck){
+                        players.get((indexCurrentPlayer + 1)%2).setKingCheck(true);
+                    }
+                    else{
+                        players.get((indexCurrentPlayer + 1)%2).setKingCheck(false);
+                    }
             }
         }
-        return null;
+    }
+
+    /**
+     * Verify if there is an attack check movement in the list of movement.
+     */
+    private boolean isCheckMovement(Collection<Movement> movements){
+        for(Iterator<Movement> it = movements.iterator(); it.hasNext();){
+            Movement movement = it.next();
+            if(movement instanceof AttackCheckMovement){
+                return true;
+            }
+        }
+        return false;
     }
 
     //============================= Partie GUI ==========================================
