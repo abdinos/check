@@ -15,10 +15,10 @@ public class BoardGame extends JComponent {
     public static final boolean[] SEVENTH_COLUMN = initColumn(6);
     public static final boolean[] EIGHT_COLUMN = initColumn(7);
 
-    private final Map<Integer, ChessPiece> board;
+    private Map<Integer, ChessPiece> board;
     private PieceColor nextColorPiece;
-    private final Collection<ChessPiece> blackChessPiece;
-    private final Collection<ChessPiece> whiteChessPiece;
+    private Collection<ChessPiece> blackChessPiece;
+    private Collection<ChessPiece> whiteChessPiece;
 
     //============================= Partie GUI ==========================================
     ImageIcon white_rook, black_rook;
@@ -44,15 +44,6 @@ public class BoardGame extends JComponent {
     }
 
     public BoardGame(){
-        board = new HashMap<>();
-        createBoard();
-        initChessPieceOnBoard();
-        blackChessPiece = findActiveChessPieces(PieceColor.BLACK);
-        whiteChessPiece = findActiveChessPieces(PieceColor.WHITE);
-
-        final Collection<Movement> whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPiece);
-        final Collection<Movement> blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPiece);
-
         //============================= Partie GUI ==========================================
         white_rook = new ImageIcon("images/white_rook.png");
         black_rook = new ImageIcon("images/black_rook.png");
@@ -134,13 +125,17 @@ public class BoardGame extends JComponent {
         return chessPieceLegalMovements;
     }
 
-    private void createBoard(){
+    public void createBoard(){
+        board = new HashMap<>();
         for(int i = 0; i < 64; i++){
             board.put(i, null);
         }
     }
 
-    private void initChessPieceOnBoard(){
+    public void initChessPieceOnBoard(){
+        if(board == null){
+            createBoard();
+        }
         // Black chess piece
         board.put(0, new Rook(0, PieceColor.BLACK));
         board.put(1, new Knight(1, PieceColor.BLACK));
@@ -177,6 +172,13 @@ public class BoardGame extends JComponent {
         board.put(61, new Bishop(61, PieceColor.WHITE));
         board.put(62, new Knight(62, PieceColor.WHITE));
         board.put(63, new Rook(63, PieceColor.WHITE));
+
+        blackChessPiece = findActiveChessPieces(PieceColor.BLACK);
+        whiteChessPiece = findActiveChessPieces(PieceColor.WHITE);
+
+        final Collection<Movement> whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPiece);
+        final Collection<Movement> blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPiece);
+
     }
 
     public boolean isCaseOccupied(int casePosition){

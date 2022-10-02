@@ -26,25 +26,25 @@ public class Bishop extends ChessPiece{
     public Collection<Movement> findLegalMovements(final BoardGame boardGame) {
         final List<Movement> legalMovements = new ArrayList<>();
 
-        for(final int futurePosition : POSSIBLE_MOVEMENT_POSITION_VECTOR){
-            int possiblePosition = this.getPiecePosition();
+        for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION_VECTOR){
+            int futurePosition = this.getPiecePosition();
 
-            while(BoardGame.isValidPosition(possiblePosition)){
-                if(isFirstColumnExclusionPosition(possiblePosition, futurePosition) ||
-                    isEightColumnExclusionPosition(possiblePosition, futurePosition)){
+            while(BoardGame.isValidPosition(futurePosition)){
+                if(isFirstColumnExclusionPosition(futurePosition, vectorPosition) ||
+                    isEightColumnExclusionPosition(futurePosition, vectorPosition)){
                     break;
                 }
 
-                possiblePosition += futurePosition;
-                if(BoardGame.isValidPosition(possiblePosition)){
-                    if (!boardGame.isCaseOccupied(possiblePosition)) {
-                        legalMovements.add(new NormalMovement(boardGame, this, possiblePosition));
+                futurePosition += vectorPosition;
+                if(BoardGame.isValidPosition(futurePosition)){
+                    if (!boardGame.isCaseOccupied(futurePosition)) {
+                        legalMovements.add(new NormalMovement(boardGame, this, futurePosition));
                     }
                     else{
-                        final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(possiblePosition);
+                        final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(futurePosition);
                         if(chessPiece != null) {
                             if (this.getPieceColor() != chessPiece.getPieceColor()) {
-                                legalMovements.add(new AttackMovement(boardGame, this, possiblePosition, chessPiece));
+                                legalMovements.add(new AttackMovement(boardGame, this, futurePosition, chessPiece));
                             }
                         }
                         break;
@@ -55,8 +55,8 @@ public class Bishop extends ChessPiece{
         return legalMovements;
     }
 
-    private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int futurePosition){
-        return (BoardGame.FIRST_COLUMN[currentPosition] && (futurePosition == -9 || futurePosition == 7));
+    private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int vectorPosition){
+        return (BoardGame.FIRST_COLUMN[currentPosition] && (vectorPosition == -9 || vectorPosition == 7));
     }
 
     private static boolean isEightColumnExclusionPosition(final int currentPosition, final int futurePosition){
