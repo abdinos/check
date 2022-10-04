@@ -5,9 +5,9 @@ import chess.board.Movement;
 
 import java.util.Collection;
 
-public abstract class ChessPiece {
+public abstract class ChessPiece{
 
-   private final int piecePosition;
+   private int piecePosition;
    private final PieceColor pieceColor;
    private final boolean isPieceMove;
 
@@ -32,7 +32,11 @@ public abstract class ChessPiece {
         return isPieceMove;
     }
 
-    public abstract Collection<Movement> findLegalMovements(BoardGame boardGame);
+    public abstract Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack);
+
+    public void setPiecePosition(int piecePosition){
+        this.piecePosition = piecePosition;
+    }
 
     @Override
     public String toString(){

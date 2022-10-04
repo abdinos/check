@@ -7,13 +7,13 @@ public class Main {
     public static void main(String[] args) {
         BoardGame boardGame = new BoardGame();
         boardGame.createBoard();
-        boardGame.initChessPieceOnBoard();
         boardGame.createPlayers();
+        boardGame.initChessPieceOnBoard();
+
 
         System.out.println(boardGame);
 
-        for (Iterator<Movement> it = boardGame.getLegalMove().iterator(); it.hasNext(); ) {
-            Movement movement = it.next();
+        for (Movement movement : boardGame.getLegalMove()) {
             System.out.println(movement.getFuturePosition() + " : " + movement.getClass());
         }
 

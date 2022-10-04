@@ -5,9 +5,9 @@ import chess.chessPiece.PieceColor;
 
 public abstract class Movement {
 
-    final BoardGame boardGame;
-    final ChessPiece chessPiece;
-    final int futurePosition;
+    private final BoardGame boardGame;
+    private final ChessPiece chessPiece;
+    private final int futurePosition;
 
     public Movement(final BoardGame boardGame, final ChessPiece chessPiece, final int futurePosition){
         this.boardGame = boardGame;

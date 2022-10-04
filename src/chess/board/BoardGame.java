@@ -17,8 +17,8 @@ public class BoardGame extends JComponent {
 
     private Map<Integer, ChessPiece> board;
     private int indexCurrentPlayer;
-    private Collection<ChessPiece> blackChessPiece;
-    private Collection<ChessPiece> whiteChessPiece;
+    private Collection<ChessPiece> blackChessPieces;
+    private Collection<ChessPiece> whiteChessPieces;
     private List<Player> players;
 
     //============================= Partie GUI ==========================================
@@ -84,24 +84,28 @@ public class BoardGame extends JComponent {
         }
         // Black chess piece
         board.put(0, new Rook(0, PieceColor.BLACK));
-        board.put(1, new Knight(1, PieceColor.BLACK));
-        board.put(2, new Bishop(2, PieceColor.BLACK));
-        board.put(3, new Queen(3, PieceColor.BLACK));
-        board.put(4, new King(4, PieceColor.BLACK));
-        board.put(5, new Bishop(5, PieceColor.BLACK));
-        board.put(6, new Knight(6, PieceColor.BLACK));
-        board.put(7, new Rook(7, PieceColor.BLACK));
+        //board.put(1, new Knight(1, PieceColor.BLACK));
+        //board.put(2, new Bishop(2, PieceColor.BLACK));
+        //board.put(3, new Queen(3, PieceColor.BLACK));
+        //board.put(4, new King(4, PieceColor.BLACK));
+        //board.put(5, new Bishop(5, PieceColor.BLACK));
+        //board.put(6, new Knight(6, PieceColor.BLACK));
+        //board.put(7, new Rook(7, PieceColor.BLACK));
+
+        /**
         board.put(8, new Pawn(8, PieceColor.BLACK));
         board.put(9, new Pawn(9, PieceColor.BLACK));
         board.put(10, new Pawn(10, PieceColor.BLACK));
         board.put(11, new Pawn(11, PieceColor.BLACK));
-        //board.put(12, new Pawn(12, PieceColor.BLACK));
+        board.put(12, new Pawn(12, PieceColor.BLACK));
         board.put(12, new Pawn(12, PieceColor.BLACK));
         board.put(13, new Pawn(13, PieceColor.BLACK));
         board.put(14, new Pawn(14, PieceColor.BLACK));
         board.put(15, new Pawn(15, PieceColor.BLACK));
+         **/
 
         // White chess piece
+        /**
         board.put(48, new Pawn(48, PieceColor.WHITE));
         board.put(49, new Pawn(49, PieceColor.WHITE));
         board.put(50, new Pawn(50, PieceColor.WHITE));
@@ -110,20 +114,24 @@ public class BoardGame extends JComponent {
         board.put(53, new Pawn(53, PieceColor.WHITE));
         board.put(54, new Pawn(54, PieceColor.WHITE));
         board.put(55, new Pawn(55, PieceColor.WHITE));
-        board.put(56, new Rook(56, PieceColor.WHITE));
-        board.put(57, new Knight(57, PieceColor.WHITE));
-        board.put(58, new Bishop(58, PieceColor.WHITE));
-        board.put(59, new Queen(59, PieceColor.WHITE));
-        board.put(60, new King(60, PieceColor.WHITE));
-        board.put(61, new Bishop(61, PieceColor.WHITE));
-        board.put(62, new Knight(62, PieceColor.WHITE));
-        board.put(63, new Rook(63, PieceColor.WHITE));
+         **/
+        //board.put(56, new Rook(56, PieceColor.WHITE));
+        //board.put(57, new Knight(57, PieceColor.WHITE));
+        //board.put(58, new Bishop(58, PieceColor.WHITE));
+        board.put(48, new Queen(48, PieceColor.WHITE)); // position = 59
+        board.put(56, new King(56, PieceColor.WHITE)); // position = 60
+        //board.put(61, new Bishop(61, PieceColor.WHITE)); // position = 61
+        //board.put(62, new Knight(62, PieceColor.WHITE));
+        //board.put(63, new Rook(63, PieceColor.WHITE)); // position = 63
 
-        blackChessPiece = findActiveChessPieces(PieceColor.BLACK);
-        whiteChessPiece = findActiveChessPieces(PieceColor.WHITE);
+        blackChessPieces = findActiveChessPieces(PieceColor.BLACK);
+        whiteChessPieces = findActiveChessPieces(PieceColor.WHITE);
 
-        final Map<ChessPiece,Collection<Movement>> whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPiece);
-        final Map<ChessPiece,Collection<Movement>> blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPiece);
+        /**
+         * TODO :  DELETE
+         */
+        //final Map<ChessPiece,Collection<Movement>> whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPieces, true);
+        //final Map<ChessPiece,Collection<Movement>> blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPieces, true);
 
     }
 
@@ -143,16 +151,17 @@ public class BoardGame extends JComponent {
      */
     public Collection<Movement> getLegalMove(){
         int index = 0;
-        for (Iterator<ChessPiece> it = blackChessPiece.iterator(); it.hasNext(); ) {
+        for (Iterator<ChessPiece> it = whiteChessPieces.iterator(); it.hasNext(); ) {
             ChessPiece chessPiece = it.next();
-            if(index == 4){
+            if(index == 0){
                 System.out.println("\n" + chessPiece.getName() + "/" + chessPiece.getPieceColor() + "/position : " + chessPiece.getPiecePosition());
-                return chessPiece.findLegalMovements(this);
+                return chessPiece.findLegalMovements(this, true);
             }
             index ++;
-            blackChessPiece.iterator().next();
+            blackChessPieces.iterator().next();
         }
         return null;
+
     }
 
     @Override
@@ -183,9 +192,8 @@ public class BoardGame extends JComponent {
      */
     private Collection<ChessPiece> findActiveChessPieces(final PieceColor pieceColor){
         Collection<ChessPiece> chessPieces = new ArrayList<>();
-        for (Iterator<ChessPiece> it = board.values().iterator(); it.hasNext(); ) {
-            ChessPiece chessPiece = it.next();
-            if(chessPiece != null) {
+        for (ChessPiece chessPiece : board.values()) {
+            if (chessPiece != null) {
                 if (chessPiece.getPieceColor() == pieceColor) {
                     chessPieces.add(chessPiece);
                 }
@@ -197,11 +205,11 @@ public class BoardGame extends JComponent {
     /**
      * Find all legal movements for a color piece
      */
-    private Map<ChessPiece,Collection<Movement>> findChessPieceLegalMovements(Collection<ChessPiece> chessPieces){
+    private Map<ChessPiece,Collection<Movement>> findChessPieceLegalMovements(Collection<ChessPiece> chessPieces, boolean verifyCheckAttack){
         Map<ChessPiece, Collection<Movement>> chessPieceLegalMovements = new HashMap<>();
 
         for(ChessPiece chessPiece : chessPieces){
-            chessPieceLegalMovements.put(chessPiece, chessPiece.findLegalMovements(this));
+            chessPieceLegalMovements.put(chessPiece, chessPiece.findLegalMovements(this, verifyCheckAttack));
         }
 
         return chessPieceLegalMovements;
@@ -231,55 +239,36 @@ public class BoardGame extends JComponent {
     /**
      * Verify if an attack on a king is possible.
      */
-    public void VerifyAttackCheckMovement(Map<ChessPiece,Collection<Movement>> chessPieceLegalMovement, boolean piecePlayed){
-        Map<Integer, ChessPiece> boardCopy = new HashMap<>(board);
-        List<Movement> finalListOfChessPieces = new ArrayList<>();
-        PieceColor enemyColor;
+    public boolean isKingCheckAfterMovement(Movement possibleMovement){
+        // Start of the simulation
+        ChessPiece chessPiece = board.get(possibleMovement.getChessPiece().getPiecePosition());
+        int chessPiecePosition = chessPiece.getPiecePosition();
+        ChessPiece chessPieceSave = board.get(possibleMovement.getFuturePosition());
 
+        board.put(chessPiecePosition, null);
+        board.put(possibleMovement.getFuturePosition(), chessPiece);
+        chessPiece.setPiecePosition(possibleMovement.getFuturePosition());
+
+        PieceColor enemyPieceColor;
         if(players.get(indexCurrentPlayer).getPlayerColor().isWhite()){
-            enemyColor = PieceColor.WHITE;
+            enemyPieceColor = PieceColor.BLACK;
         }
-        else {
-            enemyColor = PieceColor.BLACK;
+        else{
+            enemyPieceColor = PieceColor.WHITE;
         }
 
-        for(ChessPiece chessPiece : findActiveChessPieces(players.get(indexCurrentPlayer).getPlayerColor())){
-            for(Iterator<Movement> iteratorMovement = chessPieceLegalMovement.get(chessPiece).iterator(); iteratorMovement.hasNext();) {
-                Movement movement = iteratorMovement.next();
-                boardCopy.put(movement.getFuturePosition(), movement.getChessPiece());
-                boolean isKingCheck = false;
-                Collection<ChessPiece> newActiveChessPieces;
-                if (!piecePlayed) {
-                    newActiveChessPieces = findActiveChessPieces(enemyColor);
-                }
-                else {
-                    newActiveChessPieces = findActiveChessPieces(players.get(indexCurrentPlayer).getPlayerColor());
-                }
-                    Map<ChessPiece, Collection<Movement>> newChessPieceLegalMovements = findChessPieceLegalMovements(newActiveChessPieces);
+        Collection<ChessPiece> enemyChessPieces = findActiveChessPieces(enemyPieceColor);
+        Map<ChessPiece,Collection<Movement>> enemyChessPiecesMovements = findChessPieceLegalMovements(enemyChessPieces, false);
 
-                    for (Iterator<Collection<Movement>> it = newChessPieceLegalMovements.values().iterator(); it.hasNext(); ) {
-                        Collection<Movement> newMovements = it.next();
-                        if (!isCheckMovement(newMovements)) {
-                            if(!piecePlayed) {
-                                finalListOfChessPieces.add(movement);
-                            }
-                            else {
-                                isKingCheck = true;
-                                break;
-                            }
-                        }
-                    }
-                    if(!piecePlayed) {
-                        chessPieceLegalMovement.put(chessPiece, finalListOfChessPieces);
-                    }
-                    else if(isKingCheck){
-                        players.get((indexCurrentPlayer + 1)%2).setKingCheck(true);
-                    }
-                    else{
-                        players.get((indexCurrentPlayer + 1)%2).setKingCheck(false);
-                    }
-            }
+        // End of the simulation
+        chessPiece.setPiecePosition(chessPiecePosition);
+        board.put(chessPiecePosition, chessPiece);
+        board.put(possibleMovement.getFuturePosition(), chessPieceSave);
+
+        for (Collection<Movement> movements : enemyChessPiecesMovements.values()) {
+            return isCheckMovement(movements);
         }
+        return false;
     }
 
     /**

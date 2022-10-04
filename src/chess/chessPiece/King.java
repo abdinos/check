@@ -1,9 +1,6 @@
 package chess.chessPiece;
 
-import chess.board.AttackMovement;
-import chess.board.BoardGame;
-import chess.board.Movement;
-import chess.board.NormalMovement;
+import chess.board.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +20,7 @@ public class King extends ChessPiece{
     }
 
     @Override
-    public Collection<Movement> findLegalMovements(final BoardGame boardGame) {
+    public Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack) {
         final List<Movement> legalMovements = new ArrayList<>();
 
         for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION){
@@ -35,13 +32,37 @@ public class King extends ChessPiece{
                     continue;
                 }
                 if (!boardGame.isCaseOccupied(futurePosition)) {
-                    legalMovements.add(new NormalMovement(boardGame, this, futurePosition));
+                    NormalMovement normalMovement = new NormalMovement(boardGame, this, futurePosition);
+                    if(!boardGame.isKingCheckAfterMovement(normalMovement)) {
+                        legalMovements.add(normalMovement);
+                    }
                 }
                 else{
                     final ChessPiece chessPiece = boardGame.getChessPieceAtPosition(futurePosition);
                     if(chessPiece != null) {
                         if (this.getPieceColor() != chessPiece.getPieceColor()) {
-                            legalMovements.add(new AttackMovement(boardGame, this, futurePosition, chessPiece));
+                            if(chessPiece instanceof King){
+                                AttackCheckMovement attackCheckMovement = new AttackCheckMovement(boardGame, this, futurePosition, chessPiece);
+                                if(verifyCheckAttack) {
+                                    if (!boardGame.isKingCheckAfterMovement(attackCheckMovement)) {
+                                        legalMovements.add(attackCheckMovement);
+                                    }
+                                }
+                                else{
+                                    legalMovements.add(attackCheckMovement);
+                                }
+                            }
+                            else{
+                                AttackMovement attackMovement = new AttackMovement(boardGame, this, futurePosition, chessPiece);
+                                if(verifyCheckAttack) {
+                                    if (!boardGame.isKingCheckAfterMovement(attackMovement)) {
+                                        legalMovements.add(attackMovement);
+                                    }
+                                }
+                                else{
+                                    legalMovements.add(attackMovement);
+                                }
+                            }
                         }
                     }
                 }
