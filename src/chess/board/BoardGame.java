@@ -284,6 +284,27 @@ public class BoardGame extends JComponent {
         return false;
     }
 
+    /**
+     * Move a chess piece
+     */
+    public void executeChessPieceMovement(Movement movement){
+        if(movement != null) {
+            ChessPiece chessPiece = movement.getChessPiece();
+            board.put(chessPiece.getPiecePosition(), null);
+            chessPiece.setPiecePosition(movement.getFuturePosition());
+            board.put(chessPiece.getPiecePosition(), chessPiece);
+            // TODO déplacer image de la pièce
+
+            if (!(movement instanceof NormalMovement)) {
+                if (players.get(indexCurrentPlayer).getPlayerColor().isWhite()) {
+                    findActiveChessPieces(PieceColor.BLACK);
+                } else {
+                    findActiveChessPieces(PieceColor.WHITE);
+                }
+            }
+        }
+    }
+
     //============================= Partie GUI ==========================================
 
     @Override
