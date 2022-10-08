@@ -47,11 +47,13 @@ public class ChessWindow extends JFrame {
         add(tfCaseArrivée);
 
         //Echiquier
+        /**
         BoardGame boardGame = new BoardGame();
         boardGame.createBoard();
         boardGame.initChessPieceOnBoard();
         boardGame.setBounds(50,20,800,1200);
         add(boardGame);
+         **/
 
         //bg
         JLabel background;

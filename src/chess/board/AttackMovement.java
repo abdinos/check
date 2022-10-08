@@ -4,10 +4,7 @@ import chess.chessPiece.ChessPiece;
 
 public class AttackMovement extends Movement{
 
-    private final ChessPiece attackPiece;
-
-    public AttackMovement(final BoardGame boardGame, final ChessPiece chessPiece, final int futurePosition, final ChessPiece attackedPiece) {
-        super(boardGame, chessPiece, futurePosition);
-        this.attackPiece = attackedPiece;
+    public AttackMovement(final BoardGame boardGame, final ChessPiece chessPieceMoved, final int futurePosition, final ChessPiece chessPieceAttacked) {
+        super(boardGame, chessPieceMoved, chessPieceAttacked, null, futurePosition, true, false, false);
     }
 }

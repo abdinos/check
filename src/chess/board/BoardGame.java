@@ -3,9 +3,6 @@ package chess.board;
 import chess.ChessGame;
 import chess.chessPiece.*;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.util.*;
 
 public class BoardGame{
@@ -59,7 +56,7 @@ public class BoardGame{
             createBoard();
         }
         // Black chess piece
-        board.put(0, new Rook(0, PieceColor.BLACK));
+        //board.put(0, new Rook(0, PieceColor.BLACK));
         //board.put(1, new Knight(1, PieceColor.BLACK));
         //board.put(2, new Bishop(2, PieceColor.BLACK));
         //board.put(3, new Queen(3, PieceColor.BLACK));
@@ -81,21 +78,20 @@ public class BoardGame{
          **/
 
         // White chess piece
-        /**
-        board.put(48, new Pawn(48, PieceColor.WHITE));
-        board.put(49, new Pawn(49, PieceColor.WHITE));
-        board.put(50, new Pawn(50, PieceColor.WHITE));
-        board.put(51, new Pawn(51, PieceColor.WHITE));
-        board.put(52, new Pawn(52, PieceColor.WHITE));
-        board.put(53, new Pawn(53, PieceColor.WHITE));
-        board.put(54, new Pawn(54, PieceColor.WHITE));
-        board.put(55, new Pawn(55, PieceColor.WHITE));
-         **/
+
+        board.put(8, new Pawn(8, PieceColor.WHITE)); //position = 48
+        //board.put(49, new Pawn(49, PieceColor.WHITE));
+        //board.put(50, new Pawn(50, PieceColor.WHITE));
+        //board.put(51, new Pawn(51, PieceColor.WHITE));
+        //board.put(52, new Pawn(52, PieceColor.WHITE));
+        //board.put(53, new Pawn(53, PieceColor.WHITE));
+        //board.put(54, new Pawn(54, PieceColor.WHITE));
+        //board.put(55, new Pawn(55, PieceColor.WHITE));
         //board.put(56, new Rook(56, PieceColor.WHITE));
         //board.put(57, new Knight(57, PieceColor.WHITE));
         //board.put(58, new Bishop(58, PieceColor.WHITE));
-        board.put(48, new Queen(48, PieceColor.WHITE)); // position = 59
-        board.put(56, new King(56, PieceColor.WHITE)); // position = 60
+        //board.put(59, new Queen(59, PieceColor.WHITE)); // position = 59
+        //board.put(60, new King(60, PieceColor.WHITE)); // position = 60
         //board.put(61, new Bishop(61, PieceColor.WHITE)); // position = 61
         //board.put(62, new Knight(62, PieceColor.WHITE));
         //board.put(63, new Rook(63, PieceColor.WHITE)); // position = 63
@@ -173,11 +169,9 @@ public class BoardGame{
      */
     private Map<ChessPiece,Collection<Movement>> findChessPieceLegalMovements(Collection<ChessPiece> chessPieces, boolean verifyCheckAttack){
         Map<ChessPiece, Collection<Movement>> chessPieceLegalMovements = new HashMap<>();
-
         for(ChessPiece chessPiece : chessPieces){
             chessPieceLegalMovements.put(chessPiece, chessPiece.findLegalMovements(this, verifyCheckAttack));
         }
-
         return chessPieceLegalMovements;
     }
 
@@ -207,23 +201,19 @@ public class BoardGame{
      */
     public boolean isKingCheckAfterMovement(Movement possibleMovement){
         // Start of the simulation
-        ChessPiece chessPiece = board.get(possibleMovement.getChessPiece().getPiecePosition());
+        ChessPiece chessPiece = board.get(possibleMovement.getChessPieceMoved().getPiecePosition());
         int chessPiecePosition = chessPiece.getPiecePosition();
         ChessPiece chessPieceSave = board.get(possibleMovement.getFuturePosition());
-
         board.put(chessPiecePosition, null);
         board.put(possibleMovement.getFuturePosition(), chessPiece);
         chessPiece.setPiecePosition(possibleMovement.getFuturePosition());
-
         PieceColor enemyPieceColor = chessGame.getEnemyColor();
-
         Collection<ChessPiece> enemyChessPieces = findActiveChessPieces(enemyPieceColor);
         Map<ChessPiece,Collection<Movement>> enemyChessPiecesMovements = findChessPieceLegalMovements(enemyChessPieces, false);
-
-        // End of the simulation
         chessPiece.setPiecePosition(chessPiecePosition);
         board.put(chessPiecePosition, chessPiece);
         board.put(possibleMovement.getFuturePosition(), chessPieceSave);
+        // End of the simulation
 
         for (Collection<Movement> movements : enemyChessPiecesMovements.values()) {
             return isCheckMovement(movements);
@@ -235,7 +225,7 @@ public class BoardGame{
      * Move a chess piece on the board and calculate active chess pieces of the enemy player
      */
     public void moveChessPiece(Movement movement, Player currentPlayer){
-        ChessPiece chessPiece = movement.getChessPiece();
+        ChessPiece chessPiece = movement.getChessPieceMoved();
         board.put(chessPiece.getPiecePosition(), null);
         chessPiece.setPiecePosition(movement.getFuturePosition());
         board.put(chessPiece.getPiecePosition(), chessPiece);
