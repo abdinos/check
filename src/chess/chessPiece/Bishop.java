@@ -36,7 +36,12 @@ public class Bishop extends ChessPiece{
                 if(BoardGame.isValidPosition(futurePosition)){
                     if (!boardGame.isCaseOccupied(futurePosition)) {
                         NormalMovement normalMovement = new NormalMovement(boardGame, this, futurePosition);
-                        if(!boardGame.isKingCheckAfterMovement(normalMovement)){
+                        if(verifyCheckAttack) {
+                            if (!boardGame.isKingCheckAfterMovement(normalMovement)) {
+                                legalMovements.add(normalMovement);
+                            }
+                        }
+                        else{
                             legalMovements.add(normalMovement);
                         }
                     }
@@ -45,7 +50,7 @@ public class Bishop extends ChessPiece{
                         if(chessPiece != null) {
                             if (this.getPieceColor() != chessPiece.getPieceColor()) {
                                 if(chessPiece instanceof King){
-                                    AttackCheckMovement attackCheckMovement = new AttackCheckMovement(boardGame, this, futurePosition, chessPiece);
+                                    AttackCheckMovement attackCheckMovement = new AttackCheckMovement(boardGame,this, futurePosition, chessPiece);
                                     if(verifyCheckAttack) {
                                         if (!boardGame.isKingCheckAfterMovement(attackCheckMovement)) {
                                             legalMovements.add(attackCheckMovement);

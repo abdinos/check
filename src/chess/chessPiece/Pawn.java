@@ -38,26 +38,27 @@ public class Pawn extends ChessPiece{
                 if(!boardGame.isCaseOccupied(behindFuturePosition) && !boardGame.isCaseOccupied(futurePosition)){
                     // TODO : coup en passant à faire
                     NormalMovement normalMovement = new NormalMovement(boardGame,this,futurePosition);
-                    if(verifyCheckAttack){
-                        legalMovements.add(normalMovement);
-                    }
-                    else {
+                    if (verifyCheckAttack) {
+                        if (!boardGame.isKingCheckAfterMovement(normalMovement)) {
+                            legalMovements.add(normalMovement);
+                        }
+                    } else {
                         legalMovements.add(normalMovement);
                     }
                 }
             }
             else if(vectorPosition == 7 && !((BoardGame.EIGHT_COLUMN[this.getPiecePosition()] && this.getPieceColor().isWhite())
                     || (BoardGame.FIRST_COLUMN[this.getPiecePosition()] && this.getPieceColor().isBlack()))){
-                if(boardGame.isCaseOccupied(vectorPosition)){
-                    final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(vectorPosition);
-                    if(chessPieceAttacked != null && this.getPieceColor() != chessPieceAttacked.getPieceColor()){
+                if(boardGame.isCaseOccupied(futurePosition)){
+                    final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(futurePosition);
+                    if(this.getPieceColor() != chessPieceAttacked.getPieceColor()){
                         createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack);
                     }
                 }
             } else if(vectorPosition == 9 && !((BoardGame.EIGHT_COLUMN[this.getPiecePosition()] && this.getPieceColor().isBlack())
                     || (BoardGame.FIRST_COLUMN[this.getPiecePosition()] && this.getPieceColor().isWhite()))){
-                if(boardGame.isCaseOccupied(vectorPosition)){
-                    final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(vectorPosition);
+                if(boardGame.isCaseOccupied(futurePosition)){
+                    final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(futurePosition);
                     if(chessPieceAttacked != null && this.getPieceColor() != chessPieceAttacked.getPieceColor()){
                         createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack);
                     }

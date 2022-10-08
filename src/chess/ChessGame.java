@@ -11,6 +11,7 @@ import chess.gui.BoardGameGUI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Scanner;
 
 public class ChessGame {
 
@@ -69,40 +70,6 @@ public class ChessGame {
         }
     }
 
-    /**
-     * methode de test
-     * TO DELETE AFTER
-     */
-    public void test(){
-        System.out.println(boardGame);
-
-        Collection<Movement> movements = boardGame.getLegalMove();
-        Movement movementExecute = null;
-        boolean i = false;
-        for (Movement movement : movements) {
-            if(!i){
-                movementExecute = movement;
-                i = true;
-            }
-            System.out.println(movement.getFuturePosition() + " : " + movement.getClass());
-        }
-
-        executeChessPieceMovement(movementExecute);
-        System.out.println("\n" + boardGame);
-
-        movements = boardGame.getLegalMove();
-        for (Movement movement : movements) {
-            System.out.println(movement.getFuturePosition() + " : " + movement.getClass());
-        }
-    }
-
-    public PieceColor getEnemyColor(){
-        if(players.get(indexCurrentPlayer).getPlayerColor().isWhite()){
-             return PieceColor.BLACK;
-        }
-       return PieceColor.WHITE;
-    }
-
     public int getIndexCurrentPlayer(){
         return indexCurrentPlayer;
     }
@@ -111,11 +78,83 @@ public class ChessGame {
         return players;
     }
 
+    public void interfaceTest(){
+        System.out.println("Début de la partie \n");
+        System.out.println(boardGame + "\n");
+
+        System.out.println("Au tour de " + players.get(indexCurrentPlayer).getName() + "\n");
+
+        boolean end = false;
+        Scanner scanner = new Scanner(System.in);
+        String response = "";
+        int position = -1;
+
+        while(!end){
+            do {
+                System.out.println("choisit la pièce à bouger (position) :");
+                response = scanner.next();
+                try {
+                    position = Integer.parseInt(response);
+                }
+                catch (Exception e){}
+            }while(position < 0 || position > 63);
+
+            ChessPiece chessPiece = boardGame.getBoard().get(position);
+            if(chessPiece != null) {
+                System.out.println("Mouvement de " + chessPiece.printChessPiece() + " : ");
+                int index = 1;
+                List<Movement> movements = new ArrayList<>();
+                if (boardGame.getChessPieceLegalMovements(position, players.get(indexCurrentPlayer).getPlayerColor()) != null) {
+                    movements = boardGame.getChessPieceLegalMovements(position, players.get(indexCurrentPlayer).getPlayerColor()).stream().toList();
+
+                    for (Movement movement : movements) {
+                        System.out.print(index++ + " : " + movement.getChessPieceMoved().getPiecePosition() + " --> " + movement.getFuturePosition());
+                        if (movement.isAttacking()) {
+                            System.out.print(" (" + movement.getChessPieceAttacked().printChessPiece() + ")");
+                        }
+                        System.out.println(" / " + movement.getClass());
+                    }
+                    System.out.println();
+
+                    do {
+                        System.out.println("choisir le mouvement ou changer de piece (new) \n");
+                        response = scanner.next();
+
+                        if (!response.equals("new")) {
+                            try {
+                                position = Integer.parseInt(response) - 1;
+                                if (position >= movements.size() || position < 0) {
+                                    System.out.println("valeur incorrect ! \n");
+                                } else {
+                                    response = "move";
+                                }
+                            } catch (Exception e) {
+                            }
+                        }
+                    } while (!response.equals("new") && !response.equals("move"));
+                } else {
+                    System.out.println("Aucune mouvement possible \n");
+                    response = "";
+                }
+
+                if (response.equals("move")) {
+                    Movement movement = movements.get(position);
+                    boardGame.moveChessPiece(movement, players.get(indexCurrentPlayer));
+
+                    System.out.println(boardGame + "\n");
+
+                    indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
+                    System.out.println("Au tour de " + players.get(indexCurrentPlayer).getName() + "\n");
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
         ChessGame chessGame = new ChessGame();
         chessGame.createPlayers();
         chessGame.initChessGame();
 
-        chessGame.test();
+        chessGame.interfaceTest();
     }
 }

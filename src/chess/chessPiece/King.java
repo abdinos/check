@@ -33,7 +33,12 @@ public class King extends ChessPiece{
                 }
                 if (!boardGame.isCaseOccupied(futurePosition)) {
                     NormalMovement normalMovement = new NormalMovement(boardGame, this, futurePosition);
-                    if(!boardGame.isKingCheckAfterMovement(normalMovement)) {
+                    if(verifyCheckAttack) {
+                        if (!boardGame.isKingCheckAfterMovement(normalMovement)) {
+                            legalMovements.add(normalMovement);
+                        }
+                    }
+                    else{
                         legalMovements.add(normalMovement);
                     }
                 }

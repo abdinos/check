@@ -25,7 +25,6 @@ public class Queen extends ChessPiece{
 
         for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION_VECTOR){
             int futurePosition = this.getPiecePosition();
-
             while(BoardGame.isValidPosition(futurePosition)){
                 if(isFirstColumnExclusionPosition(futurePosition, vectorPosition) ||
                         isEightColumnExclusionPosition(futurePosition, vectorPosition)){
@@ -82,7 +81,7 @@ public class Queen extends ChessPiece{
     }
 
     private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int vectorPosition){
-        return (BoardGame.FIRST_COLUMN[currentPosition] && (vectorPosition == -9 || vectorPosition == -7 || vectorPosition == -1));
+        return (BoardGame.FIRST_COLUMN[currentPosition] && (vectorPosition == -9 || vectorPosition == 7 || vectorPosition == -1));
     }
 
     private static boolean isEightColumnExclusionPosition(final int currentPosition, final int vectorPosition){

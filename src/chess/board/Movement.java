@@ -50,7 +50,7 @@ public abstract class Movement {
         return isAttacking;
     }
 
-    public boolean isCheckKing() {
+    public boolean isKingCheck() {
         return isCheckKing;
     }
 

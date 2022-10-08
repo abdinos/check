@@ -9,7 +9,7 @@ public abstract class ChessPiece{
 
    private int piecePosition;
    private final PieceColor pieceColor;
-   private final boolean isPieceMove;
+   private boolean isPieceMove;
 
     public ChessPiece(int piecePosition, final PieceColor pieceColor){
         this.piecePosition = piecePosition;
@@ -38,9 +38,12 @@ public abstract class ChessPiece{
         this.piecePosition = piecePosition;
     }
 
-    @Override
-    public String toString(){
-        return getPieceColor().isBlack() ? getName().toLowerCase() : getName().toUpperCase();
+    public void pieceMoved(){
+        isPieceMove = true;
+    }
+
+    public String printChessPiece(){
+        return getPieceColor().isBlack() ? ("B " + getName()) : ("W " + getName());
     }
 
 }
