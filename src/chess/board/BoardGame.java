@@ -204,19 +204,22 @@ public class BoardGame{
         ChessPiece chessPiece = board.get(possibleMovement.getChessPieceMoved().getPiecePosition());
         int chessPiecePosition = chessPiece.getPiecePosition();
         ChessPiece chessPieceSave = board.get(possibleMovement.getFuturePosition());
+
         board.put(chessPiecePosition, null);
         board.put(possibleMovement.getFuturePosition(), chessPiece);
+
         chessPiece.setPiecePosition(possibleMovement.getFuturePosition());
         PieceColor enemyPieceColor = chessGame.getEnemyColor();
         Collection<ChessPiece> enemyChessPieces = findActiveChessPieces(enemyPieceColor);
         Map<ChessPiece,Collection<Movement>> enemyChessPiecesMovements = findChessPieceLegalMovements(enemyChessPieces, false);
         chessPiece.setPiecePosition(chessPiecePosition);
+
         board.put(chessPiecePosition, chessPiece);
         board.put(possibleMovement.getFuturePosition(), chessPieceSave);
         // End of the simulation
 
         for (Collection<Movement> movements : enemyChessPiecesMovements.values()) {
-            return isCheckMovement(movements);
+            return searchCheckMovements(movements);
         }
         return false;
     }
@@ -230,7 +233,7 @@ public class BoardGame{
         chessPiece.setPiecePosition(movement.getFuturePosition());
         board.put(chessPiece.getPiecePosition(), chessPiece);
 
-        if (!(movement instanceof NormalMovement)) {
+        if (movement.isAttacking()) {
             if (currentPlayer.getPlayerColor().isWhite()) {
                 findActiveChessPieces(PieceColor.BLACK);
             } else {
@@ -242,10 +245,10 @@ public class BoardGame{
     /**
      * Verify if there is an attack check movement in the list of movement.
      */
-    private boolean isCheckMovement(Collection<Movement> movements){
+    private boolean searchCheckMovements(Collection<Movement> movements){
         for(Iterator<Movement> it = movements.iterator(); it.hasNext();){
             Movement movement = it.next();
-            if(movement instanceof AttackCheckMovement){
+            if(movement.isCheckKing()){
                 return true;
             }
         }
