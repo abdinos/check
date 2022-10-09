@@ -240,9 +240,9 @@ public class BoardGame{
         if(currentColor != null){
             Map<ChessPiece, Collection<Movement>> mapChessPieceLegalMovements;
             if (currentColor.isWhite()) {
-                mapChessPieceLegalMovements = whiteChessPieceLegalMovement;
-            } else {
                 mapChessPieceLegalMovements = blackChessPieceLegalMovement;
+            } else {
+                mapChessPieceLegalMovements = whiteChessPieceLegalMovement;
             }
 
             boolean isCheckState = false;
