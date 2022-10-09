@@ -22,6 +22,14 @@ public class Pawn extends ChessPiece{
     @Override
     public Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack) {
         final List<Movement> legalMovements = new ArrayList<>();
+        PieceColor enemyPieceColor;
+
+        if(this.getPieceColor().isWhite()){
+            enemyPieceColor = PieceColor.BLACK;
+        }
+        else{
+            enemyPieceColor = PieceColor.WHITE;
+        }
 
         for(final int vectorPosition: POSSIBLE_MOVEMENT_POSITION){
             final int futurePosition = this.getPiecePosition() + (vectorPosition * this.getPieceColor().getDirection());
@@ -30,7 +38,7 @@ public class Pawn extends ChessPiece{
                 continue;
             }
             if(vectorPosition == 8 && !boardGame.isCaseOccupied(futurePosition)){
-                createNormalMovement(boardGame, futurePosition, legalMovements, verifyCheckAttack);
+                createNormalMovement(boardGame, futurePosition, legalMovements, verifyCheckAttack,enemyPieceColor);
             }
             else if(vectorPosition == 16 && !this.isPieceMove() && ((this.getPiecePosition() >= 48 && this.getPieceColor().isWhite())
                     || (this.getPiecePosition() <= 15 && this.getPieceColor().isBlack()))){
@@ -39,7 +47,7 @@ public class Pawn extends ChessPiece{
                     // TODO : coup en passant à faire
                     NormalMovement normalMovement = new NormalMovement(boardGame,this,futurePosition);
                     if (verifyCheckAttack) {
-                        if (!boardGame.isKingCheckAfterMovement(normalMovement)) {
+                        if (!boardGame.isKingCheckAfterMovement(normalMovement,enemyPieceColor)) {
                             legalMovements.add(normalMovement);
                         }
                     } else {
@@ -52,7 +60,7 @@ public class Pawn extends ChessPiece{
                 if(boardGame.isCaseOccupied(futurePosition)){
                     final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(futurePosition);
                     if(this.getPieceColor() != chessPieceAttacked.getPieceColor()){
-                        createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack);
+                        createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack,enemyPieceColor);
                     }
                 }
             } else if(vectorPosition == 9 && !((BoardGame.EIGHT_COLUMN[this.getPiecePosition()] && this.getPieceColor().isBlack())
@@ -60,7 +68,7 @@ public class Pawn extends ChessPiece{
                 if(boardGame.isCaseOccupied(futurePosition)){
                     final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(futurePosition);
                     if(chessPieceAttacked != null && this.getPieceColor() != chessPieceAttacked.getPieceColor()){
-                        createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack);
+                        createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack,enemyPieceColor);
                     }
                 }
             }
@@ -72,13 +80,14 @@ public class Pawn extends ChessPiece{
      * Create a normal movement for a pawn
      */
     private void createNormalMovement(final BoardGame boardGame, final int futurePosition,
-                                     final List<Movement> legalMovements, final boolean verifyCheckAttack){
+                                     final List<Movement> legalMovements, final boolean verifyCheckAttack,
+                                      final PieceColor enemyPieceColor){
         if((this.getPieceColor().isWhite() && (futurePosition >= 0 && futurePosition <= 7)) ||
                 (this.getPieceColor().isBlack() && (futurePosition >= 56 && futurePosition <= 63))){
             ChessPiece newChessPiece = new Queen(futurePosition, this.getPieceColor());
             PromotionNormalMovement promotionPawnMovement = new PromotionNormalMovement(boardGame, this,futurePosition,newChessPiece);
             if (verifyCheckAttack) {
-                if (!boardGame.isKingCheckAfterMovement(promotionPawnMovement)) {
+                if (!boardGame.isKingCheckAfterMovement(promotionPawnMovement,enemyPieceColor)) {
                     legalMovements.add(promotionPawnMovement);
                 }
             } else {
@@ -88,7 +97,7 @@ public class Pawn extends ChessPiece{
         else {
             NormalMovement normalMovement = new NormalMovement(boardGame, this, futurePosition);
             if (verifyCheckAttack) {
-                if (!boardGame.isKingCheckAfterMovement(normalMovement)) {
+                if (!boardGame.isKingCheckAfterMovement(normalMovement,enemyPieceColor)) {
                     legalMovements.add(normalMovement);
                 }
             } else {
@@ -102,14 +111,14 @@ public class Pawn extends ChessPiece{
      */
     private void createAttackMovement(final BoardGame boardGame, final ChessPiece chessPieceAttacked,
                                      final int futurePosition, final List<Movement> legalMovements,
-                                     final boolean verifyCheckAttack){
+                                     final boolean verifyCheckAttack, final PieceColor enemyPieceColor){
         if(chessPieceAttacked instanceof King){
             if((this.getPieceColor().isWhite() && (futurePosition >= 0 && futurePosition <= 7)) ||
                     (this.getPieceColor().isBlack() && (futurePosition >= 56 && futurePosition <= 63))){
                 ChessPiece newChessPiece = new Queen(futurePosition, this.getPieceColor());
                 PromotionAttackCheckMovement promotionAttackCheckMovement = new PromotionAttackCheckMovement(boardGame,this,futurePosition,chessPieceAttacked,newChessPiece);
                 if (verifyCheckAttack) {
-                    if (!boardGame.isKingCheckAfterMovement(promotionAttackCheckMovement)) {
+                    if (!boardGame.isKingCheckAfterMovement(promotionAttackCheckMovement,enemyPieceColor)) {
                         legalMovements.add(promotionAttackCheckMovement);
                     }
                 } else {
@@ -119,7 +128,7 @@ public class Pawn extends ChessPiece{
             else {
                 AttackCheckMovement attackCheckMovement = new AttackCheckMovement(boardGame, this, futurePosition, chessPieceAttacked);
                 if (verifyCheckAttack) {
-                    if (!boardGame.isKingCheckAfterMovement(attackCheckMovement)) {
+                    if (!boardGame.isKingCheckAfterMovement(attackCheckMovement,enemyPieceColor)) {
                         legalMovements.add(attackCheckMovement);
                     }
                 } else {
@@ -133,7 +142,7 @@ public class Pawn extends ChessPiece{
                 ChessPiece newChessPiece = new Queen(futurePosition, this.getPieceColor());
                 PromotionAttackMovement promotionAttackMovement = new PromotionAttackMovement(boardGame, this, futurePosition, chessPieceAttacked, newChessPiece);
                 if (verifyCheckAttack) {
-                    if (!boardGame.isKingCheckAfterMovement(promotionAttackMovement)) {
+                    if (!boardGame.isKingCheckAfterMovement(promotionAttackMovement,enemyPieceColor)) {
                         legalMovements.add(promotionAttackMovement);
                     }
                 } else {
@@ -143,7 +152,7 @@ public class Pawn extends ChessPiece{
             else {
                 AttackMovement attackMovement = new AttackMovement(boardGame, this, futurePosition, chessPieceAttacked);
                 if (verifyCheckAttack) {
-                    if (!boardGame.isKingCheckAfterMovement(attackMovement)) {
+                    if (!boardGame.isKingCheckAfterMovement(attackMovement,enemyPieceColor)) {
                         legalMovements.add(attackMovement);
                     }
                 } else {

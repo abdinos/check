@@ -2,14 +2,12 @@ package chess;
 
 import chess.board.BoardGame;
 import chess.board.Movement;
-import chess.board.NormalMovement;
 import chess.board.Player;
 import chess.chessPiece.ChessPiece;
 import chess.chessPiece.PieceColor;
 import chess.gui.BoardGameGUI;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,9 +21,12 @@ public class ChessGame {
 
     private BoardGameGUI boardGameGUI;
 
+    private boolean isEndGame;
+
     public ChessGame(){
         this.boardGame = new BoardGame(this);
         this.boardGameGUI = new BoardGameGUI(boardGame.getBoard());
+        isEndGame = false;
     }
 
     /**
@@ -58,18 +59,6 @@ public class ChessGame {
         indexCurrentPlayer = 0;
     }
 
-    /**
-     * Move a chess piece
-     */
-    public void executeChessPieceMovement(Movement movement){
-        checkBoardGameInitialized();
-
-        if(movement != null) {
-            boardGame.moveChessPiece(movement, players.get(indexCurrentPlayer));
-            // TODO déplacer image de la pièce
-        }
-    }
-
     public int getIndexCurrentPlayer(){
         return indexCurrentPlayer;
     }
@@ -78,19 +67,53 @@ public class ChessGame {
         return players;
     }
 
+    public boolean isEndGame(){
+        return isEndGame;
+    }
+
+    /**
+     * Move a chess piece on the board and calculate active chess pieces of the enemy player
+     */
+    public void executeChessPieceMovement(Movement movement){
+        if(movement != null) {
+            boardGame.moveChessPiece(movement);
+
+            if (movement.isPromoting()) {
+                boardGame.promotingPawn(movement.getChessPieceMoved(), movement.getChessPiecePromoted(), movement.getFuturePosition());
+            }
+
+            boardGame.findAllActiveChessPieces();
+            Player enemyPlayer = players.get((indexCurrentPlayer + 1) % players.size());
+            Player currentPlayer = players.get(indexCurrentPlayer);
+            boardGame.updateChessPiecesLegalMovements(enemyPlayer.getPlayerColor());
+            boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor());
+
+            if(boardGame.isGameEnded(currentPlayer.getPlayerColor(),enemyPlayer)){
+                isEndGame = true;
+            }
+        }
+
+    }
+
+    /**
+     * interface de test sur console
+     * TO DELETE
+     */
     public void interfaceTest(){
-        System.out.println("Début de la partie \n");
-        System.out.println(boardGame + "\n");
-
-        System.out.println("Au tour de " + players.get(indexCurrentPlayer).getName() + "\n");
-
-        boolean end = false;
         Scanner scanner = new Scanner(System.in);
         String response = "";
         int position = -1;
+        int tour = 1;
 
-        while(!end){
+        System.out.println("Début de la partie \n");
+
+        while(!isEndGame){
             do {
+                System.out.println(boardGame + "\n");
+
+                System.out.println("tour " + tour);
+                System.out.println("Au tour de " + players.get(indexCurrentPlayer).getName() + "\n");
+
                 System.out.println("choisit la pièce à bouger (position) :");
                 response = scanner.next();
                 try {
@@ -99,6 +122,7 @@ public class ChessGame {
                 catch (Exception e){}
             }while(position < 0 || position > 63);
 
+            // Get chess piece at the position enter
             ChessPiece chessPiece = boardGame.getBoard().get(position);
             if(chessPiece != null) {
                 System.out.println("Mouvement de " + chessPiece.printChessPiece() + " : ");
@@ -139,15 +163,22 @@ public class ChessGame {
 
                 if (response.equals("move")) {
                     Movement movement = movements.get(position);
-                    boardGame.moveChessPiece(movement, players.get(indexCurrentPlayer));
+                    executeChessPieceMovement(movement);
 
-                    System.out.println(boardGame + "\n");
+                    Player enemyPlayer = players.get((indexCurrentPlayer + 1) % players.size());
+                    if(enemyPlayer.isKingCheck()){
+                        System.out.println(enemyPlayer.getName() + " : check state\n");
+                    }
 
-                    indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
-                    System.out.println("Au tour de " + players.get(indexCurrentPlayer).getName() + "\n");
+                    if(!isEndGame) {
+                        System.out.println("changement de joueur \n");
+                        indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
+                        tour++;
+                    }
                 }
             }
         }
+        System.out.println("\nVictoire de " + players.get(indexCurrentPlayer).getName());
     }
 
     public static void main(String[] args) {

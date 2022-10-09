@@ -22,6 +22,14 @@ public class King extends ChessPiece{
     @Override
     public Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack) {
         final List<Movement> legalMovements = new ArrayList<>();
+        PieceColor enemyPieceColor;
+
+        if(this.getPieceColor().isWhite()){
+            enemyPieceColor = PieceColor.BLACK;
+        }
+        else{
+            enemyPieceColor = PieceColor.WHITE;
+        }
 
         for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION){
             final int futurePosition = this.getPiecePosition() + vectorPosition;
@@ -34,7 +42,7 @@ public class King extends ChessPiece{
                 if (!boardGame.isCaseOccupied(futurePosition)) {
                     NormalMovement normalMovement = new NormalMovement(boardGame, this, futurePosition);
                     if(verifyCheckAttack) {
-                        if (!boardGame.isKingCheckAfterMovement(normalMovement)) {
+                        if (!boardGame.isKingCheckAfterMovement(normalMovement,enemyPieceColor)) {
                             legalMovements.add(normalMovement);
                         }
                     }
@@ -49,7 +57,7 @@ public class King extends ChessPiece{
                             if(chessPiece instanceof King){
                                 AttackCheckMovement attackCheckMovement = new AttackCheckMovement(boardGame, this, futurePosition, chessPiece);
                                 if(verifyCheckAttack) {
-                                    if (!boardGame.isKingCheckAfterMovement(attackCheckMovement)) {
+                                    if (!boardGame.isKingCheckAfterMovement(attackCheckMovement,enemyPieceColor)) {
                                         legalMovements.add(attackCheckMovement);
                                     }
                                 }
@@ -60,7 +68,7 @@ public class King extends ChessPiece{
                             else{
                                 AttackMovement attackMovement = new AttackMovement(boardGame, this, futurePosition, chessPiece);
                                 if(verifyCheckAttack) {
-                                    if (!boardGame.isKingCheckAfterMovement(attackMovement)) {
+                                    if (!boardGame.isKingCheckAfterMovement(attackMovement,enemyPieceColor)) {
                                         legalMovements.add(attackMovement);
                                     }
                                 }
@@ -82,7 +90,7 @@ public class King extends ChessPiece{
     }
 
     private static boolean isHeightColumnExclusionPosition(final int currentPosition, final int vectorPosition){
-        return (BoardGame.EIGHT_COLUMN[currentPosition] && (vectorPosition == -7 || vectorPosition == 1) ||
-                vectorPosition == 9);
+        return (BoardGame.EIGHT_COLUMN[currentPosition] && ((vectorPosition == -7 || vectorPosition == 1) ||
+                vectorPosition == 9));
     }
 }
