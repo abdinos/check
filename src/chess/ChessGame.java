@@ -7,6 +7,7 @@ import chess.chessPiece.ChessPiece;
 import chess.chessPiece.PieceColor;
 import chess.gui.BoardGameGUI;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -23,7 +24,7 @@ public class ChessGame {
 
     private boolean isEndGame;
 
-    public ChessGame(){
+    public ChessGame() throws IOException {
         this.boardGame = new BoardGame(this);
         boardGame.setCalculKingCheck(new StandardCalculKingCheck(boardGame));
         this.boardGameGUI = new BoardGameGUI(boardGame.getBoard());
@@ -182,7 +183,7 @@ public class ChessGame {
         System.out.println("\nVictoire de " + players.get(indexCurrentPlayer).getName());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ChessGame chessGame = new ChessGame();
         chessGame.createPlayers();
         chessGame.initChessGame();

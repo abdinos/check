@@ -41,7 +41,9 @@ public class BoardGame{
     }
 
     public BoardGame(ChessGame chessGame){
+
         this.chessGame = chessGame;
+        calculKingCheck = new StandardCalculKingCheck(this);
     }
 
     /**
@@ -62,50 +64,49 @@ public class BoardGame{
             createBoard();
         }
         // Black chess piece
-        /**
+
         board.put(0, new Rook(0, PieceColor.BLACK, new CalculLegalMovementRook()));
         board.put(1, new Knight(1, PieceColor.BLACK, new CalculLegalMovementKnight()));
-        board.put(2, new Bishop(2, PieceColor.BLACK, new CalculLegalMovementBishop()));
-        board.put(3, new Queen(3, PieceColor.BLACK, new CalculLegalMovementQueen()));
-         **/
+        board.put(2, new Bishop(2, PieceColor.BLACK, new CalculLegalMouvementBishop()));
+        board.put(3, new Queen(3, PieceColor.BLACK, new CalculLegalMouvementQueen()));
+
         board.put(4, new King(4, PieceColor.BLACK, new CalculLegalMovementKing()));
-        /**
-        board.put(5, new Bishop(5, PieceColor.BLACK, new CalculLegalMovementBishop()));
+
+        board.put(5, new Bishop(5, PieceColor.BLACK, new CalculLegalMouvementBishop()));
         board.put(6, new Knight(6, PieceColor.BLACK, new CalculLegalMovementKnight()));
         board.put(7, new Rook(7, PieceColor.BLACK, new CalculLegalMovementRook()));
 
-        board.put(8, new Pawn(8, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(9, new Pawn(9, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(10, new Pawn(10, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(11, new Pawn(11, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(12, new Pawn(12, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(12, new Pawn(12, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(13, new Pawn(13, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(14, new Pawn(14, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(15, new Pawn(15, PieceColor.BLACK, new CalculLegalMovementPawn()));
-         **/
+        board.put(8, new Pawn(8, PieceColor.BLACK, new CalculLegalMouvementPawn()));
+        board.put(9, new Pawn(9, PieceColor.BLACK, new CalculLegalMouvementPawn()));
+        board.put(10, new Pawn(10, PieceColor.BLACK, new CalculLegalMouvementPawn()));
+        board.put(11, new Pawn(11, PieceColor.BLACK, new CalculLegalMouvementPawn()));
+        board.put(12, new Pawn(12, PieceColor.BLACK, new CalculLegalMouvementPawn()));
+        board.put(13, new Pawn(13, PieceColor.BLACK, new CalculLegalMouvementPawn()));
+        board.put(14, new Pawn(14, PieceColor.BLACK, new CalculLegalMouvementPawn()));
+        board.put(15, new Pawn(15, PieceColor.BLACK, new CalculLegalMouvementPawn()));
+
 
         // White chess piece
-        /**
-        board.put(48, new Pawn(48, PieceColor.WHITE, new CalculLegalMovementPawn()));
-        board.put(49, new Pawn(49, PieceColor.WHITE, new CalculLegalMovementPawn()));
-        board.put(50, new Pawn(50, PieceColor.WHITE, new CalculLegalMovementPawn()));
-        board.put(51, new Pawn(51, PieceColor.WHITE, new CalculLegalMovementPawn()));
-        board.put(52, new Pawn(52, PieceColor.WHITE, new CalculLegalMovementPawn()));
-        board.put(53, new Pawn(53, PieceColor.WHITE, new CalculLegalMovementPawn()));
-        board.put(54, new Pawn(54, PieceColor.WHITE, new CalculLegalMovementPawn()));
-        board.put(55, new Pawn(55, PieceColor.WHITE, new CalculLegalMovementPawn()));
-         **/
-        board.put(9, new Rook(9, PieceColor.WHITE, new CalculLegalMovementRook())); // position = 56
-        /**
+
+        board.put(48, new Pawn(48, PieceColor.WHITE, new CalculLegalMouvementPawn()));
+        board.put(49, new Pawn(49, PieceColor.WHITE, new CalculLegalMouvementPawn()));
+        board.put(50, new Pawn(50, PieceColor.WHITE, new CalculLegalMouvementPawn()));
+        board.put(51, new Pawn(51, PieceColor.WHITE, new CalculLegalMouvementPawn()));
+        board.put(52, new Pawn(52, PieceColor.WHITE, new CalculLegalMouvementPawn()));
+        board.put(53, new Pawn(53, PieceColor.WHITE, new CalculLegalMouvementPawn()));
+        board.put(54, new Pawn(54, PieceColor.WHITE, new CalculLegalMouvementPawn()));
+        board.put(55, new Pawn(55, PieceColor.WHITE, new CalculLegalMouvementPawn()));
+
+        board.put(56, new Rook(56, PieceColor.WHITE, new CalculLegalMovementRook())); // position = 56
+
         board.put(57, new Knight(57, PieceColor.WHITE, new CalculLegalMovementKnight()));
-        board.put(58, new Bishop(58, PieceColor.WHITE, new CalculLegalMovementBishop()));
-        board.put(59, new Queen(59, PieceColor.WHITE, new CalculLegalMovementQueen()));
+        board.put(58, new Bishop(58, PieceColor.WHITE, new CalculLegalMouvementBishop()));
+        board.put(59, new Queen(59, PieceColor.WHITE, new CalculLegalMouvementQueen()));
         board.put(60, new King(60, PieceColor.WHITE, new CalculLegalMovementKing()));
-        board.put(61, new Bishop(61, PieceColor.WHITE, new CalculLegalMovementBishop()));
+        board.put(61, new Bishop(61, PieceColor.WHITE, new CalculLegalMouvementBishop()));
         board.put(62, new Knight(62, PieceColor.WHITE, new CalculLegalMovementKnight()));
-         **/
-        board.put(16, new Rook(16, PieceColor.WHITE, new CalculLegalMovementRook())); // position = 63
+
+        board.put(63, new Rook(63, PieceColor.WHITE, new CalculLegalMovementRook())); // position = 63
 
         blackChessPieces = findActiveChessPieces(PieceColor.BLACK);
         whiteChessPieces = findActiveChessPieces(PieceColor.WHITE);
@@ -309,5 +310,13 @@ public class BoardGame{
 
     public void setCalculKingCheck(InterfaceCalculKingCheck interfaceCalculKingCheck){
         calculKingCheck = interfaceCalculKingCheck;
+    }
+
+    public Map<ChessPiece, Collection<Movement>> getWhiteChessPieceLegalMovement() {
+        return whiteChessPieceLegalMovement;
+    }
+
+    public Map<ChessPiece, Collection<Movement>> getBlackChessPieceLegalMovement() {
+        return blackChessPieceLegalMovement;
     }
 }

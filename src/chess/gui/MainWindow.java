@@ -93,6 +93,22 @@ public class MainWindow extends JFrame {
             @Override
             public void run() {
                 UIManager.put("swing.boldMetal", Boolean.FALSE);
+                ChessGame chessGame = null;
+                try {
+                    chessGame = new ChessGame();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                BoardGame boardGame = new BoardGame(chessGame);
+                //chessGame.initChessGame();
+                boardGame.createBoard();
+                //boardGame.initChessPieceOnBoard();
+                BoardGameGUI boardGameGUI = null;
+                try {
+                    boardGameGUI = new BoardGameGUI(boardGame.getBoard());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 new MainWindow().setVisible(true);
             }
         });

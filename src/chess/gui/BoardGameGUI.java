@@ -1,10 +1,15 @@
 package chess.gui;
 
+import chess.board.BoardGame;
 import chess.chessPiece.ChessPiece;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
@@ -15,34 +20,34 @@ public class BoardGameGUI extends JComponent {
     private Map<Integer, ChessPiece> board;
 
     //============================= Partie GUI ==========================================
-    ImageIcon white_rook, black_rook;
-    ImageIcon white_knight, black_knight;
-    ImageIcon white_bishop, black_bishop;
-    ImageIcon white_queen, black_queen;
-    ImageIcon white_king, black_king;
-    ImageIcon white_pawn, black_pawn;
+    Image white_rook, black_rook;
+    Image white_knight, black_knight;
+    Image white_bishop, black_bishop;
+    Image white_queen, black_queen;
+    Image white_king, black_king;
+    Image white_pawn, black_pawn;
 
-    public BoardGameGUI(Map<Integer, ChessPiece> board){
+    public BoardGameGUI(Map<Integer, ChessPiece> board) throws IOException {
         this.board = board;
 
         //============================= Partie GUI ==========================================
-        white_rook = new ImageIcon("images/white_rook.png");
-        black_rook = new ImageIcon("images/black_rook.png");
+        white_rook = ImageIO.read(new File("images/white_rook.png"));
+        black_rook = ImageIO.read(new File("images/black_rook.png"));
 
-        white_knight = new ImageIcon("images/white_knight.png");
-        black_knight = new ImageIcon("images/black_knight.png");
+        white_knight = ImageIO.read(new File("images/white_knight.png"));
+        black_knight = ImageIO.read(new File("images/black_knight.png"));
 
-        white_bishop = new ImageIcon("images/white_bishop.png");
-        black_bishop  = new ImageIcon("images/black_bishop.png");
+        white_bishop = ImageIO.read(new File("images/white_bishop.png"));
+        black_bishop  = ImageIO.read(new File("images/black_bishop.png"));
 
-        white_queen = new ImageIcon("images/white_queen.png");
-        black_queen = new ImageIcon("images/black_queen.png");
+        white_queen = ImageIO.read(new File("images/white_queen.png"));
+        black_queen = ImageIO.read(new File("images/black_queen.png"));
 
-        white_king = new ImageIcon("images/white_king.png");
-        black_king = new ImageIcon("images/black_king.png");
+        white_king = ImageIO.read(new File("images/white_king.png"));
+        black_king =ImageIO.read(new File("images/black_king.png"));
 
-        white_pawn = new ImageIcon("images/white_pawn.png");
-        black_pawn = new ImageIcon("images/black_pawn.png");
+        white_pawn =ImageIO.read(new File("images/white_pawn.png"));
+        black_pawn = ImageIO.read(new File("images/black_pawn.png"));
     }
 
     //============================= Partie GUI ==========================================
@@ -86,54 +91,58 @@ public class BoardGameGUI extends JComponent {
             graphics2D.drawString(""+(char) c,(i+1.5f)*CASE_DIMENSION-5, 2.0f/3*CASE_DIMENSION+6);
         }
         //placer les pieces
-        ImageIcon imageIcon = null;
+        Image imageIcon = null;
         int i=0;
         int j=0;
         System.out.println(board.entrySet().size());
         for (Map.Entry<Integer, ChessPiece> entry : board.entrySet()){
-            String pieceName = String.valueOf(entry.getValue());
+            ChessPiece chessPiece = entry.getValue();
+            //String pieceName = String.valueOf(entry.getValue());
             if(entry.getKey() <=15 || entry.getKey() >=48){
-                System.out.println(pieceName+"-"+ entry.getKey());
-                if(Character.isLowerCase(pieceName.charAt(0))){//noir
-                    if (pieceName.equals("rook")){
+                System.out.println(chessPiece.printChessPiece()+"-"+ entry.getKey());
+                String color = String.valueOf(chessPiece.printChessPiece().charAt(0));
+                String pieceName = chessPiece.printChessPiece().substring(2);
+                if(color.equals("B")){//noir
+                    if (pieceName.equals("Rook")){
                         imageIcon = black_rook;
                     }
-                    else if (pieceName.equals("knight")){
+                    else if (pieceName.equals("Knight")){
                         imageIcon = black_knight;
                     }
-                    else if (pieceName.equals("bishop")){
+                    else if (pieceName.equals("Bishop")){
                         imageIcon = black_bishop;
                     }
-                    else if (pieceName.equals("queen")){
+                    else if (pieceName.equals("Queen")){
                         imageIcon = black_queen;
                     }
-                    else if (pieceName.equals("king")){
+                    else if (pieceName.equals("King")){
                         imageIcon = black_king;
-                    }else if (pieceName.equals("pawn")) {
+                    }else if (pieceName.equals("Pawn")) {
                         imageIcon = black_pawn;
                     }
                 }else{//blanche
-                    if (pieceName.equals("ROOK")){
+                    //pieceName = pieceName.toUpperCase();
+                    if (pieceName.equals("Rook")){
                         imageIcon = white_rook;
                     }
-                    else if (pieceName.equals("KNIGHT")){
+                    else if (pieceName.equals("Knight")){
                         imageIcon = white_knight;
                     }
-                    else if (pieceName.equals("BISHOP")){
+                    else if (pieceName.equals("Bishop")){
                         imageIcon = white_bishop;
                     }
-                    else if (pieceName.equals("QUEEN")){
+                    else if (pieceName.equals("Queen")){
                         imageIcon = white_queen;
                     }
-                    else if (pieceName.equals("KING")){
+                    else if (pieceName.equals("King")){
                         imageIcon = white_king;
-                    }else if (pieceName.equals("PAWN")){
+                    }else if (pieceName.equals("Pawn")){
                         imageIcon = white_pawn;
                     }
                 }
-                if(imageIcon != null) {
-                    imageIcon.paintIcon(null, graphics2D, (j + 1) * CASE_DIMENSION, (i + 1) * CASE_DIMENSION);
-                }
+                //imageIcon.paintIcon(null, graphics2D, (j + 1) * CASE_DIMENSION, (i + 1) * CASE_DIMENSION);
+                super.paintComponent(graphics);
+                graphics.drawImage(imageIcon,(j + 1) * CASE_DIMENSION, (i + 1) * CASE_DIMENSION,null);
             }
             j++;
             if(j>=8){
@@ -145,6 +154,60 @@ public class BoardGameGUI extends JComponent {
             }
         }
 
+        int xEnHaut = 60;
+        int yEnhaut = 60;
+        int xEnBas = 540;
+        int yEnBas = 540;
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int pos_x = e.getX();
+                int pos_y = e.getY();
+                int xcase = (pos_x/60)-1;
+                int ycase = (pos_y/60)-1;
+                System.out.println(e.getX()+"-"+e.getY());
+                if(pos_x<xEnHaut || pos_x>xEnBas || pos_y<yEnhaut || pos_y>yEnBas){
+                    System.out.println("vous n etes pas dans chessBoard ");
+                  //System.out.println("vous etes dans la case"+pos_x/60)+1);
+                }else{
+                    System.out.println("vous etes dans la case " + ((pos_x/60)));
+                    System.out.println("vous etes dans la case " + ((pos_y/60)));
+                    ChessPiece chessPiece;
+                    if((pos_y/60)>1) {
+                        chessPiece = board.get((xcase+(8*ycase)));
+                    }else{
+                        chessPiece = board.get(((pos_x / 60) - 1));
+                    }
+                    if(chessPiece !=null){
+                        System.out.println(chessPiece.getName());
+                        if(chessPiece.getPieceColor().isWhite()){
+                            //TOdo
+                            //BoardGame boardGame = new BoardGame()
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
         graphics2D.dispose();
     }
 }

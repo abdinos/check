@@ -47,7 +47,6 @@ public class ChessWindow extends JFrame {
         //Echiquier
         boardGame.setBounds(50,20,800,1200);
         add(boardGame);
-
         //bg
         JLabel background;
         ImageIcon imageIcon = new ImageIcon("images/ppp.jpg");
