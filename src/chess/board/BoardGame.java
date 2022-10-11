@@ -211,11 +211,9 @@ public class BoardGame{
                 if (!movement.isAttacking()) {
                     chessPieceSpecialMove = chessPiece;
                     ((Pawn)chessPiece).setMoveEnPassantPossible();
-                    System.out.println("new chess piece special move : " + chessPiece.printChessPiece());
                 }
                 else{
                     chessPieceSpecialMove = null;
-                    System.out.println("null chess piece speical move");
                 }
             }
         }

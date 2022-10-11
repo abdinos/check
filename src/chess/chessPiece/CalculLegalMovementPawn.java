@@ -29,23 +29,19 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
             if(!BoardGame.isValidPosition(futurePosition)){
                 continue;
             }
+            // Line move to 1 case
             if(vectorPosition == 8 && !boardGame.isCaseOccupied(futurePosition)){
                 createNormalMovement(boardGame, futurePosition, legalMovements, verifyCheckAttack,enemyPieceColor, chessPiece);
             }
+            // Line move to 2 cases
             else if(vectorPosition == 16 && !chessPiece.isPieceMove() && ((chessPiece.getPiecePosition() >= 48 && chessPiece.getPieceColor().isWhite())
                     || (chessPiece.getPiecePosition() <= 15 && chessPiece.getPieceColor().isBlack()))){
                 final int behindFuturePosition = chessPiece.getPiecePosition() + (chessPiece.getPieceColor().getDirection() * 8);
                 if(!boardGame.isCaseOccupied(behindFuturePosition) && !boardGame.isCaseOccupied(futurePosition)){
                     // Move "en passant"
-                    if(verifyCheckAttack) {
-                        System.out.println("test special move normal");
-                    }
                     if(isEnPassantMovePossible(boardGame,(futurePosition + 1), chessPiece.getPieceColor(), ((Pawn)chessPiece).isMoveEnPassantPossible()) != null ||
                             isEnPassantMovePossible(boardGame, (futurePosition - 1), chessPiece.getPieceColor(), ((Pawn)chessPiece).isMoveEnPassantPossible()) != null){
                         SpecialPawnMovement specialPawnMovement = new SpecialPawnMovement(boardGame, chessPiece, futurePosition, null);
-                        if(verifyCheckAttack) {
-                            System.out.println("succès");
-                        }
                         if (verifyCheckAttack) {
                             if (!boardGame.isKingCheckAfterMovement(specialPawnMovement, enemyPieceColor)) {
                                 legalMovements.add(specialPawnMovement);
@@ -55,9 +51,6 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
                         }
                     }
                     else {
-                        if(verifyCheckAttack) {
-                            System.out.println("echec");
-                        }
                         NormalMovement normalMovement = new NormalMovement(boardGame, chessPiece, futurePosition);
                         if (verifyCheckAttack) {
                             if (!boardGame.isKingCheckAfterMovement(normalMovement, enemyPieceColor)) {
@@ -69,15 +62,14 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
                     }
                 }
             }
+            // Diagonal move
             else if(vectorPosition == 7 && !((BoardGame.EIGHT_COLUMN[chessPiece.getPiecePosition()] && chessPiece.getPieceColor().isWhite())
                     || (BoardGame.FIRST_COLUMN[chessPiece.getPiecePosition()] && chessPiece.getPieceColor().isBlack()))){
-                for(int i = -1; i <= 1; i = i + 2) {
-                    ChessPiece chessPieceNextToThisPiece = isEnPassantMovePossible(boardGame, (chessPiece.getPiecePosition() + i),
-                            chessPiece.getPieceColor(), true);
-                    if (chessPieceNextToThisPiece != null) {
-                        createAttackMovement(boardGame, chessPieceNextToThisPiece, chessPieceNextToThisPiece.getPiecePosition(),
-                                legalMovements, verifyCheckAttack, enemyPieceColor, chessPiece);
-                    }
+                ChessPiece chessPieceNextToThisPiece = isEnPassantMovePossible(boardGame, (chessPiece.getPiecePosition() + chessPiece.getPieceColor().getDirection()),
+                        chessPiece.getPieceColor(), true);
+                if (chessPieceNextToThisPiece != null) {
+                    createAttackMovement(boardGame, chessPieceNextToThisPiece, futurePosition,
+                            legalMovements, verifyCheckAttack, enemyPieceColor, chessPiece);
                 }
 
                 if(boardGame.isCaseOccupied(futurePosition)){
@@ -86,8 +78,19 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
                         createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack,enemyPieceColor, chessPiece);
                     }
                 }
-            } else if(vectorPosition == 9 && !((BoardGame.EIGHT_COLUMN[chessPiece.getPiecePosition()] && chessPiece.getPieceColor().isBlack())
+
+            }
+            // Diagonal move
+            else if(vectorPosition == 9 && !((BoardGame.EIGHT_COLUMN[chessPiece.getPiecePosition()] && chessPiece.getPieceColor().isBlack())
                     || (BoardGame.FIRST_COLUMN[chessPiece.getPiecePosition()] && chessPiece.getPieceColor().isWhite()))){
+                ChessPiece chessPieceNextToThisPiece = isEnPassantMovePossible(boardGame, (chessPiece.getPiecePosition() + chessPiece.getPieceColor().getDirection()),
+                        chessPiece.getPieceColor(), true);
+                if (chessPieceNextToThisPiece != null) {
+                    createAttackMovement(boardGame, chessPieceNextToThisPiece, futurePosition,
+                            legalMovements, verifyCheckAttack, enemyPieceColor, chessPiece);
+                }
+
+
                 if(boardGame.isCaseOccupied(futurePosition)){
                     final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(futurePosition);
                     if(chessPieceAttacked != null && chessPieceAttacked.getPieceColor() != chessPieceAttacked.getPieceColor()){
@@ -162,7 +165,6 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
             }
         }
         else{
-            System.out.println("else create attack");
             // Pawn promotion
             if((chessPiece.getPieceColor().isWhite() && (futurePosition >= 0 && futurePosition <= 7)) ||
                     (chessPiece.getPieceColor().isBlack() && (futurePosition >= 56 && futurePosition <= 63))){
@@ -177,14 +179,12 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
                 }
             }
             else {
-                if(chessPieceAttacked instanceof Pawn && boardGame.getChessPieceSpecialMove() == chessPieceAttacked) {
+                if (chessPieceAttacked instanceof Pawn && boardGame.getChessPieceSpecialMove() == chessPieceAttacked) {
                     // Chess piece attack pawn after he used special move "en passant"
-                    System.out.println("pawn attack after special move");
                     AttackSpecialPawnMovement attackSpecialPawnMovement = new AttackSpecialPawnMovement(boardGame,
-                            chessPiece, (chessPiece.getPiecePosition() + 1), null);
-                    System.out.println("succès");
+                            chessPiece, (chessPiece.getPiecePosition() + 1), chessPieceAttacked);
                     if (verifyCheckAttack) {
-                        if (!boardGame.isKingCheckAfterMovement(attackSpecialPawnMovement,enemyPieceColor)) {
+                        if (!boardGame.isKingCheckAfterMovement(attackSpecialPawnMovement, enemyPieceColor)) {
                             legalMovements.add(attackSpecialPawnMovement);
                             return;
                         }
@@ -193,16 +193,15 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
                         return;
                     }
                 }
-            }
-                System.out.println("echec");
                 AttackMovement attackMovement = new AttackMovement(boardGame, chessPiece, futurePosition, chessPieceAttacked);
                 if (verifyCheckAttack) {
-                    if (!boardGame.isKingCheckAfterMovement(attackMovement,enemyPieceColor)) {
+                    if (!boardGame.isKingCheckAfterMovement(attackMovement, enemyPieceColor)) {
                         legalMovements.add(attackMovement);
                     }
                 } else {
                     legalMovements.add(attackMovement);
                 }
+            }
         }
     }
 

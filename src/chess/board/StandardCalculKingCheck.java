@@ -36,6 +36,7 @@ public class StandardCalculKingCheck implements InterfaceCalculKingCheck{
             enemyChessPiecesMovements = boardGame.whiteChessPieceLegalMovement;
         }
         boardGame.setChessPiecePosition(movement.getChessPieceMoved(), chessPieceSave, chessPiecePosition);
+        boardGame.updateChessPiecesLegalMovements(pieceColor, false);
         // End of the simulation
 
         for (Collection<Movement> movements : enemyChessPiecesMovements.values()) {
