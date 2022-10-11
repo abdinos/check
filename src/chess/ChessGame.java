@@ -1,8 +1,8 @@
 package chess;
 
 import chess.board.BoardGame;
-import chess.board.Movement;
-import chess.board.Player;
+import chess.Movement.Movement;
+import chess.board.StandardCalculKingCheck;
 import chess.chessPiece.ChessPiece;
 import chess.chessPiece.PieceColor;
 import chess.gui.BoardGameGUI;
@@ -25,6 +25,7 @@ public class ChessGame {
 
     public ChessGame(){
         this.boardGame = new BoardGame(this);
+        boardGame.setCalculKingCheck(new StandardCalculKingCheck(boardGame));
         this.boardGameGUI = new BoardGameGUI(boardGame.getBoard());
         isEndGame = false;
     }
@@ -85,8 +86,8 @@ public class ChessGame {
             boardGame.findAllActiveChessPieces();
             Player enemyPlayer = players.get((indexCurrentPlayer + 1) % players.size());
             Player currentPlayer = players.get(indexCurrentPlayer);
-            boardGame.updateChessPiecesLegalMovements(enemyPlayer.getPlayerColor());
-            boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor());
+            boardGame.updateChessPiecesLegalMovements(enemyPlayer.getPlayerColor(), true);
+            boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor(),true);
 
             if(boardGame.isGameEnded(currentPlayer.getPlayerColor(),enemyPlayer)){
                 isEndGame = true;

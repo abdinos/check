@@ -1,5 +1,8 @@
 package chess.gui;
 
+import chess.ChessGame;
+import chess.board.BoardGame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -53,7 +56,11 @@ public class MainWindow extends JFrame {
             public void actionPerformed(ActionEvent e)
             {
                 try {
-                    new ChessWindow().setVisible(true);
+                    ChessGame chessGame = new ChessGame();
+                    BoardGame boardGame = new BoardGame(chessGame);
+                    boardGame.createBoard();
+                    boardGame.initChessPieceOnBoard();
+                    new ChessWindow(new BoardGameGUI(boardGame.getBoard())).setVisible(true);
                     dispose();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);

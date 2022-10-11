@@ -2,9 +2,12 @@ package chess.gui;
 
 import chess.chessPiece.ChessPiece;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 public class BoardGameGUI extends JComponent {
@@ -83,7 +86,7 @@ public class BoardGameGUI extends JComponent {
             graphics2D.drawString(""+(char) c,(i+1.5f)*CASE_DIMENSION-5, 2.0f/3*CASE_DIMENSION+6);
         }
         //placer les pieces
-        ImageIcon imageIcon =null;
+        ImageIcon imageIcon = null;
         int i=0;
         int j=0;
         System.out.println(board.entrySet().size());
@@ -128,7 +131,9 @@ public class BoardGameGUI extends JComponent {
                         imageIcon = white_pawn;
                     }
                 }
-                imageIcon.paintIcon(null,graphics2D, (j+1)*CASE_DIMENSION, (i+1)*CASE_DIMENSION);
+                if(imageIcon != null) {
+                    imageIcon.paintIcon(null, graphics2D, (j + 1) * CASE_DIMENSION, (i + 1) * CASE_DIMENSION);
+                }
             }
             j++;
             if(j>=8){
@@ -139,6 +144,7 @@ public class BoardGameGUI extends JComponent {
                 break;
             }
         }
+
         graphics2D.dispose();
     }
 }

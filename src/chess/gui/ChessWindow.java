@@ -1,14 +1,12 @@
 package chess.gui;
 
-import chess.board.BoardGame;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
 public class ChessWindow extends JFrame {
 
-    public ChessWindow() throws IOException {
+    public ChessWindow(BoardGameGUI boardGame) throws IOException {
         setTitle("Jeu d'échecs"); // titre de l'interface graphique
         setSize(800,1200); // dimension de l'interface 1200x800
         setResizable(false); // la fenetre ne sera pas redimensionnable par l'utilisateur
@@ -47,13 +45,8 @@ public class ChessWindow extends JFrame {
         add(tfCaseArrivée);
 
         //Echiquier
-        /**
-        BoardGame boardGame = new BoardGame();
-        boardGame.createBoard();
-        boardGame.initChessPieceOnBoard();
         boardGame.setBounds(50,20,800,1200);
         add(boardGame);
-         **/
 
         //bg
         JLabel background;

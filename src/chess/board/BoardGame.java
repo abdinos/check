@@ -1,6 +1,8 @@
 package chess.board;
 
 import chess.ChessGame;
+import chess.Movement.Movement;
+import chess.Player;
 import chess.chessPiece.*;
 
 import java.util.*;
@@ -18,9 +20,11 @@ public class BoardGame{
     private Collection<ChessPiece> blackChessPieces;
     private Collection<ChessPiece> whiteChessPieces;
 
-    private Map<ChessPiece,Collection<Movement>> whiteChessPieceLegalMovement;
+    protected Map<ChessPiece,Collection<Movement>> whiteChessPieceLegalMovement;
 
-    private Map<ChessPiece,Collection<Movement>> blackChessPieceLegalMovement;
+    protected Map<ChessPiece,Collection<Movement>> blackChessPieceLegalMovement;
+
+    private InterfaceCalculKingCheck calculKingCheck;
 
     private static boolean[] initColumn(int columnNumber){
         final boolean[] column = new boolean[64];
@@ -182,42 +186,12 @@ public class BoardGame{
     /**
      * Verify if an attack on a king is possible.
      */
-    public boolean isKingCheckAfterMovement(Movement possibleMovement, PieceColor pieceColor){
-        // Start of the simulation
-        int chessPiecePosition = possibleMovement.getChessPieceMoved().getPiecePosition();
-        ChessPiece chessPieceSave = board.get(possibleMovement.getFuturePosition());
-
-        board.put(chessPiecePosition, null);
-        board.put(possibleMovement.getFuturePosition(), possibleMovement.getChessPieceMoved());
-        possibleMovement.getChessPieceMoved().setPiecePosition(possibleMovement.getFuturePosition());
-
-        Collection<ChessPiece> enemyChessPieces = findActiveChessPieces(pieceColor);
-        Map<ChessPiece,Collection<Movement>> enemyChessPiecesMovements = findChessPieceLegalMovements(enemyChessPieces, false);
-
-        possibleMovement.getChessPieceMoved().setPiecePosition(chessPiecePosition);
-        board.put(chessPiecePosition, possibleMovement.getChessPieceMoved());
-        board.put(possibleMovement.getFuturePosition(), chessPieceSave);
-        // End of the simulation
-
-        for (Collection<Movement> movements : enemyChessPiecesMovements.values()) {
-            if(searchCheckMovements(movements)){
-                return true;
-            }
+    public boolean isKingCheckAfterMovement(Movement movement, PieceColor pieceColor){
+        if(calculKingCheck == null){
+            System.err.println("interface calcul king check not instanced !");
+            System.exit(-1);
         }
-        return false;
-    }
-
-    /**
-     * Verify if there is an attack check movement in the list of movement.
-     */
-    private boolean searchCheckMovements(Collection<Movement> movements){
-        for(Iterator<Movement> it = movements.iterator(); it.hasNext();){
-            Movement movement = it.next();
-            if(movement.isKingCheck()){
-                return true;
-            }
-        }
-        return false;
+        return calculKingCheck.isKingCheckAfterMovement(movement,pieceColor);
     }
 
     /**
@@ -226,11 +200,19 @@ public class BoardGame{
     public void moveChessPiece(Movement movement){
         if(movement != null) {
             ChessPiece chessPiece = movement.getChessPieceMoved();
-            board.put(chessPiece.getPiecePosition(), null);
-            chessPiece.setPiecePosition(movement.getFuturePosition());
-            board.put(chessPiece.getPiecePosition(), chessPiece);
+           setChessPiecePosition(chessPiece, null ,movement.getFuturePosition());
             chessPiece.pieceMoved();
         }
+    }
+
+    /**
+     * Set a chess piece position on the board.
+     */
+    protected void setChessPiecePosition(ChessPiece chessPieceMoved, ChessPiece chessPiece, int newPosition){
+        // chessPiece can be null or the piece before the movement (if a rollback is requested)
+        board.put(chessPieceMoved.getPiecePosition(), chessPiece);
+        chessPieceMoved.setPiecePosition(newPosition);
+        board.put(chessPieceMoved.getPiecePosition(), chessPieceMoved);
     }
 
     /**
@@ -297,12 +279,12 @@ public class BoardGame{
     /**
      * Update chess pieces legal movements for a piece color
      */
-    public void updateChessPiecesLegalMovements(PieceColor pieceColor){
+    public void updateChessPiecesLegalMovements(PieceColor pieceColor, boolean isCheckKing){
         if(pieceColor.isWhite()){
-            whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPieces, true);
+            whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPieces, isCheckKing);
         }
         else{
-            blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPieces, true);
+            blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPieces, isCheckKing);
         }
     }
 
@@ -323,5 +305,9 @@ public class BoardGame{
             return whiteChessPieceLegalMovement.get(chessPiece);
         }
         return null;
+    }
+
+    public void setCalculKingCheck(InterfaceCalculKingCheck interfaceCalculKingCheck){
+        calculKingCheck = interfaceCalculKingCheck;
     }
 }

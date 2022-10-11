@@ -1,5 +1,6 @@
 package chess.chessPiece;
 
+import chess.Movement.*;
 import chess.board.*;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package chess.board;
+package chess;
 
 import chess.chessPiece.PieceColor;
 

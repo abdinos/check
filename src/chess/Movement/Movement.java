@@ -1,5 +1,6 @@
-package chess.board;
+package chess.Movement;
 
+import chess.board.BoardGame;
 import chess.chessPiece.ChessPiece;
 
 public abstract class Movement {

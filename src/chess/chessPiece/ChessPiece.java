@@ -1,7 +1,7 @@
 package chess.chessPiece;
 
 import chess.board.BoardGame;
-import chess.board.Movement;
+import chess.Movement.Movement;
 
 import java.util.Collection;
 
