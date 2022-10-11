@@ -11,10 +11,13 @@ public abstract class ChessPiece{
    private final PieceColor pieceColor;
    private boolean isPieceMove;
 
-    public ChessPiece(int piecePosition, final PieceColor pieceColor){
+   private InterfaceCalculLegalMovementChessPiece interfaceCalculLegalMovementChessPiece;
+
+    public ChessPiece(int piecePosition, final PieceColor pieceColor, final InterfaceCalculLegalMovementChessPiece interfaceCalculLegalMovementChessPiece){
         this.piecePosition = piecePosition;
         this.pieceColor = pieceColor;
         this.isPieceMove = false;
+        this.interfaceCalculLegalMovementChessPiece = interfaceCalculLegalMovementChessPiece;
     }
 
 
@@ -32,7 +35,13 @@ public abstract class ChessPiece{
         return isPieceMove;
     }
 
-    public abstract Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack);
+    public Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack) {
+        if(getCalculLegalMovementChessPiece() == null){
+            System.err.println("Error : InterfaceCalculLegalMovementChessPiece not instanced !");
+            System.exit(-1);
+        }
+        return getCalculLegalMovementChessPiece().findLegalMovements(boardGame, verifyCheckAttack, this);
+    }
 
     public void setPiecePosition(int piecePosition){
         this.piecePosition = piecePosition;
@@ -44,6 +53,10 @@ public abstract class ChessPiece{
 
     public String printChessPiece(){
         return getPieceColor().isBlack() ? ("B " + getName()) : ("W " + getName());
+    }
+
+    public InterfaceCalculLegalMovementChessPiece getCalculLegalMovementChessPiece(){
+        return interfaceCalculLegalMovementChessPiece;
     }
 
 }
