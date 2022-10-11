@@ -26,6 +26,8 @@ public class BoardGame{
 
     private InterfaceCalculKingCheck calculKingCheck;
 
+    private ChessPiece chessPieceSpecialMove = null;
+
     private static boolean[] initColumn(int columnNumber){
         final boolean[] column = new boolean[64];
         /**
@@ -42,6 +44,7 @@ public class BoardGame{
 
     public BoardGame(ChessGame chessGame){
         this.chessGame = chessGame;
+        calculKingCheck = new StandardCalculKingCheck(this);
     }
 
     /**
@@ -68,13 +71,15 @@ public class BoardGame{
         board.put(2, new Bishop(2, PieceColor.BLACK, new CalculLegalMovementBishop()));
         board.put(3, new Queen(3, PieceColor.BLACK, new CalculLegalMovementQueen()));
          **/
-        board.put(4, new King(4, PieceColor.BLACK, new CalculLegalMovementKing()));
+        //board.put(4, new King(4, PieceColor.BLACK, new CalculLegalMovementKing()));
         /**
         board.put(5, new Bishop(5, PieceColor.BLACK, new CalculLegalMovementBishop()));
         board.put(6, new Knight(6, PieceColor.BLACK, new CalculLegalMovementKnight()));
         board.put(7, new Rook(7, PieceColor.BLACK, new CalculLegalMovementRook()));
+         **/
 
-        board.put(8, new Pawn(8, PieceColor.BLACK, new CalculLegalMovementPawn()));
+        board.put(32, new Pawn(32, PieceColor.BLACK, new CalculLegalMovementPawn())); // position = 8
+        /**
         board.put(9, new Pawn(9, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(10, new Pawn(10, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(11, new Pawn(11, PieceColor.BLACK, new CalculLegalMovementPawn()));
@@ -86,8 +91,8 @@ public class BoardGame{
          **/
 
         // White chess piece
+        board.put(49, new Pawn(49, PieceColor.WHITE, new CalculLegalMovementPawn()));// position = 48
         /**
-        board.put(48, new Pawn(48, PieceColor.WHITE, new CalculLegalMovementPawn()));
         board.put(49, new Pawn(49, PieceColor.WHITE, new CalculLegalMovementPawn()));
         board.put(50, new Pawn(50, PieceColor.WHITE, new CalculLegalMovementPawn()));
         board.put(51, new Pawn(51, PieceColor.WHITE, new CalculLegalMovementPawn()));
@@ -96,7 +101,7 @@ public class BoardGame{
         board.put(54, new Pawn(54, PieceColor.WHITE, new CalculLegalMovementPawn()));
         board.put(55, new Pawn(55, PieceColor.WHITE, new CalculLegalMovementPawn()));
          **/
-        board.put(9, new Rook(9, PieceColor.WHITE, new CalculLegalMovementRook())); // position = 56
+        //board.put(56, new Rook(56, PieceColor.WHITE, new CalculLegalMovementRook()));
         /**
         board.put(57, new Knight(57, PieceColor.WHITE, new CalculLegalMovementKnight()));
         board.put(58, new Bishop(58, PieceColor.WHITE, new CalculLegalMovementBishop()));
@@ -105,7 +110,7 @@ public class BoardGame{
         board.put(61, new Bishop(61, PieceColor.WHITE, new CalculLegalMovementBishop()));
         board.put(62, new Knight(62, PieceColor.WHITE, new CalculLegalMovementKnight()));
          **/
-        board.put(16, new Rook(16, PieceColor.WHITE, new CalculLegalMovementRook())); // position = 63
+        //board.put(63, new Rook(63, PieceColor.WHITE, new CalculLegalMovementRook()));
 
         blackChessPieces = findActiveChessPieces(PieceColor.BLACK);
         whiteChessPieces = findActiveChessPieces(PieceColor.WHITE);
@@ -200,8 +205,19 @@ public class BoardGame{
     public void moveChessPiece(Movement movement){
         if(movement != null) {
             ChessPiece chessPiece = movement.getChessPieceMoved();
-           setChessPiecePosition(chessPiece, null ,movement.getFuturePosition());
+            setChessPiecePosition(chessPiece, null ,movement.getFuturePosition());
             chessPiece.pieceMoved();
+            if(movement.isMoveSpecialPawn() && chessPiece instanceof Pawn) {
+                if (!movement.isAttacking()) {
+                    chessPieceSpecialMove = chessPiece;
+                    ((Pawn)chessPiece).setMoveEnPassantPossible();
+                    System.out.println("new chess piece special move : " + chessPiece.printChessPiece());
+                }
+                else{
+                    chessPieceSpecialMove = null;
+                    System.out.println("null chess piece speical move");
+                }
+            }
         }
     }
 
@@ -309,5 +325,9 @@ public class BoardGame{
 
     public void setCalculKingCheck(InterfaceCalculKingCheck interfaceCalculKingCheck){
         calculKingCheck = interfaceCalculKingCheck;
+    }
+
+    public ChessPiece getChessPieceSpecialMove(){
+        return chessPieceSpecialMove;
     }
 }

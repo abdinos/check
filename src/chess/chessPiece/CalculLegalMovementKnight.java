@@ -3,7 +3,7 @@ package chess.chessPiece;
 import chess.Movement.AttackMovement;
 import chess.Movement.Movement;
 import chess.Movement.NormalMovement;
-import chess.board.AttackCheckMovement;
+import chess.Movement.AttackCheckMovement;
 import chess.board.BoardGame;
 
 import java.util.ArrayList;

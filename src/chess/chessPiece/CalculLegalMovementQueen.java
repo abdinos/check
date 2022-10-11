@@ -3,14 +3,14 @@ package chess.chessPiece;
 import chess.Movement.AttackMovement;
 import chess.Movement.Movement;
 import chess.Movement.NormalMovement;
-import chess.board.AttackCheckMovement;
+import chess.Movement.AttackCheckMovement;
 import chess.board.BoardGame;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CalculLegalMouvementQueen implements InterfaceCalculLegalMovementChessPiece{
+public class CalculLegalMovementQueen implements InterfaceCalculLegalMovementChessPiece{
 
     private final static int[] POSSIBLE_MOVEMENT_POSITION_VECTOR = {-9, -8, -7, -1, 1, 7, 8, 9};
 
