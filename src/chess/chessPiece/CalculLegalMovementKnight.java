@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CalculLegalMovementKnight implements InterfaceCalculLegalMovementChessPiece {
 
-    private final static int[] POSSIBLE_MOVEMENT_POSITION = {-17, -15, -10, -6, 10, 15, 17};
+    private final static int[] POSSIBLE_MOVEMENT_POSITION = {-17, -15, -10, -6, 6, 10, 15, 17};
 
     public Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack, final ChessPiece chessPiece){
         final List<Movement> legalMovements = new ArrayList<>();
@@ -26,14 +26,15 @@ public class CalculLegalMovementKnight implements InterfaceCalculLegalMovementCh
         }
 
         for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION){
-            final int futurePosition = chessPiece.getPiecePosition() + vectorPosition;
+            int futurePosition = chessPiece.getPiecePosition();
+            if(isFirstColumnExclusionPosition(futurePosition, vectorPosition) ||
+                    isSecondColumnExclusionPosition(futurePosition, vectorPosition) ||
+                    isSeventhColumnExclusionPosition(futurePosition, vectorPosition) ||
+                    isEightColumnExclusionPosition(futurePosition, vectorPosition)){
+                continue;
+            }
+            futurePosition += vectorPosition;
             if(BoardGame.isValidPosition(futurePosition)) {
-                if(isFirstColumnExclusionPosition(futurePosition, vectorPosition) ||
-                        isSecondColumnExclusionPosition(futurePosition, vectorPosition) ||
-                        isSeventhColumnExclusionPosition(futurePosition, vectorPosition) ||
-                        isEightColumnExclusionPosition(futurePosition, vectorPosition)){
-                    continue;
-                }
                 if (!boardGame.isCaseOccupied(futurePosition)) {
                     NormalMovement normalMovement = new NormalMovement(boardGame, chessPiece, futurePosition);
                     if(verifyCheckAttack){
