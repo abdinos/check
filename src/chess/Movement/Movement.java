@@ -13,12 +13,12 @@ public abstract class Movement {
     private final boolean isAttacking;
     private final boolean isCheckKing;
     private final boolean isPromoting;
-
     private final boolean isMoveSpecialPawn;
+    private final boolean isCastling;
 
     public Movement(final BoardGame boardGame, final ChessPiece chessPieceMoved, final ChessPiece chessPieceAttacked,
                     ChessPiece chessPiecePromoted, final int futurePosition, boolean isAttacking, boolean isPromoting,
-                    boolean isCheckKing, boolean isMoveSpecialPawn){
+                    boolean isCheckKing, boolean isMoveSpecialPawn, final boolean isCastling){
         this.boardGame = boardGame;
         this.futurePosition = futurePosition;
         this.chessPieceMoved = chessPieceMoved;
@@ -28,6 +28,7 @@ public abstract class Movement {
         this.isPromoting = isPromoting;
         this.isCheckKing = isCheckKing;
         this.isMoveSpecialPawn = isMoveSpecialPawn;
+        this.isCastling = isCastling;
     }
 
     public BoardGame getBoardGame() {
@@ -54,7 +55,7 @@ public abstract class Movement {
         return isAttacking;
     }
 
-    public boolean isKingCheck() {
+    public boolean isCheckKing() {
         return isCheckKing;
     }
 
@@ -63,4 +64,6 @@ public abstract class Movement {
     }
 
     public boolean isMoveSpecialPawn(){ return isMoveSpecialPawn; }
+
+    public boolean isCastling(){ return isCastling; }
 }

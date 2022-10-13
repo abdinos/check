@@ -4,9 +4,15 @@ import chess.board.BoardGame;
 import chess.Movement.Movement;
 import chess.board.StandardCalculKingCheck;
 import chess.chessPiece.ChessPiece;
+import chess.chessPiece.Pawn;
 import chess.chessPiece.PieceColor;
 import chess.gui.BoardGameGUI;
+import chess.gui.MainWindow;
+import com.sun.tools.javac.Main;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -23,10 +29,22 @@ public class ChessGame {
 
     private boolean isEndGame;
 
-    public ChessGame(){
+    public ChessGame() {
         this.boardGame = new BoardGame(this);
         boardGame.setCalculKingCheck(new StandardCalculKingCheck(boardGame));
-        this.boardGameGUI = new BoardGameGUI(boardGame.getBoard());
+
+        //test
+        //MainWindow mainWindow = new MainWindow();
+        //mainWindow.setVisible(true);
+        /**
+        try{
+            MainWindow mainWindow = new MainWindow();
+            this.boardGameGUI = new BoardGameGUI(boardGame.getBoard(),mainWindow.getJFrame());
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+         **/
         isEndGame = false;
     }
 
@@ -77,10 +95,32 @@ public class ChessGame {
      */
     public void executeChessPieceMovement(Movement movement){
         if(movement != null) {
-            boardGame.moveChessPiece(movement);
+            ChessPiece chessPieceToMove = movement.getChessPieceMoved();
+            int futurePosition = movement.getFuturePosition();
+            boardGame.moveChessPiece(chessPieceToMove, futurePosition);
 
             if (movement.isPromoting()) {
-                boardGame.promotingPawn(movement.getChessPieceMoved(), movement.getChessPiecePromoted(), movement.getFuturePosition());
+                boardGame.promotingPawn(chessPieceToMove, movement.getChessPiecePromoted(), futurePosition);
+            }
+            else  if(movement.isMoveSpecialPawn() && chessPieceToMove instanceof Pawn) {
+                if (!movement.isAttacking()) {
+                    boardGame.setChessPieceSpecialMove(chessPieceToMove);
+                    ((Pawn)chessPieceToMove).setMoveEnPassantPossible();
+                }
+                else{
+                    boardGame.setChessPieceSpecialMove(null);
+                }
+            }
+            else if(movement.isCastling()){
+                ChessPiece chessPieceToExchange = movement.getChessPieceAttacked();
+                int futurePositionToPieceExchanged = chessPieceToMove.getPiecePosition();
+                if(chessPieceToExchange.getPiecePosition() < futurePositionToPieceExchanged){
+                    futurePositionToPieceExchanged++ ;
+                }
+                else{
+                    futurePositionToPieceExchanged--;
+                }
+                boardGame.moveChessPiece(chessPieceToExchange, futurePositionToPieceExchanged);
             }
 
             boardGame.findAllActiveChessPieces();
