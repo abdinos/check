@@ -7,8 +7,19 @@ import java.util.Collection;
 
 public abstract class ChessPiece{
 
+    /**
+     * The chess piece position on the board
+     */
    private int piecePosition;
+
+    /**
+     * The chess piece color
+     */
    private final PieceColor pieceColor;
+
+    /**
+     * Indicate if the chess piece has already moved or not
+     */
    private boolean isPieceMove;
 
    private InterfaceCalculLegalMovementChessPiece interfaceCalculLegalMovementChessPiece;
@@ -35,6 +46,9 @@ public abstract class ChessPiece{
         return isPieceMove;
     }
 
+    /**
+     * Find all legal movements for a chess piece
+     */
     public Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack) {
         if(getCalculLegalMovementChessPiece() == null){
             System.err.println("Error : InterfaceCalculLegalMovementChessPiece not instanced !");
@@ -51,7 +65,7 @@ public abstract class ChessPiece{
         isPieceMove = true;
     }
 
-    public String printChessPiece(){
+    public String ChessPieceToString(){
         return getPieceColor().isBlack() ? ("B " + getName()) : ("W " + getName());
     }
 

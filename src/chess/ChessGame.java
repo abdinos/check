@@ -4,6 +4,7 @@ import chess.board.BoardGame;
 import chess.Movement.Movement;
 import chess.board.StandardCalculKingCheck;
 import chess.chessPiece.ChessPiece;
+import chess.chessPiece.Pawn;
 import chess.chessPiece.PieceColor;
 import chess.gui.BoardGameGUI;
 
@@ -23,11 +24,26 @@ public class ChessGame {
 
     private boolean isEndGame;
 
-    public ChessGame(){
+    private boolean isDrawn;
+
+    public ChessGame() {
         this.boardGame = new BoardGame(this);
         boardGame.setCalculKingCheck(new StandardCalculKingCheck(boardGame));
-        this.boardGameGUI = new BoardGameGUI(boardGame.getBoard());
+
+        //test
+        //MainWindow mainWindow = new MainWindow();
+        //mainWindow.setVisible(true);
+        /**
+        try{
+            MainWindow mainWindow = new MainWindow();
+            this.boardGameGUI = new BoardGameGUI(boardGame.getBoard(),mainWindow.getJFrame());
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+         **/
         isEndGame = false;
+        isDrawn = false;
     }
 
     /**
@@ -77,10 +93,32 @@ public class ChessGame {
      */
     public void executeChessPieceMovement(Movement movement){
         if(movement != null) {
-            boardGame.moveChessPiece(movement);
+            ChessPiece chessPieceToMove = movement.getChessPieceMoved();
+            int futurePosition = movement.getFuturePosition();
+            boardGame.moveChessPiece(chessPieceToMove,null, futurePosition,false);
 
             if (movement.isPromoting()) {
-                boardGame.promotingPawn(movement.getChessPieceMoved(), movement.getChessPiecePromoted(), movement.getFuturePosition());
+                boardGame.promotingPawn(chessPieceToMove, movement.getChessPiecePromoted(), futurePosition);
+            }
+            else  if(movement.isMoveSpecialPawn() && chessPieceToMove instanceof Pawn) {
+                if (!movement.isAttacking()) {
+                    boardGame.setChessPieceSpecialMove(chessPieceToMove);
+                    ((Pawn)chessPieceToMove).setMoveEnPassantPossible();
+                }
+                else{
+                    boardGame.setChessPieceSpecialMove(null);
+                }
+            }
+            else if(movement.isCastling()){
+                ChessPiece chessPieceToExchange = movement.getChessPieceAttacked();
+                int futurePositionToPieceExchanged = chessPieceToMove.getPiecePosition();
+                if(chessPieceToExchange.getPiecePosition() < futurePositionToPieceExchanged){
+                    futurePositionToPieceExchanged++ ;
+                }
+                else{
+                    futurePositionToPieceExchanged--;
+                }
+                boardGame.moveChessPiece(chessPieceToExchange,null, futurePositionToPieceExchanged,false);
             }
 
             boardGame.findAllActiveChessPieces();
@@ -89,8 +127,13 @@ public class ChessGame {
             boardGame.updateChessPiecesLegalMovements(enemyPlayer.getPlayerColor(), true);
             boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor(),true);
 
-            if(boardGame.isGameEnded(currentPlayer.getPlayerColor(),enemyPlayer)){
-                isEndGame = true;
+            if(boardGame.isDraw()){
+                isDrawn = true;
+            }
+            else {
+                if (boardGame.isGameEnded(currentPlayer.getPlayerColor(), enemyPlayer)) {
+                    isEndGame = true;
+                }
             }
         }
 
@@ -126,7 +169,7 @@ public class ChessGame {
             // Get chess piece at the position enter
             ChessPiece chessPiece = boardGame.getBoard().get(position);
             if(chessPiece != null) {
-                System.out.println("Mouvement de " + chessPiece.printChessPiece() + " : ");
+                System.out.println("Mouvement de " + chessPiece.ChessPieceToString() + " : ");
                 int index = 1;
                 List<Movement> movements = new ArrayList<>();
                 if (boardGame.getChessPieceLegalMovements(position, players.get(indexCurrentPlayer).getPlayerColor()) != null) {
@@ -135,7 +178,7 @@ public class ChessGame {
                     for (Movement movement : movements) {
                         System.out.print(index++ + " : " + movement.getChessPieceMoved().getPiecePosition() + " --> " + movement.getFuturePosition());
                         if (movement.isAttacking()) {
-                            System.out.print(" (" + movement.getChessPieceAttacked().printChessPiece() + ")");
+                            System.out.print(" (" + movement.getChessPieceAttacked().ChessPieceToString() + ")");
                         }
                         System.out.println(" / " + movement.getClass());
                     }
