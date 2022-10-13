@@ -1,9 +1,6 @@
 package chess.chessPiece;
 
-import chess.Movement.AttackMovement;
-import chess.Movement.Movement;
-import chess.Movement.NormalMovement;
-import chess.Movement.AttackCheckMovement;
+import chess.Movement.*;
 import chess.board.BoardGame;
 
 import java.util.ArrayList;
@@ -26,7 +23,7 @@ public class CalculLegalMovementKing implements InterfaceCalculLegalMovementChes
         }
 
         for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION){
-            final int futurePosition = chessPiece.getPiecePosition() + vectorPosition;
+            int futurePosition = chessPiece.getPiecePosition() + vectorPosition;
 
             if(BoardGame.isValidPosition(futurePosition)){
                 if(isFirstColumnExclusionPosition(futurePosition, vectorPosition) ||
@@ -43,6 +40,44 @@ public class CalculLegalMovementKing implements InterfaceCalculLegalMovementChes
                     else{
                         legalMovements.add(normalMovement);
                     }
+
+                    // Search if castling with a rook is possible
+                    if(!chessPiece.isPieceMove() && (vectorPosition == 1 || vectorPosition == -1)) {
+                        futurePosition = chessPiece.getPiecePosition();
+                        while(BoardGame.isValidPosition(futurePosition)){
+                            futurePosition += vectorPosition;
+
+                            if(boardGame.isCaseOccupied(futurePosition)){
+                                ChessPiece chessPieceAtFuturePosition = boardGame.getChessPieceAtPosition(futurePosition);
+                                if(chessPieceAtFuturePosition instanceof Rook && !chessPieceAtFuturePosition.isPieceMove()){
+                                    if(chessPiece.getPiecePosition() < chessPieceAtFuturePosition.getPiecePosition()){
+                                        futurePosition = chessPiece.getPiecePosition() + 2;
+                                    }
+                                    else{
+                                        futurePosition = chessPiece.getPiecePosition() - 2;
+                                    }
+                                    CastleMovement castleMovement = new CastleMovement(boardGame, chessPiece, futurePosition, chessPieceAtFuturePosition);
+                                    if(verifyCheckAttack) {
+                                        if (!boardGame.isKingCheckAfterMovement(castleMovement,enemyPieceColor)) {
+                                            legalMovements.add(castleMovement);
+                                        }
+                                    }
+                                    else{
+                                        legalMovements.add(castleMovement);
+                                    }
+                                    break;
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                            if(isFirstColumnExclusionPosition(futurePosition, vectorPosition) ||
+                                    isHeightColumnExclusionPosition(futurePosition, vectorPosition)){
+                                break;
+                            }
+                        }
+                    }
+
                 }
                 else{
                     final ChessPiece chessPieceAtFuturePosition = boardGame.getChessPieceAtPosition(futurePosition);
