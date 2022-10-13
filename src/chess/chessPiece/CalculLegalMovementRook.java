@@ -1,9 +1,6 @@
 package chess.chessPiece;
 
-import chess.Movement.AttackMovement;
-import chess.Movement.Movement;
-import chess.Movement.NormalMovement;
-import chess.Movement.AttackCheckMovement;
+import chess.Movement.*;
 import chess.board.BoardGame;
 
 import java.util.ArrayList;
@@ -50,6 +47,7 @@ public class CalculLegalMovementRook implements InterfaceCalculLegalMovementChes
                     else{
                         final ChessPiece chessPieceAtFuturePosition = boardGame.getChessPieceAtPosition(futurePosition);
                         if(chessPieceAtFuturePosition != null) {
+                            // Find a piece with a different color
                             if (chessPiece.getPieceColor() != chessPieceAtFuturePosition.getPieceColor()) {
                                 if(verifyCheckAttack){
                                 }
@@ -73,6 +71,26 @@ public class CalculLegalMovementRook implements InterfaceCalculLegalMovementChes
                                     }
                                     else{
                                         legalMovements.add(attackMovement);
+                                    }
+                                }
+                            }
+                            // Find a piece with the same color
+                            else{
+                                if(chessPieceAtFuturePosition instanceof King && !chessPieceAtFuturePosition.isPieceMove() && !chessPiece.isPieceMove()){
+                                    if(chessPiece.getPiecePosition() > futurePosition){
+                                        futurePosition++;
+                                    }
+                                    else{
+                                        futurePosition--;
+                                    }
+                                    CastleMovement castleMovement = new CastleMovement(boardGame,chessPiece,futurePosition,chessPieceAtFuturePosition);
+                                    if(verifyCheckAttack) {
+                                        if (!boardGame.isKingCheckAfterMovement(castleMovement,enemyPieceColor)) {
+                                            legalMovements.add(castleMovement);
+                                        }
+                                    }
+                                    else{
+                                        legalMovements.add(castleMovement);
                                     }
                                 }
                             }

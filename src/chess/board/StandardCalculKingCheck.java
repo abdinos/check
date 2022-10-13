@@ -53,7 +53,7 @@ public class StandardCalculKingCheck implements InterfaceCalculKingCheck{
     private boolean searchCheckMovements(Collection<Movement> movements){
         for(Iterator<Movement> it = movements.iterator(); it.hasNext();){
             Movement movement = it.next();
-            if(movement.isKingCheck()){
+            if(movement.isCheckKing()){
                 return true;
             }
         }
