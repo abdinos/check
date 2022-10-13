@@ -7,8 +7,10 @@ import chess.chessPiece.ChessPiece;
 import chess.chessPiece.Pawn;
 import chess.chessPiece.PieceColor;
 import chess.gui.BoardGameGUI;
+import chess.gui.ChessGameDemo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -136,7 +138,14 @@ public class ChessGame {
                 }
             }
         }
+    }
 
+    public ChessPiece getChessPieceAtPosition(int position){
+        return boardGame.getChessPieceAtPosition(position);
+    }
+
+    public Collection<Movement> getMovementsForAPiece(int position, PieceColor color){
+        return boardGame.getChessPieceLegalMovements(position, color);
     }
 
     /**
@@ -225,11 +234,25 @@ public class ChessGame {
         System.out.println("\nVictoire de " + players.get(indexCurrentPlayer).getName());
     }
 
+    /**
     public static void main(String[] args) {
         ChessGame chessGame = new ChessGame();
         chessGame.createPlayers();
         chessGame.initChessGame();
 
         chessGame.interfaceTest();
+    }
+     **/
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                ChessGame chessGame = new ChessGame();
+                chessGame.createPlayers();
+                chessGame.initChessGame();
+
+                ChessGameDemo chessGameDemo = new ChessGameDemo(chessGame);
+                chessGameDemo.createAndShowGUI();
+            }
+        });
     }
 }
