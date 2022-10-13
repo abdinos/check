@@ -46,6 +46,7 @@ public class CalculLegalMovementRook implements InterfaceCalculLegalMovementChes
                     else{ // Another piece has been found
                         final ChessPiece chessPieceAtFuturePosition = boardGame.getChessPieceAtPosition(futurePosition);
                         if(chessPieceAtFuturePosition != null) {
+                            // Find a piece with a different color
                             if (chessPiece.getPieceColor() != chessPieceAtFuturePosition.getPieceColor()) {
                                 if(verifyCheckAttack){
                                 }
@@ -68,6 +69,26 @@ public class CalculLegalMovementRook implements InterfaceCalculLegalMovementChes
                                     }
                                     CastleMovement castleMovement = new CastleMovement(boardGame,chessPiece,futurePosition,chessPieceAtFuturePosition);
                                     addMovement(boardGame, legalMovements, castleMovement, enemyPieceColor, verifyCheckAttack);
+                                }
+                            }
+                            // Find a piece with the same color
+                            else{
+                                if(chessPieceAtFuturePosition instanceof King && !chessPieceAtFuturePosition.isPieceMove() && !chessPiece.isPieceMove()){
+                                    if(chessPiece.getPiecePosition() > futurePosition){
+                                        futurePosition++;
+                                    }
+                                    else{
+                                        futurePosition--;
+                                    }
+                                    CastleMovement castleMovement = new CastleMovement(boardGame,chessPiece,futurePosition,chessPieceAtFuturePosition);
+                                    if(verifyCheckAttack) {
+                                        if (!boardGame.isKingCheckAfterMovement(castleMovement,enemyPieceColor)) {
+                                            legalMovements.add(castleMovement);
+                                        }
+                                    }
+                                    else{
+                                        legalMovements.add(castleMovement);
+                                    }
                                 }
                             }
                         }
