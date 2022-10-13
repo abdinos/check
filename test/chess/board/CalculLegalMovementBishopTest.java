@@ -106,22 +106,22 @@ public class CalculLegalMovementBishopTest {
     void testLegalCheckmateFreePositionMovement() {
         boardGame = new BoardGame(chessGame);
         boardGame.createBoard();
-        ChessPiece pawn = new Pawn(8, PieceColor.BLACK, new CalculLegalMovementPawn());
+        ChessPiece queen = new Queen(26, PieceColor.BLACK, new CalculLegalMovementPawn());
         ChessPiece enemyKing = new King(16, PieceColor.WHITE, new CalculLegalMovementKing());
-        ChessPiece knight = new Knight(25, PieceColor.BLACK, new CalculLegalMovementKnight());
-        ChessPiece rook = new Rook(17, PieceColor.BLACK, new CalculLegalMovementRook());
-        boardGame.getBoard().put(2, new Bishop(2, PieceColor.BLACK, new CalculLegalMovementBishop()));
-        boardGame.getBoard().put(8, pawn);
+        ChessPiece knight = new Knight(18, PieceColor.BLACK, new CalculLegalMovementKnight());
+        ChessPiece rook = new Rook(57, PieceColor.BLACK, new CalculLegalMovementRook());
+        boardGame.getBoard().put(11, new Bishop(11, PieceColor.BLACK, new CalculLegalMovementBishop()));
+        boardGame.getBoard().put(26, queen);
         boardGame.getBoard().put(16, enemyKing);
-        boardGame.getBoard().put(25, knight);
-        boardGame.getBoard().put(17, rook);
-        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(2).findLegalMovements(boardGame, true);
+        boardGame.getBoard().put(18, knight);
+        boardGame.getBoard().put(57, rook);
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(11).findLegalMovements(boardGame, true);
         AttackCheckMovement attackCheckMovement = null;
         for (Movement movement : actualMovements) {
             if (movement.getClass() == AttackCheckMovement.class)
                 attackCheckMovement = (AttackCheckMovement) movement;
         }
-        assertTrue(attackCheckMovement != null && attackCheckMovement.getFuturePosition() == 16);
+        assertTrue(attackCheckMovement != null && attackCheckMovement.getFuturePosition() == 2);
     }
 
     @Test
