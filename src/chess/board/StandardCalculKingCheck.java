@@ -24,7 +24,7 @@ public class StandardCalculKingCheck implements InterfaceCalculKingCheck{
         int chessPiecePosition = movement.getChessPieceMoved().getPiecePosition();
         ChessPiece chessPieceSave = boardGame.getBoard().get(movement.getFuturePosition());
 
-        boardGame.setChessPiecePosition(movement.getChessPieceMoved(), null, movement.getFuturePosition());
+        boardGame.moveChessPiece(movement.getChessPieceMoved(), null, movement.getFuturePosition(),true);
         boardGame.findAllActiveChessPieces();
         boardGame.updateChessPiecesLegalMovements(pieceColor, false);
         Map<ChessPiece,Collection<Movement>> enemyChessPiecesMovements;
@@ -35,7 +35,7 @@ public class StandardCalculKingCheck implements InterfaceCalculKingCheck{
         else{
             enemyChessPiecesMovements = boardGame.whiteChessPieceLegalMovement;
         }
-        boardGame.setChessPiecePosition(movement.getChessPieceMoved(), chessPieceSave, chessPiecePosition);
+        boardGame.moveChessPiece(movement.getChessPieceMoved(), chessPieceSave, chessPiecePosition,true);
         boardGame.updateChessPiecesLegalMovements(pieceColor, false);
         // End of the simulation
 
