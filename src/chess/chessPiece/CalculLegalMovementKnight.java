@@ -12,8 +12,14 @@ import java.util.List;
 
 public class CalculLegalMovementKnight implements InterfaceCalculLegalMovementChessPiece {
 
+    /**
+     * The vector where a knight can move
+     */
     private final static int[] POSSIBLE_MOVEMENT_POSITION = {-17, -15, -10, -6, 6, 10, 15, 17};
 
+    /**
+     * Find all legal movement for a knight
+     */
     public Collection<Movement> findLegalMovements(final BoardGame boardGame, final boolean verifyCheckAttack, final ChessPiece chessPiece){
         final List<Movement> legalMovements = new ArrayList<>();
         PieceColor enemyPieceColor;
@@ -37,40 +43,19 @@ public class CalculLegalMovementKnight implements InterfaceCalculLegalMovementCh
             if(BoardGame.isValidPosition(futurePosition)) {
                 if (!boardGame.isCaseOccupied(futurePosition)) {
                     NormalMovement normalMovement = new NormalMovement(boardGame, chessPiece, futurePosition);
-                    if(verifyCheckAttack){
-                        if(!boardGame.isKingCheckAfterMovement(normalMovement,enemyPieceColor)){
-                            legalMovements.add(normalMovement);
-                        }
-                    }
-                    else {
-                        legalMovements.add(normalMovement);
-                    }
+                    addMovement(boardGame, legalMovements, normalMovement, enemyPieceColor, verifyCheckAttack);
                 }
-                else{
+                else{ // Another piece has been found
                     final ChessPiece chessPieceAtFuturePosition = boardGame.getChessPieceAtPosition(futurePosition);
                     if(chessPieceAtFuturePosition != null) {
                         if (chessPieceAtFuturePosition.getPieceColor() != chessPieceAtFuturePosition.getPieceColor()) {
                             if(chessPieceAtFuturePosition instanceof King){
                                 AttackCheckMovement attackCheckMovement = new AttackCheckMovement(boardGame,chessPiece, futurePosition, chessPieceAtFuturePosition);
-                                if(verifyCheckAttack) {
-                                    if (!boardGame.isKingCheckAfterMovement(attackCheckMovement,enemyPieceColor)) {
-                                        legalMovements.add(attackCheckMovement);
-                                    }
-                                }
-                                else{
-                                    legalMovements.add(attackCheckMovement);
-                                }
+                                addMovement(boardGame, legalMovements, attackCheckMovement, enemyPieceColor, verifyCheckAttack);
                             }
                             else{
                                 AttackMovement attackMovement = new AttackMovement(boardGame, chessPiece, futurePosition, chessPieceAtFuturePosition);
-                                if(verifyCheckAttack) {
-                                    if (!boardGame.isKingCheckAfterMovement(attackMovement,enemyPieceColor)) {
-                                        legalMovements.add(attackMovement);
-                                    }
-                                }
-                                else{
-                                    legalMovements.add(attackMovement);
-                                }
+                                addMovement(boardGame, legalMovements, attackMovement, enemyPieceColor, verifyCheckAttack);
                             }
                         }
                     }
@@ -80,19 +65,46 @@ public class CalculLegalMovementKnight implements InterfaceCalculLegalMovementCh
         return legalMovements;
     }
 
+    /**
+     * Add a new movement to the list of legal movements
+     */
+    private void addMovement(BoardGame boardGame,List<Movement> legalMovements, Movement movement, PieceColor pieceColor, boolean verifyCheckAttack){
+        if(verifyCheckAttack){
+            if(!boardGame.isKingCheckAfterMovement(movement,pieceColor)){ // Verify if the king can be in check state after
+                legalMovements.add(movement);
+            }
+        }
+        else {
+            legalMovements.add(movement);
+        }
+    }
+
+
+    /**
+     * Verify if the future position is not an exclusion position in the first column
+     */
     private static boolean isFirstColumnExclusionPosition(final int currentPosition, final int vectorPosition){
         return (BoardGame.FIRST_COLUMN[currentPosition] && (vectorPosition == -17 || vectorPosition == -10 ||
                 vectorPosition == 6 || vectorPosition == 15));
     }
 
+    /**
+     * Verify if the future position is not an exclusion position in the second column
+     */
     private static boolean isSecondColumnExclusionPosition(final int currentPosition, final int vectorPosition){
         return (BoardGame.SECOND_COLUMN[currentPosition] && (vectorPosition == -10 || vectorPosition == 6));
     }
 
+    /**
+     * Verify if the future position is not an exclusion position in the seventh column
+     */
     private static boolean isSeventhColumnExclusionPosition(final int currentPosition, final int vectorPosition){
         return (BoardGame.SEVENTH_COLUMN[currentPosition] && (vectorPosition == -6 || vectorPosition == 10));
     }
 
+    /**
+     * Verify if the future position is not an exclusion position in the height column
+     */
     private static boolean isEightColumnExclusionPosition(final int currentPosition, final int vectorPosition){
         return (BoardGame.EIGHT_COLUMN[currentPosition] && (vectorPosition == -15 || vectorPosition == -6 ||
                 vectorPosition == 10 || vectorPosition == 17));
