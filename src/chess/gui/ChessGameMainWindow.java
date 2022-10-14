@@ -264,7 +264,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
             if (chessPieceSelectedMovements != null) {
                 chessPieceSelected = chessPiece;
                 caseColorChessPieceSelectedMovements = new HashMap<>();
+                System.out.println("mouvement list : ");
                 for (Movement movement : chessPieceSelectedMovements) {
+                    System.out.println(movement.getChessPieceMoved().chessPieceToString() + " to " + movement.getFuturePosition());
                     int futurePosition = movement.getFuturePosition();
                     caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
                     labels.get(futurePosition).setBackground(Color.BLUE);
