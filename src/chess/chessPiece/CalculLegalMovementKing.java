@@ -10,7 +10,7 @@ import java.util.List;
 public class CalculLegalMovementKing implements InterfaceCalculLegalMovementChessPiece {
 
     /**
-     * The vector where a king can move
+     * The ve*ctor where a king can move
      */
     private final static int[] POSSIBLE_MOVEMENT_POSITION = {-9, -8, -7, -1, 1, 7, 8 ,9};
 
