@@ -47,7 +47,6 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     private Icon white_pawn, black_pawn;
 
 
-
     public ChessGameMainWindow(ChessGame chessGame) {
         this.chessGame = chessGame;
         currentPieceColor = chessGame.getPlayers().get(chessGame.getIndexCurrentPlayer()).getPlayerColor();
