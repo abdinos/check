@@ -36,9 +36,9 @@ echo $JAVA_HOME </strong> </li>
 ## Réalisé par :
 <ul>
  <li>Loic FERY : <a href="https://github.com/loicfery"> https://github.com/loicfery </a> </li>
- <li>Yanis AMROUCHE <a href="https://github.com/yanisamrouche">https://github.com/yanisamrouche </a></li>
- <li>Farouk AGUENI <a href="https://github.com/agueni">https://github.com/agueni </a> (a19028598) </li>
- <li>Abdessettar OULD-CHIBANI <a href="https://github.com/abdinos">https://github.com/abdinos </a> </li>
+ <li>Yanis AMROUCHE : <a href="https://github.com/yanisamrouche">https://github.com/yanisamrouche </a></li>
+ <li>Farouk AGUENI : <a href="https://github.com/agueni">https://github.com/agueni </a> (a19028598) </li>
+ <li>Abdessettar OULD-CHIBANI : <a href="https://github.com/abdinos">https://github.com/abdinos </a> </li>
 </ul>
 
 Enjoy :)
