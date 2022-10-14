@@ -48,7 +48,7 @@ public class CalculLegalMovementKnight implements InterfaceCalculLegalMovementCh
                 else{ // Another piece has been found
                     final ChessPiece chessPieceAtFuturePosition = boardGame.getChessPieceAtPosition(futurePosition);
                     if(chessPieceAtFuturePosition != null) {
-                        if (chessPieceAtFuturePosition.getPieceColor() != chessPieceAtFuturePosition.getPieceColor()) {
+                        if (chessPiece.getPieceColor() != chessPieceAtFuturePosition.getPieceColor()) {
                             if(chessPieceAtFuturePosition instanceof King){
                                 AttackCheckMovement attackCheckMovement = new AttackCheckMovement(boardGame,chessPiece, futurePosition, chessPieceAtFuturePosition);
                                 addMovement(boardGame, legalMovements, attackCheckMovement, enemyPieceColor, verifyCheckAttack);

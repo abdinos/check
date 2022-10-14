@@ -169,7 +169,7 @@ public class BoardGame{
                 text = "-     ";
             }
             else {
-                text = board.get(i).ChessPieceToString();
+                text = board.get(i).chessPieceToString();
             }
             builder.append(text + "  ");
             if((i + 1) % NUMBER_OF_CASE_BY_COLUMN == 0){

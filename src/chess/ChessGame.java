@@ -178,7 +178,7 @@ public class ChessGame {
             // Get chess piece at the position enter
             ChessPiece chessPiece = boardGame.getBoard().get(position);
             if(chessPiece != null) {
-                System.out.println("Mouvement de " + chessPiece.ChessPieceToString() + " : ");
+                System.out.println("Mouvement de " + chessPiece.chessPieceToString() + " : ");
                 int index = 1;
                 List<Movement> movements = new ArrayList<>();
                 if (boardGame.getChessPieceLegalMovements(position, players.get(indexCurrentPlayer).getPlayerColor()) != null) {
@@ -187,7 +187,7 @@ public class ChessGame {
                     for (Movement movement : movements) {
                         System.out.print(index++ + " : " + movement.getChessPieceMoved().getPiecePosition() + " --> " + movement.getFuturePosition());
                         if (movement.isAttacking()) {
-                            System.out.print(" (" + movement.getChessPieceAttacked().ChessPieceToString() + ")");
+                            System.out.print(" (" + movement.getChessPieceAttacked().chessPieceToString() + ")");
                         }
                         System.out.println(" / " + movement.getClass());
                     }
@@ -250,8 +250,10 @@ public class ChessGame {
                 chessGame.createPlayers();
                 chessGame.initChessGame();
 
-                ChessGameDemo chessGameDemo = new ChessGameDemo(chessGame);
-                chessGameDemo.createAndShowGUI();
+                chessGame.interfaceTest();
+
+                //ChessGameDemo chessGameDemo = new ChessGameDemo(chessGame);
+                //chessGameDemo.createAndShowGUI();
             }
         });
     }

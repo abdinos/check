@@ -65,7 +65,7 @@ public abstract class ChessPiece{
         isPieceMove = true;
     }
 
-    public String ChessPieceToString(){
+    public String chessPieceToString(){
         return getPieceColor().isBlack() ? ("B " + getName()) : ("W " + getName());
     }
 
