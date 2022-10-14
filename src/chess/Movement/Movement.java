@@ -55,6 +55,8 @@ public abstract class Movement {
      */
     private final boolean isCastling;
 
+
+
     public Movement(final BoardGame boardGame, final ChessPiece chessPieceMoved, final ChessPiece chessPieceAttacked,
                     ChessPiece chessPiecePromoted, final int futurePosition, boolean isAttacking, boolean isPromoting,
                     boolean isCheckKing, boolean isMoveSpecialPawn, final boolean isCastling){
@@ -69,6 +71,7 @@ public abstract class Movement {
         this.isMoveSpecialPawn = isMoveSpecialPawn;
         this.isCastling = isCastling;
     }
+
 
     public BoardGame getBoardGame() {
         return boardGame;

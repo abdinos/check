@@ -162,19 +162,37 @@ public class CalculLegalMovementRookTest {
         boardGame = new BoardGame(chessGame);
         boardGame.createBoard();
         ChessPiece rook2 = new Rook(57, PieceColor.BLACK, new CalculLegalMovementRook());
-        ChessPiece enemyKing = new King(16, PieceColor.WHITE, new CalculLegalMovementKing());
-        ChessPiece rook = new Rook(1, PieceColor.BLACK, new CalculLegalMovementRook());
+        ChessPiece enemyKing = new King(24, PieceColor.WHITE, new CalculLegalMovementKing());
+        ChessPiece rook = new Rook(0, PieceColor.BLACK, new CalculLegalMovementRook());
         boardGame.getBoard().put(57, rook2);
-        boardGame.getBoard().put(16, enemyKing);
-        boardGame.getBoard().put(1, rook);
-        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(1).findLegalMovements(boardGame, true);
-        AttackCheckMovement attackCheckMovement = null;
+        boardGame.getBoard().put(24, enemyKing);
+        boardGame.getBoard().put(0, rook);
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(24).findLegalMovements(boardGame, true);AttackCheckMovement attackCheckMovement = null;
+        ArrayList<Integer> actualPositions = new ArrayList<>();
         for (Movement movement : actualMovements) {
-            if (movement.getClass() == AttackCheckMovement.class)
-               attackCheckMovement = (AttackCheckMovement) movement;
-            System.out.println(movement.getFuturePosition());
+            actualPositions.add(movement.getFuturePosition());
         }
-        assertTrue(attackCheckMovement != null && attackCheckMovement.getFuturePosition() == 0);
+        assertTrue(actualPositions.isEmpty());
+    }
+    @Test
+    void testLegalCheckmateOccupiedPositionMovement() {
+        boardGame = new BoardGame(chessGame);
+        boardGame.createBoard();
+        ChessPiece rook2 = new Rook(57, PieceColor.BLACK, new CalculLegalMovementRook());
+        ChessPiece enemyKing = new King(24, PieceColor.WHITE, new CalculLegalMovementKing());
+        ChessPiece rook = new Rook(0, PieceColor.BLACK, new CalculLegalMovementRook());
+        ChessPiece pawn = new Pawn(49, PieceColor.BLACK, new CalculLegalMovementPawn());
+        boardGame.getBoard().put(57, rook2);
+        boardGame.getBoard().put(24, enemyKing);
+        boardGame.getBoard().put(0, rook);
+        boardGame.getBoard().put(49, pawn);
+        boardGame.moveChessPiece(rook2,pawn,49,true);
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(24).findLegalMovements(boardGame, true);AttackCheckMovement attackCheckMovement = null;
+        ArrayList<Integer> actualPositions = new ArrayList<>();
+        for (Movement movement : actualMovements) {
+            actualPositions.add(movement.getFuturePosition());
+        }
+        assertTrue(actualPositions.isEmpty());
     }
 
 
