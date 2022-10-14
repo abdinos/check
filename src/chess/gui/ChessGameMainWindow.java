@@ -180,9 +180,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         label.setVerticalAlignment(JLabel.CENTER);
         label.setHorizontalAlignment(JLabel.CENTER);
         label.setOpaque(true);
-        //label.setBackground(Color.WHITE);
         label.setForeground(Color.BLACK);
-        //label.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         label.setPreferredSize(new Dimension(0, 0));
         return label;
     }

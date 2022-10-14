@@ -35,6 +35,12 @@ public class ThirdLearningWindow extends JFrame {
         prev(precedent);
         add(precedent);
 
+        // btn Employer une stratégie gagnante
+        JButton returnButton = new JButton("Retour");
+        returnButton.setBounds(0,0,200,40);
+        returnButton(returnButton);
+        add(returnButton);
+
         setSize(1200,1200); // dimension de l'interface 1200x800
         setResizable(false); // la fenetre ne sera pas redimensionnable par l'utilisateur
         setDefaultCloseOperation(EXIT_ON_CLOSE); // fermeture de l'interface une fois que l'utilisateur click sur (X)
@@ -49,7 +55,6 @@ public class ThirdLearningWindow extends JFrame {
         for(File item : liste){
             if(item.isFile())
             {
-                System.out.format("Nom du fichier: %s%n", item.getName());
                 c++;
             }
         }
@@ -89,6 +94,17 @@ public class ThirdLearningWindow extends JFrame {
                 add(jlabel);
                 System.out.println(c);
 
+            }
+        });
+    }
+
+    public void returnButton(JButton jButton){
+        jButton.addActionListener( new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                new MainWindow().setVisible(true);
+                dispose();
             }
         });
     }

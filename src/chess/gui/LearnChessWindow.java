@@ -20,13 +20,9 @@ public class LearnChessWindow extends JFrame {
         //bg
         JLabel background;
         ImageIcon imageIcon = new ImageIcon("images/bg.jpg");
-        background = new JLabel("",imageIcon,JLabel.HORIZONTAL);
-        background.setBounds(0,0,800,900);
-        add(background);
 
 
         // btn Mettre en place le plateau
-        //setLayout( new GridBagLayout() );
         JButton btn1 = new JButton("Mettre en place le plateau");
         btn1.setBounds(250,650, 300,40);
         learn1(btn1);
@@ -50,8 +46,15 @@ public class LearnChessWindow extends JFrame {
         learn4(btn4);
         add(btn4);
 
+        // btn Employer une stratégie gagnante
+        JButton returnButton = new JButton("Retour");
+        returnButton.setBounds(0,0,200,40);
+        returnButton(returnButton);
+        add(returnButton);
 
-
+        background = new JLabel("",imageIcon,JLabel.HORIZONTAL);
+        background.setBounds(0,0,800,900);
+        add(background);
     }
 
     public void learn1(JButton jButton){
@@ -62,6 +65,7 @@ public class LearnChessWindow extends JFrame {
 
                 try {
                     new FirstLearningWindow().setVisible(true);
+                    dispose();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -75,6 +79,7 @@ public class LearnChessWindow extends JFrame {
             {
                 try {
                     new SecondLearningWindow().setVisible(true);
+                    dispose();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -91,6 +96,7 @@ public class LearnChessWindow extends JFrame {
 
                 try {
                     new ThirdLearningWindow().setVisible(true);
+                    dispose();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -106,9 +112,21 @@ public class LearnChessWindow extends JFrame {
             {
                 try {
                     new FourthLearningWindow().setVisible(true);
+                    dispose();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
+            }
+        });
+    }
+
+    public void returnButton(JButton jButton){
+        jButton.addActionListener( new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                new MainWindow().setVisible(true);
+                dispose();
             }
         });
     }
