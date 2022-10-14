@@ -4,6 +4,7 @@ import chess.ChessGame;
 import chess.Movement.AttackCheckMovement;
 import chess.Movement.AttackMovement;
 import chess.Movement.Movement;
+import chess.board.BoardGame;
 import chess.chessPiece.*;
 import org.junit.jupiter.api.Test;
 
@@ -167,12 +168,11 @@ public class CalculLegalMovementRookTest {
         boardGame.getBoard().put(57, rook2);
         boardGame.getBoard().put(24, enemyKing);
         boardGame.getBoard().put(0, rook);
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
         ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(24).findLegalMovements(boardGame, true);AttackCheckMovement attackCheckMovement = null;
-        ArrayList<Integer> actualPositions = new ArrayList<>();
-        for (Movement movement : actualMovements) {
-            actualPositions.add(movement.getFuturePosition());
-        }
-        assertTrue(actualPositions.isEmpty());
+        assertTrue(actualMovements.isEmpty());
     }
     @Test
     void testLegalCheckmateOccupiedPositionMovement() {
@@ -187,12 +187,11 @@ public class CalculLegalMovementRookTest {
         boardGame.getBoard().put(0, rook);
         boardGame.getBoard().put(49, pawn);
         boardGame.moveChessPiece(rook2,pawn,49,true);
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
         ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(24).findLegalMovements(boardGame, true);AttackCheckMovement attackCheckMovement = null;
-        ArrayList<Integer> actualPositions = new ArrayList<>();
-        for (Movement movement : actualMovements) {
-            actualPositions.add(movement.getFuturePosition());
-        }
-        assertTrue(actualPositions.isEmpty());
+        assertTrue(actualMovements.isEmpty());
     }
 
 

@@ -3,6 +3,7 @@ package chess.board;
 import chess.ChessGame;
 import chess.Movement.AttackMovement;
 import chess.Movement.Movement;
+import chess.board.BoardGame;
 import chess.chessPiece.*;
 import org.junit.jupiter.api.Test;
 
@@ -112,6 +113,9 @@ public class CalculLegalMovementKingTest {
         boardGame.getBoard().put(26, queen);
         boardGame.getBoard().put(16, enemyKing);
         boardGame.getBoard().put(8, king);
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
         ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(16).findLegalMovements(boardGame, true);
         assertTrue(actualMovements.isEmpty());
     }
@@ -131,7 +135,9 @@ public class CalculLegalMovementKingTest {
         boardGame.getBoard().put(26, queen);
         boardGame.getBoard().put(8,pawn);
         boardGame.moveChessPiece(king,pawn,8,true);
-
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
         ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(16).findLegalMovements(boardGame, true);
         assertTrue(actualMovements.isEmpty());
 

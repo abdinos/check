@@ -3,6 +3,8 @@ package chess.board;
 import chess.ChessGame;
 import chess.Movement.AttackMovement;
 import chess.Movement.Movement;
+import chess.Movement.SpecialPawnMovement;
+import chess.board.BoardGame;
 import chess.chessPiece.*;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +19,22 @@ public class CalculLegalMovementPawnTest {
     BoardGame boardGame;
 
     @Test
+    void testLegalNormalFreeMovement1Case() {
+        boardGame = new BoardGame(chessGame);
+        boardGame.createBoard();
+        boardGame.getBoard().put(16, new Pawn(16, PieceColor.BLACK, new CalculLegalMovementPawn()));
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(16).findLegalMovements(boardGame, true);
+        ArrayList<Integer> actualPositions = new ArrayList<>();
+        for (Movement movement : actualMovements) {
+            actualPositions.add(movement.getFuturePosition());
+        }
+        ArrayList<Integer> expectedPositions = new ArrayList<>();
+        expectedPositions.add(24);
+        assertTrue(expectedPositions.size() == actualPositions.size() && actualPositions.containsAll(expectedPositions));
+
+
+    }
+    @Test
     void testLegalNormalFreeMovement() {
         boardGame = new BoardGame(chessGame);
         boardGame.createBoard();
@@ -30,6 +48,26 @@ public class CalculLegalMovementPawnTest {
         expectedPositions.add(11);
         expectedPositions.add(19);
         assertTrue(expectedPositions.size() == actualPositions.size() && actualPositions.containsAll(expectedPositions));
+
+
+    }
+    @Test
+    void testLegalMovementEnPassant() {
+        boardGame = new BoardGame(chessGame);
+        boardGame.createBoard();
+        boardGame.getBoard().put(35, new Pawn(35, PieceColor.BLACK, new CalculLegalMovementPawn()));
+        boardGame.getBoard().put(52, new Pawn(52, PieceColor.WHITE, new CalculLegalMovementPawn()));
+        boardGame.moveChessPiece(boardGame.getChessPieceAtPosition(52),null,36,false);
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(35).findLegalMovements(boardGame, false);
+        AttackMovement specialPawnMovement = null;
+        for (Movement movement : actualMovements) {
+            if (movement.getClass() ==  AttackMovement.class)
+                specialPawnMovement = (AttackMovement) movement;
+        }
+        assertTrue(specialPawnMovement!= null && specialPawnMovement.getFuturePosition()==44);
 
 
     }
@@ -50,46 +88,22 @@ public class CalculLegalMovementPawnTest {
         assertTrue(expectedPositions.size() == actualPositions.size() && actualPositions.containsAll(expectedPositions));
     }
 
-    @Test
-    void testFirstColumnExclusionMovement() {
-        boardGame = new BoardGame(chessGame);
-        boardGame.createBoard();
-        boardGame.getBoard().put(16, new King(16, PieceColor.BLACK, new CalculLegalMovementKing()));
-        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(16).findLegalMovements(boardGame, true);
-        ArrayList<Integer> actualPositions = new ArrayList<>();
-        for (Movement movement : actualMovements) {
-            actualPositions.add(movement.getFuturePosition());
-        }
-        assertFalse(actualPositions.contains(15) || actualPositions.contains(7)|| actualPositions.contains(23));
-    }
 
-    @Test
-    void testEighthColumnExclusionMovement() {
-        boardGame = new BoardGame(chessGame);
-        boardGame.createBoard();
-        boardGame.getBoard().put(23, new King(23, PieceColor.BLACK, new CalculLegalMovementKing()));
-        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(23).findLegalMovements(boardGame, true);
-        ArrayList<Integer> actualPositions = new ArrayList<>();
-        for (Movement movement : actualMovements) {
-            actualPositions.add(movement.getFuturePosition());
-        }
-        assertFalse(actualPositions.contains(32) || actualPositions.contains(24) || actualPositions.contains(16));
-    }
 
     @Test
     void testLegalNormalEnemyOccupiedPositionMovement() {
         boardGame = new BoardGame(chessGame);
         boardGame.createBoard();
-        ChessPiece enemyWhitePawn = new Pawn(11, PieceColor.WHITE, new CalculLegalMovementPawn());
-        boardGame.getBoard().put(3, new King(3, PieceColor.BLACK, new CalculLegalMovementKing()));
-        boardGame.getBoard().put(11, enemyWhitePawn);
-        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(3).findLegalMovements(boardGame, true);
+        ChessPiece enemyWhitePawn = new Pawn(20, PieceColor.WHITE, new CalculLegalMovementPawn());
+        boardGame.getBoard().put(11, new Pawn(11, PieceColor.BLACK, new CalculLegalMovementPawn()));
+        boardGame.getBoard().put(20, enemyWhitePawn);
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(11).findLegalMovements(boardGame, true);
         AttackMovement attackMovement = null;
         for (Movement movement : actualMovements) {
             if (movement.getClass() == AttackMovement.class)
                 attackMovement = (AttackMovement) movement;
         }
-        assertTrue(attackMovement != null && attackMovement.getFuturePosition() == 11);
+        assertTrue(attackMovement != null && attackMovement.getFuturePosition() == 20);
 
 
     }
@@ -100,12 +114,15 @@ public class CalculLegalMovementPawnTest {
         boardGame.createBoard();
         ChessPiece queen = new Queen(26, PieceColor.BLACK, new CalculLegalMovementQueen());
         ChessPiece enemyKing = new King(16, PieceColor.WHITE, new CalculLegalMovementKing());
-        ChessPiece king = new King(8, PieceColor.BLACK, new CalculLegalMovementKing());
+        ChessPiece pawn = new Pawn(9, PieceColor.BLACK, new CalculLegalMovementPawn());
         ChessPiece bishop = new Bishop(2, PieceColor.BLACK, new CalculLegalMovementBishop());
-        boardGame.getBoard().put(2,bishop );
+        boardGame.getBoard().put(9,pawn);
+        boardGame.getBoard().put(2,bishop);
         boardGame.getBoard().put(26, queen);
         boardGame.getBoard().put(16, enemyKing);
-        boardGame.getBoard().put(8, king);
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
         ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(16).findLegalMovements(boardGame, true);
         assertTrue(actualMovements.isEmpty());
     }
@@ -114,19 +131,22 @@ public class CalculLegalMovementPawnTest {
     void testLegalCheckmateOccupiedPositionMovement() {
         boardGame = new BoardGame(chessGame);
         boardGame.createBoard();
-        ChessPiece enemyKing = new King(16, PieceColor.WHITE, new CalculLegalMovementKing());
-        ChessPiece king = new King(0, PieceColor.BLACK, new CalculLegalMovementKing());
-        ChessPiece queen = new Queen(26, PieceColor.BLACK, new CalculLegalMovementQueen());
-        ChessPiece pawn = new Pawn(8,PieceColor.WHITE,new CalculLegalMovementPawn());
-        ChessPiece bishop = new Bishop(2, PieceColor.BLACK, new CalculLegalMovementBishop());
-        boardGame.getBoard().put(2,bishop );
-        boardGame.getBoard().put(16, enemyKing);
-        boardGame.getBoard().put(0, king);
-        boardGame.getBoard().put(26, queen);
-        boardGame.getBoard().put(8,pawn);
-        boardGame.moveChessPiece(king,pawn,8,true);
+        ChessPiece enemyKing = new King(24, PieceColor.WHITE, new CalculLegalMovementKing());
+        ChessPiece pawnenemy = new King(17, PieceColor.BLACK, new CalculLegalMovementPawn());
+        ChessPiece queen = new Queen(34, PieceColor.BLACK, new CalculLegalMovementQueen());
+        ChessPiece pawn = new Pawn(10,PieceColor.WHITE,new CalculLegalMovementPawn());
+        ChessPiece bishop = new Bishop(3, PieceColor.BLACK, new CalculLegalMovementBishop());
+        boardGame.getBoard().put(3,bishop );
+        boardGame.getBoard().put(24, enemyKing);
+        boardGame.getBoard().put(17,pawnenemy);
+        boardGame.getBoard().put(34, queen);
+        boardGame.getBoard().put(10,pawn);
+        boardGame.moveChessPiece(pawn,pawnenemy,17,false);
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
 
-        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(16).findLegalMovements(boardGame, true);
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(24).findLegalMovements(boardGame, true);
         assertTrue(actualMovements.isEmpty());
 
 
@@ -138,15 +158,15 @@ public class CalculLegalMovementPawnTest {
         boardGame.createBoard();
 
         ChessPiece enemyKing = null;
-        boardGame.getBoard().put(2, new King(2, PieceColor.BLACK, new CalculLegalMovementKing()));
-        boardGame.getBoard().put(3, enemyKing);
-        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(2).findLegalMovements(boardGame, false);
+        boardGame.getBoard().put(11, new Pawn(11, PieceColor.BLACK, new CalculLegalMovementPawn()));
+        boardGame.getBoard().put(19, enemyKing);
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(11).findLegalMovements(boardGame, false);
         ArrayList<Integer> actualPositions = new ArrayList<>();
         for (Movement movement : actualMovements) {
             actualPositions.add(movement.getFuturePosition());
         }
 
-        assertTrue(actualPositions.contains(3));
+        assertTrue(actualPositions.contains(19));
 
 
     }
@@ -155,16 +175,16 @@ public class CalculLegalMovementPawnTest {
     void testLegalNormalEnemyOccupiedPositionMovementWhite() {
         boardGame = new BoardGame(chessGame);
         boardGame.createBoard();
-        ChessPiece enemyWhitePawn = new Pawn(50, PieceColor.BLACK, new CalculLegalMovementPawn());
-        boardGame.getBoard().put(58, new King(58, PieceColor.WHITE, new CalculLegalMovementKing()));
-        boardGame.getBoard().put(50, enemyWhitePawn);
-        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(58).findLegalMovements(boardGame, true);
+        ChessPiece enemyPawn = new Pawn(33, PieceColor.BLACK, new CalculLegalMovementPawn());
+        boardGame.getBoard().put(42, new Pawn(42, PieceColor.WHITE, new CalculLegalMovementPawn()));
+        boardGame.getBoard().put(33, enemyPawn);
+        ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(42).findLegalMovements(boardGame, true);
         AttackMovement attackMovement = null;
         for (Movement movement : actualMovements) {
             if (movement.getClass() == AttackMovement.class)
                 attackMovement = (AttackMovement) movement;
         }
-        assertTrue(attackMovement != null && attackMovement.getFuturePosition() == 50);
+        assertTrue(attackMovement != null && attackMovement.getFuturePosition() == 33);
 
 
     }

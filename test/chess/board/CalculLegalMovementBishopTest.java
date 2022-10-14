@@ -4,6 +4,7 @@ import chess.ChessGame;
 import chess.Movement.AttackCheckMovement;
 import chess.Movement.AttackMovement;
 import chess.Movement.Movement;
+import chess.board.BoardGame;
 import chess.chessPiece.*;
 import org.junit.jupiter.api.Test;
 
@@ -106,16 +107,24 @@ public class CalculLegalMovementBishopTest {
     void testLegalCheckmateFreePositionMovement() {
         boardGame = new BoardGame(chessGame);
         boardGame.createBoard();
-        ChessPiece queen = new Queen(26, PieceColor.BLACK, new CalculLegalMovementPawn());
+        ChessPiece queen = new Queen(26, PieceColor.BLACK, new CalculLegalMovementQueen());
         ChessPiece enemyKing = new King(16, PieceColor.WHITE, new CalculLegalMovementKing());
         ChessPiece knight = new Knight(18, PieceColor.BLACK, new CalculLegalMovementKnight());
         ChessPiece rook = new Rook(57, PieceColor.BLACK, new CalculLegalMovementRook());
-        boardGame.getBoard().put(11, new Bishop(11, PieceColor.BLACK, new CalculLegalMovementBishop()));
+        boardGame.getBoard().put(2, new Bishop(2, PieceColor.BLACK, new CalculLegalMovementBishop()));
         boardGame.getBoard().put(26, queen);
         boardGame.getBoard().put(16, enemyKing);
         boardGame.getBoard().put(18, knight);
         boardGame.getBoard().put(57, rook);
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
         ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(16).findLegalMovements(boardGame, true);
+       /* ArrayList<Integer> actualPositions = new ArrayList<>();
+        for (Movement movement : actualMovements) {
+            actualPositions.add(movement.getFuturePosition());
+            System.out.println(movement.getFuturePosition());
+        }*/
         assertTrue(actualMovements.isEmpty());
     }
 
@@ -136,7 +145,9 @@ public class CalculLegalMovementBishopTest {
         boardGame.getBoard().put(32, queen);
         boardGame.getBoard().put(9,pawn);
         boardGame.moveChessPiece(bishop,pawn,9,true);
-
+        boardGame.findAllActiveChessPieces(false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.BLACK,true,false);
+        boardGame.updateChessPiecesLegalMovements(PieceColor.WHITE,true,false);
         ArrayList<Movement> actualMovements = (ArrayList<Movement>) boardGame.getChessPieceAtPosition(16).findLegalMovements(boardGame, true);
         assertTrue(actualMovements.isEmpty());
 
