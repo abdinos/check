@@ -1,3 +1,4 @@
+## PROJET GL M2 IDL
 # Description du projet 
 Le jeu d'échecs, ou les échecs, est un jeu de société opposant deux joueurs de part et d'autre d'un tablier appelé « échiquier » composé de soixante-quatre cases, 32 claires et 32 sombres nommées les cases blanches et les cases noires. <br/>
 Le jeu consiste à mettre l'autre joueur échec et mat, c'est-à-dire que son roi est en prise et qu'il n'y a aucun coup possible pour l'en sortir.<br/>
@@ -34,10 +35,10 @@ echo $JAVA_HOME </strong> </li>
 
 # Réalisé par :
 <ul>
- <li>Loic FERY : <a> https://github.com/loicfery </a> </li>
- <li>Yanis AMROUCHE <a>https://github.com/yanisamrouche </a></li>
- <li>Farouk AGUENI <a>https://github.com/agueni </a> (a19028598) </li>
- <li>Abdessettar OULD-CHIBANI <a>https://github.com/abdinos </a> </li>
+ <li>Loic FERY : <a href="https://github.com/loicfery"> https://github.com/loicfery </a> </li>
+ <li>Yanis AMROUCHE <a href="https://github.com/yanisamrouche">https://github.com/yanisamrouche </a></li>
+ <li>Farouk AGUENI <a href="https://github.com/agueni">https://github.com/agueni </a> (a19028598) </li>
+ <li>Abdessettar OULD-CHIBANI <a href="https://github.com/abdinos">https://github.com/abdinos </a> </li>
 </ul>
 
 Enjoy :)
