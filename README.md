@@ -29,9 +29,12 @@ echo $JAVA_HOME </strong> </li>
 
 ## Pour lancer le projet
 <ul>
- <li> git clone https://github.com/abdinos/chess.git </li>
- <li> </li>
+ <li> Lancer la commande : java -jar chess.jar </li>
 </ul>
+
+## Git
+<u>
+ <li> git clone https://github.com/abdinos/chess.git </li></u>
 
 ## Réalisé par :
 <ul>
