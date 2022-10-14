@@ -115,7 +115,6 @@ public class BoardGame{
             createBoard();
         }
         // Black chess piece
-        /**
         board.put(0, new Rook(0, PieceColor.BLACK, new CalculLegalMovementRook()));
         board.put(1, new Knight(1, PieceColor.BLACK, new CalculLegalMovementKnight()));
         board.put(2, new Bishop(2, PieceColor.BLACK, new CalculLegalMovementBishop()));
@@ -129,15 +128,12 @@ public class BoardGame{
         board.put(10, new Pawn(10, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(11, new Pawn(11, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(12, new Pawn(12, PieceColor.BLACK, new CalculLegalMovementPawn()));
-        board.put(12, new Pawn(12, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(13, new Pawn(13, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(14, new Pawn(14, PieceColor.BLACK, new CalculLegalMovementPawn()));
-         **/
-        board.put(17, new Pawn(17, PieceColor.BLACK, new CalculLegalMovementPawn()));//15
+        board.put(15, new Pawn(15, PieceColor.BLACK, new CalculLegalMovementPawn()));
 
         // White chess piece
-        board.put(48, new Pawn(48, PieceColor.WHITE, new CalculLegalMovementPawn()));//48
-        /**
+        board.put(48, new Pawn(48, PieceColor.WHITE, new CalculLegalMovementPawn()));
         board.put(49, new Pawn(49, PieceColor.WHITE, new CalculLegalMovementPawn()));
         board.put(50, new Pawn(50, PieceColor.WHITE, new CalculLegalMovementPawn()));
         board.put(51, new Pawn(51, PieceColor.WHITE, new CalculLegalMovementPawn()));
@@ -153,7 +149,6 @@ public class BoardGame{
         board.put(61, new Bishop(61, PieceColor.WHITE, new CalculLegalMovementBishop()));
         board.put(62, new Knight(62, PieceColor.WHITE, new CalculLegalMovementKnight()));
         board.put(63, new Rook(63, PieceColor.WHITE, new CalculLegalMovementRook()));
-         **/
 
         blackChessPiecesAlive = findActiveChessPieces(PieceColor.BLACK);
         whiteChessPiecesAlive = findActiveChessPieces(PieceColor.WHITE);
@@ -255,6 +250,15 @@ public class BoardGame{
 
         if(!isSimulate) {
             chessPieceToMove.pieceMoved();
+        }
+    }
+
+    /**
+     * Kill a pawn after the use of the special move "en passant"
+     */
+    public void killPawnAfterSpecialMove(Movement movement){
+        if(movement.isMoveSpecialPawn() && movement.isAttacking() && movement.getChessPieceAttacked() != null){
+            board.put(movement.getChessPieceAttacked().getPiecePosition(), null);
         }
     }
 

@@ -100,16 +100,23 @@ public class ChessGame {
             ChessPiece chessPieceToMove = movement.getChessPieceMoved();
             int futurePosition = movement.getFuturePosition();
             boardGame.moveChessPiece(chessPieceToMove,null, futurePosition,false);
+            System.out.println("move execute : " + movement.getClass() + " : " + movement.isMoveSpecialPawn());
+
 
             if (movement.isPromoting()) {
+                System.out.println("promotion");
                 boardGame.promotingPawn(chessPieceToMove, movement.getChessPiecePromoted(), futurePosition);
             }
-            else  if(movement.isMoveSpecialPawn() && chessPieceToMove instanceof Pawn) {
+            else if(movement.isMoveSpecialPawn() && chessPieceToMove instanceof Pawn) {
+                System.out.println("test en passant : " + chessPieceToMove.chessPieceToString());
                 if (!movement.isAttacking()) {
+                    System.out.println("possible coup en passant sur lui");
                     boardGame.setChessPieceSpecialMove(chessPieceToMove);
                     ((Pawn)chessPieceToMove).setMoveEnPassantPossible();
                 }
                 else{
+                    System.out.println("attack");
+                    boardGame.killPawnAfterSpecialMove(movement);
                     boardGame.setChessPieceSpecialMove(null);
                 }
             }

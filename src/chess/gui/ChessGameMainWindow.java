@@ -272,8 +272,13 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
                 caseColorChessPieceSelectedMovements = new HashMap<>();
                 for (Movement movement : chessPieceSelectedMovements) {
                     int futurePosition = movement.getFuturePosition();
-                    caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
-                    labels.get(futurePosition).setBackground(Color.BLUE);
+                    if(labels.containsKey(futurePosition)) {
+                        caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
+                        labels.get(futurePosition).setBackground(Color.BLUE);
+                    }
+                    else{
+                        System.out.println("problemee");
+                    }
                 }
             }
         }

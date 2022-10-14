@@ -10,6 +10,6 @@ public class SpecialPawnMovement extends Movement{
      * can be attacked by another pawn with the "en passant" special move by the enemy player
      */
     public SpecialPawnMovement(final BoardGame boardGame, final ChessPiece chessPieceMoved, final int futurePosition, final ChessPiece chessPiecePromoted){
-        super(boardGame,chessPieceMoved, null, chessPiecePromoted, futurePosition, false, true, false, true, false);
+        super(boardGame,chessPieceMoved, null, chessPiecePromoted, futurePosition, false, false, false, true, false);
     }
 }
