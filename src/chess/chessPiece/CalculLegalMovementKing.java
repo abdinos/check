@@ -31,7 +31,7 @@ public class CalculLegalMovementKing implements InterfaceCalculLegalMovementChes
         for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION){
             int futurePosition = chessPiece.getPiecePosition() + vectorPosition;
 
-            if(BoardGame.isValidPosition(chessPiece.getPiecePosition())){
+            if(BoardGame.isValidPosition(futurePosition)){
                 if(isFirstColumnExclusionPosition(chessPiece.getPiecePosition(), vectorPosition) ||
                         isHeightColumnExclusionPosition(chessPiece.getPiecePosition(), vectorPosition)){
                     continue;
