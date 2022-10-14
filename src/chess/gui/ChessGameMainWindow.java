@@ -44,12 +44,15 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
 
     private PieceColor currentPieceColor;
 
+    private boolean isGameEnded;
+
     public ChessGameMainWindow(ChessGame chessGame) {
         this.chessGame = chessGame;
         currentPieceColor = chessGame.getPlayers().get(chessGame.getIndexCurrentPlayer()).getPlayerColor();
         labels = new HashMap<>();
         chessPieceSelected = null;
         chessPieceSelectedMovements = null;
+        isGameEnded = false;
 
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -235,6 +238,10 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     }
 
     public void mouseClicked(MouseEvent e){
+        if(isGameEnded){
+            return;
+        }
+
         int xCase = (e.getX()/80)-1;
         int yCase = (e.getY()/80);
 
@@ -357,5 +364,22 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     public void setCurrentPieceColor(PieceColor pieceColor){
         currentPieceColor = pieceColor;
         labelInformationCurrentPlayer.setText("C'est au tour du joueur " + pieceColor);
+    }
+
+    public void endGame(){
+        isGameEnded = true;
+        String playerColor = "";
+        if(currentPieceColor.isWhite()){
+            playerColor = "Blanc";
+        }
+        else{
+            playerColor = "Noir";
+        }
+        labelInformationCurrentPlayer.setText("Le joueur " + playerColor + " gagne la partie");
+    }
+
+    public void draw(){
+        isGameEnded = true;
+        labelInformationCurrentPlayer.setText("Egalité !");
     }
 }

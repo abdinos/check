@@ -132,9 +132,11 @@ public class ChessGame {
             boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor(),true);
 
             if(boardGame.isDraw()){
+                chessGameMainWindow.draw();
                 isDrawn = true;
             }
             else if (boardGame.isGameEnded(currentPlayer.getPlayerColor(), enemyPlayer)) {
+                    chessGameMainWindow.endGame();
                     isEndGame = true;
                 }
             else{
