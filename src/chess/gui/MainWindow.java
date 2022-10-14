@@ -30,25 +30,25 @@ public class MainWindow extends JFrame {
         // btn JOUER
         //setLayout( new GridBagLayout() );
         JButton playBtn = new JButton("JOUER");
-        playBtn.setBounds(320,100, 200,40);
+        playBtn.setBounds(300,700, 200,40);
         play(playBtn);
         add(playBtn);
 
         // btn COMMENT JOUER
         JButton howBtn = new JButton("COMMENT JOUER");
-        howBtn.setBounds(320,150,200,40);
+        howBtn.setBounds(300,750,200,40);
         howToPlay(howBtn);
         add(howBtn);
 
         // btn QUITTER
         JButton leaveBtn = new JButton("QUITTER");
-        leaveBtn.setBounds(320,200,200,40);
+        leaveBtn.setBounds(300,800,200,40);
         leaveTheGame(leaveBtn);
         add(leaveBtn);
 
         //bg
         JLabel background;
-        ImageIcon imageIcon = new ImageIcon("images/mainbg.jpg");
+        ImageIcon imageIcon = new ImageIcon("images/bg.jpg");
         background = new JLabel("",imageIcon,JLabel.HORIZONTAL);
         background.setBounds(0,0,800,900);
         add(background);
@@ -63,18 +63,11 @@ public class MainWindow extends JFrame {
         {
             public void actionPerformed(ActionEvent e)
             {
-                try {
-                    boardGame = new BoardGame(chessGame);
-                    boardGame.createBoard();
-                    boardGame.initChessPieceOnBoard();
-                    chessWindow = new ChessWindow();
-                    dispose();
-
-                    boardGameGUI = new BoardGameGUI(boardGame.getBoard());
-                }
-                catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                ChessGame chessGame = new ChessGame();
+                chessGame.createPlayers();
+                chessGame.initChessGame();
+                new ChessGameMainWindow(chessGame).createAndShowGUI();
+                dispose();
             }
         });
     }
@@ -83,7 +76,8 @@ public class MainWindow extends JFrame {
         {
             public void actionPerformed(ActionEvent e)
             {
-                //TODO : une fenetre qui montre comment jouer
+                new LearnChessWindow().setVisible(true);
+                dispose();
             }
         });
     }

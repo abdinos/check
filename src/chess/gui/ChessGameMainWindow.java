@@ -14,31 +14,28 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+
 /*
  * LayeredPaneDemo2.java requires
  * images/dukeWaveRed.gif.
  */
 public class ChessGameMainWindow extends JPanel implements ActionListener, MouseListener {
 
-
+    private JLayeredPane layeredPane;
     private final int windowHeight = 700;
     private final int windowWeight = 700;
     private final int NUMBER_OF_LINE = 8;
     private final int NUMBER_OF_COLUMN = 8;
 
     private final String CURRENT_PATH = System.getProperty("user.dir");
-    private JLayeredPane layeredPane;
-    private JLabel kingCheckState;
+
     private JLabel labelInformationCurrentPlayer;
     private final ChessGame chessGame;
     private Map<Integer, JLabel> labels;
     private ChessPiece chessPieceSelected;
     private  Collection<Movement> chessPieceSelectedMovements;
     private Map<Integer, Color> caseColorChessPieceSelectedMovements;
-    private Map<Integer, Color> caseColorChessPieceAfterMovements;
-    private PieceColor currentPieceColor;
-    private boolean isGameEnded;
-
     private Icon white_rook, black_rook;
     private Icon white_knight, black_knight;
     private Icon white_bishop, black_bishop;
@@ -46,7 +43,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     private Icon white_king, black_king;
     private Icon white_pawn, black_pawn;
 
-
+    private PieceColor currentPieceColor;
 
     public ChessGameMainWindow(ChessGame chessGame) {
         this.chessGame = chessGame;
@@ -54,7 +51,6 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         labels = new HashMap<>();
         chessPieceSelected = null;
         chessPieceSelectedMovements = null;
-        isGameEnded = false;
 
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -75,10 +71,10 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
             for(int j = 0; j < NUMBER_OF_COLUMN; j++){
                 Color color;
                 if(isWhite){
-                    color = new Color(102,51,0);
+                    color = Color.ORANGE;
                 }
                 else{
-                    color = new Color(255,204,51);
+                    color = Color.lightGray;
                 }
                 JLabel label = createColoredLabel(color,index);
                 labels.put(index,label);
@@ -102,9 +98,6 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         add(layeredPane);
     }
 
-    /**
-     * Set the Icon with the image saved
-     */
     private void setupImageChessPiece(){
         try {
             white_rook = createImageIcon("/images/white_rook.png");
@@ -130,9 +123,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         }
     }
 
-    /**
-     * Returns an ImageIcon, or null if the path was invalid.
-     */
+    /** Returns an ImageIcon, or null if the path was invalid. */
     private Icon createImageIcon(String path) throws IOException {
         ImageIcon imageIcon = new ImageIcon(CURRENT_PATH + path);
 
@@ -145,9 +136,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         }
     }
 
-    /**
-     * Create and set up a colored label
-     */
+    //Create and set up a colored label.
     private JLabel createColoredLabel(Color color, int position) {
         JLabel label;
         ChessPiece chessPiece = chessGame.getChessPieceAtPosition(position);
@@ -173,9 +162,6 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         return label;
     }
 
-    /**
-     * Create the legend for the board
-     */
     private JLabel createLegendLabel(String text){
         JLabel label = new JLabel(text);
         label.setVerticalAlignment(JLabel.CENTER);
@@ -188,13 +174,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         return label;
     }
 
-    /**
-     * Return the Icon associated to the chess piece
-     */
     public Icon getImageToChessPiece(ChessPiece chessPiece){
-        if(chessPiece == null){
-            return null;
-        }
         switch (chessPiece.getName()){
             case "King":
                 if(chessPiece.getPieceColor().isWhite()){
@@ -233,103 +213,73 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     //Create the control pane for the top of the frame.
     private JPanel createControlPanel() {
         labelInformationCurrentPlayer = new JLabel();
-        labelInformationCurrentPlayer.setVerticalAlignment(JLabel.CENTER);
-        labelInformationCurrentPlayer.setHorizontalAlignment(JLabel.CENTER);
-
-        kingCheckState = new JLabel();
-        kingCheckState.setVerticalAlignment(JLabel.CENTER);
-        kingCheckState.setHorizontalAlignment(JLabel.CENTER);
-
         setCurrentPieceColor(currentPieceColor);
 
         JPanel controls = new JPanel();
-        controls.setLayout(new GridLayout(2,1));
         controls.add(labelInformationCurrentPlayer);
-        controls.add(kingCheckState);
         return controls;
     }
 
     //Make Duke follow the cursor.
-    public void mouseMoved(MouseEvent e) {}
+    public void mouseMoved(MouseEvent e) {
+        /**
+        dukeLabel.setLocation(e.getX()-dukeLabel.getWidth()/2,
+                e.getY()-dukeLabel.getHeight()/2);
+         **/
+    }
 
-    public void mousePressed(MouseEvent e){}
+    public void mousePressed(MouseEvent e){
+
+    }
 
     public void mouseClicked(MouseEvent e){
-        if(isGameEnded){
-            return;
-        }
-
         int xCase = (e.getX()/80)-1;
         int yCase = (e.getY()/80);
 
-        int chessPiecePosition = xCase+(NUMBER_OF_LINE * yCase);
+        int chessPiecePosition = xCase+(8*yCase);
 
         ChessPiece chessPiece = chessGame.getChessPieceAtPosition(chessPiecePosition);
-        boolean isPieceMoved = verifyAndMoveChessPiece(chessPiecePosition);
+        boolean isPieceMoved = false;
+
+        if(chessPieceSelected != null && caseColorChessPieceSelectedMovements != null){
+            for (Movement movement : chessPieceSelectedMovements) {
+                if (movement.getFuturePosition() == chessPiecePosition) { // The chess piece is moved
+                    updateChessPiece(movement.getFuturePosition(), chessPieceSelected.getPiecePosition(), chessPieceSelected);
+                    chessGame.executeChessPieceMovement(movement);
+                    chessPieceSelected = null;
+                    chessPieceSelectedMovements = null;
+                    isPieceMoved = true;
+                    resetCaseColor();
+                    break;
+                }
+            }
+        }
 
         if(!isPieceMoved && caseColorChessPieceSelectedMovements != null){
-            resetCaseColor(caseColorChessPieceSelectedMovements, false);
+            resetCaseColor();
             chessPieceSelected = null;
             chessPieceSelectedMovements = null;
         }
 
         if (chessPiece != null && chessPiece.getPieceColor() == currentPieceColor) {
-            chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiece);
+            chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiecePosition, chessPiece.getPieceColor());
             if (chessPieceSelectedMovements != null) {
                 chessPieceSelected = chessPiece;
                 caseColorChessPieceSelectedMovements = new HashMap<>();
+                System.out.println("mouvement list : ");
                 for (Movement movement : chessPieceSelectedMovements) {
+                    System.out.println(movement.getChessPieceMoved().chessPieceToString() + " to " + movement.getFuturePosition());
                     int futurePosition = movement.getFuturePosition();
-                    if(labels.containsKey(futurePosition)) {
-                        caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
-                        labels.get(futurePosition).setBackground(Color.BLUE);
-                    }
+                    caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
+                    labels.get(futurePosition).setBackground(Color.BLUE);
                 }
             }
         }
     }
 
-    public boolean verifyAndMoveChessPiece(int chessPiecePosition){
-        if(chessPieceSelected != null && caseColorChessPieceSelectedMovements != null){
-            for (Movement movement : chessPieceSelectedMovements) {
-                if (movement.getFuturePosition() == chessPiecePosition) { // The chess piece is moved
-                    resetCaseColor(caseColorChessPieceSelectedMovements, false);
-
-                    if(caseColorChessPieceAfterMovements != null){
-                        resetCaseColor(caseColorChessPieceAfterMovements, true);
-                    }
-
-                    int futurePositionChessPieceMoved = movement.getChessPieceMoved().getPiecePosition();
-
-                    caseColorChessPieceAfterMovements = new HashMap<>();
-                    caseColorChessPieceAfterMovements.put(movement.getFuturePosition(),labels.get(movement.getFuturePosition()).getBackground());
-                    caseColorChessPieceAfterMovements.put(futurePositionChessPieceMoved, labels.get(futurePositionChessPieceMoved).getBackground());
-
-                    labels.get(movement.getFuturePosition()).setBackground(Color.red);
-                    labels.get(futurePositionChessPieceMoved).setBackground(Color.red);
-
-                    chessGame.executeChessPieceMovement(movement);
-                    update();
-
-                    chessPieceSelected = null;
-                    chessPieceSelectedMovements = null;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void resetCaseColor(Map<Integer, Color> map, boolean resetRedCases){
-        for(Map.Entry<Integer, Color> entry : map.entrySet()){
-            if(!resetRedCases) {
-                if (labels.get(entry.getKey()).getBackground() != Color.red) {
-                    labels.get(entry.getKey()).setBackground(entry.getValue());
-                }
-            }
-            else{
-                labels.get(entry.getKey()).setBackground(entry.getValue());
-            }
+    private void resetCaseColor(){
+        for(Map.Entry<Integer, Color> entry : caseColorChessPieceSelectedMovements.entrySet()){
+            labels.get(entry.getKey()).setBackground(entry.getValue());
         }
     }
 
@@ -345,24 +295,49 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
 
     }
 
-    private void update(){
-        for(int i = 0; i < (NUMBER_OF_COLUMN * NUMBER_OF_LINE); i++){
-            ChessPiece chessPiece = chessGame.getChessPieceAtPosition(i);
-            Icon icon = getImageToChessPiece(chessPiece);
-            labels.get(i).setIcon(icon);
+    public void mouseDragged(MouseEvent e) {} //do nothing
+
+    public void updateChessPiece(int newPosition, int oldPosition, ChessPiece chessPiece){
+        Icon icon = getImageToChessPiece(chessPiece);
+        if(icon != null){
+            labels.get(newPosition).setIcon(icon);
+            labels.get(oldPosition).setIcon(null);
         }
     }
 
+    //Handle user interaction with the check box and combo box.
     public void actionPerformed(ActionEvent e) {
+        /**
+        String cmd = e.getActionCommand();
+
+        if (ON_TOP_COMMAND.equals(cmd)) {
+            if (onTop.isSelected())
+                layeredPane.moveToFront(dukeLabel);
+            else
+                layeredPane.moveToBack(dukeLabel);
+
+        } else if (LAYER_COMMAND.equals(cmd)) {
+            int position = onTop.isSelected() ? 0 : 1;
+            layeredPane.setLayer(dukeLabel,
+                    layerList.getSelectedIndex(),
+                    position);
+        }
+         **/
     }
 
     /**
-     * Create the play menu and show it.
+     * Create the GUI and show it.  For thread safety,
+     * this method should be invoked from the
+     * event-dispatching thread.
      */
-    public void createAndShoPlayMenu() {
+    public void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("Partie d\'échec");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame frame = new JFrame("LayeredPaneDemo2");
+        frame.setSize(800,1200); // dimension de l'interface 1200x800
+        frame.setResizable(false); // la fenetre ne sera pas redimensionnable par l'utilisateur
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE); // fermeture de l'interface une fois que l'utilisateur click sur (X)
+        frame.setLayout(null); // pour chacun des éléments graphiques il faudra donner les coord. (x,y) & la largeur et la hauteur
+        frame.setLocationRelativeTo(null); // on centre notre fenetre
 
         //Create and set up the content pane.
         JComponent newContentPane = this;
@@ -378,36 +353,6 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
 
     public void setCurrentPieceColor(PieceColor pieceColor){
         currentPieceColor = pieceColor;
-        labelInformationCurrentPlayer.setText("C'est au tour du joueur " + pieceColor);
-    }
-
-    public void endGame(){
-        isGameEnded = true;
-        String playerColor = "";
-        if(currentPieceColor.isWhite()){
-            playerColor = "Blanc";
-        }
-        else{
-            playerColor = "Noir";
-        }
-        labelInformationCurrentPlayer.setText("Le joueur " + playerColor + " gagne la partie");
-    }
-
-    public void draw(){
-        isGameEnded = true;
-        labelInformationCurrentPlayer.setText("Egalité !");
-    }
-
-    public void kingCheckState(boolean isKingCheckState){
-        if(isKingCheckState){
-            String playerColor = "";
-            if(currentPieceColor.isWhite()){
-                playerColor = "Blanc";
-            }
-            else{
-                playerColor = "Noir";
-            }
-            kingCheckState.setText("Le roi du joueur " + playerColor + " est en échec");
-        }
+        labelInformationCurrentPlayer.setText("C'est au tour de " + pieceColor);
     }
 }

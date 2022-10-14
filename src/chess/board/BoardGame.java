@@ -48,31 +48,23 @@ public class BoardGame{
      */
     private Collection<ChessPiece> blackChessPiecesAlive;
 
-    private Collection<ChessPiece> blackChessPiecesAliveSimulation;
-
     /**
      * The collection of white chess pieces alive
      */
     private Collection<ChessPiece> whiteChessPiecesAlive;
 
-    private Collection<ChessPiece> whiteChessPiecesAliveSimulation;
-
     /**
      * The Map with all legal movements for all white chess pieces alive
      */
     protected Map<ChessPiece,Collection<Movement>> whiteChessPieceLegalMovement;
-    protected Map<ChessPiece,Collection<Movement>> whiteChessPieceLegalMovementSimulation;
-
 
     /**
      * The Map with all legal movements for all black chess pieces alive
      */
     protected Map<ChessPiece,Collection<Movement>> blackChessPieceLegalMovement;
 
-    protected Map<ChessPiece,Collection<Movement>> blackChessPieceLegalMovementSimulation;
-
     /**
-     * The interface to calculate if the king is in check state after a movement by another chess piece
+     * The interface to calculate if the king is in check state after a movement by an other chess piece
      */
     private InterfaceCalculKingCheck calculKingCheck;
 
@@ -85,7 +77,6 @@ public class BoardGame{
      * The pawn save after the special move "en passant" used
      */
     private ChessPiece chessPieceSpecialMove = null;
-
 
     /**
      * Create and return a table to indicate all case in a column given in parameter
@@ -126,8 +117,8 @@ public class BoardGame{
         board.put(0, new Rook(0, PieceColor.BLACK, new CalculLegalMovementRook()));
         board.put(1, new Knight(1, PieceColor.BLACK, new CalculLegalMovementKnight()));
         board.put(2, new Bishop(2, PieceColor.BLACK, new CalculLegalMovementBishop()));
-        board.put(3, new King(3, PieceColor.BLACK, new CalculLegalMovementKing()));
-        board.put(4, new Queen(4, PieceColor.BLACK, new CalculLegalMovementQueen()));
+        board.put(3, new Queen(3, PieceColor.BLACK, new CalculLegalMovementQueen()));
+        board.put(4, new King(4, PieceColor.BLACK, new CalculLegalMovementKing()));
         board.put(5, new Bishop(5, PieceColor.BLACK, new CalculLegalMovementBishop()));
         board.put(6, new Knight(6, PieceColor.BLACK, new CalculLegalMovementKnight()));
         board.put(7, new Rook(7, PieceColor.BLACK, new CalculLegalMovementRook()));
@@ -135,6 +126,7 @@ public class BoardGame{
         board.put(9, new Pawn(9, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(10, new Pawn(10, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(11, new Pawn(11, PieceColor.BLACK, new CalculLegalMovementPawn()));
+        board.put(12, new Pawn(12, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(12, new Pawn(12, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(13, new Pawn(13, PieceColor.BLACK, new CalculLegalMovementPawn()));
         board.put(14, new Pawn(14, PieceColor.BLACK, new CalculLegalMovementPawn()));
@@ -158,7 +150,8 @@ public class BoardGame{
         board.put(62, new Knight(62, PieceColor.WHITE, new CalculLegalMovementKnight()));
         board.put(63, new Rook(63, PieceColor.WHITE, new CalculLegalMovementRook()));
 
-        findAllActiveChessPieces(false);
+        blackChessPiecesAlive = findActiveChessPieces(PieceColor.BLACK);
+        whiteChessPiecesAlive = findActiveChessPieces(PieceColor.WHITE);
         whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPiecesAlive, true);
         blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPiecesAlive, true);
     }
@@ -253,19 +246,10 @@ public class BoardGame{
     public void moveChessPiece(ChessPiece chessPieceToMove, ChessPiece chessPieceAtFuturePosition, int futurePosition, boolean isSimulate){
         board.put(chessPieceToMove.getPiecePosition(),  chessPieceAtFuturePosition);
         chessPieceToMove.setPiecePosition(futurePosition);
-        board.put(futurePosition, chessPieceToMove);
+        board.put(chessPieceToMove.getPiecePosition(), chessPieceToMove);
 
         if(!isSimulate) {
             chessPieceToMove.pieceMoved();
-        }
-    }
-
-    /**
-     * Kill a pawn after the use of the special move "en passant"
-     */
-    public void killPawnAfterSpecialMove(Movement movement){
-        if(movement.isMoveSpecialPawn() && movement.isAttacking() && movement.getChessPieceAttacked() != null){
-            board.put(movement.getChessPieceAttacked().getPiecePosition(), null);
         }
     }
 
@@ -332,36 +316,20 @@ public class BoardGame{
     /**
      * Find all active chess pieces
      */
-    public void findAllActiveChessPieces(boolean isSimulating){
-        if(!isSimulating) {
-            blackChessPiecesAlive = findActiveChessPieces(PieceColor.BLACK);
-            whiteChessPiecesAlive = findActiveChessPieces(PieceColor.WHITE);
-        }
-        else{
-            blackChessPiecesAliveSimulation = findActiveChessPieces(PieceColor.BLACK);
-            whiteChessPiecesAliveSimulation = findActiveChessPieces(PieceColor.WHITE);
-        }
+    public void findAllActiveChessPieces(){
+        blackChessPiecesAlive = findActiveChessPieces(PieceColor.BLACK);
+        whiteChessPiecesAlive = findActiveChessPieces(PieceColor.WHITE);
     }
 
     /**
      * Update chess pieces legal movements for a piece color
      */
-    public void updateChessPiecesLegalMovements(PieceColor pieceColor, boolean isCheckKing, boolean isSimulating){
+    public void updateChessPiecesLegalMovements(PieceColor pieceColor, boolean isCheckKing){
         if(pieceColor.isWhite()){
-            if(isSimulating){
-                whiteChessPieceLegalMovementSimulation = findChessPieceLegalMovements(whiteChessPiecesAlive, isCheckKing);
-            }
-            else {
-                whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPiecesAlive, isCheckKing);
-            }
+            whiteChessPieceLegalMovement = findChessPieceLegalMovements(whiteChessPiecesAlive, isCheckKing);
         }
         else{
-            if(isSimulating){
-                blackChessPieceLegalMovementSimulation = findChessPieceLegalMovements(blackChessPiecesAlive, isCheckKing);
-            }
-            else {
-                blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPiecesAlive, isCheckKing);
-            }
+            blackChessPieceLegalMovement = findChessPieceLegalMovements(blackChessPiecesAlive, isCheckKing);
         }
     }
 
@@ -375,9 +343,10 @@ public class BoardGame{
     /**
      * Get all legal movements for a piece color
      */
-    public Collection<Movement> getChessPieceLegalMovements(ChessPiece chessPiece){
+    public Collection<Movement> getChessPieceLegalMovements(int position, PieceColor chessPieceColor){
+        ChessPiece chessPiece = board.get(position);
         if(chessPiece != null) {
-            if (chessPiece.getPieceColor().isBlack()) {
+            if (chessPieceColor.isBlack()) {
                 return blackChessPieceLegalMovement.get(chessPiece);
             }
             return whiteChessPieceLegalMovement.get(chessPiece);

@@ -59,7 +59,7 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
             // Diagonal move
             else if(vectorPosition == 7 && !((BoardGame.EIGHT_COLUMN[chessPiece.getPiecePosition()] && chessPiece.getPieceColor().isWhite())
                     || (BoardGame.FIRST_COLUMN[chessPiece.getPiecePosition()] && chessPiece.getPieceColor().isBlack()))){
-                ChessPiece chessPieceNextToThisPiece = isEnPassantMovePossible(boardGame, (chessPiece.getPiecePosition() - chessPiece.getPieceColor().getDirection()),
+                ChessPiece chessPieceNextToThisPiece = isEnPassantMovePossible(boardGame, (chessPiece.getPiecePosition() + chessPiece.getPieceColor().getDirection()),
                         chessPiece.getPieceColor(), true);
                 if (chessPieceNextToThisPiece != null) {
                     createAttackMovement(boardGame, chessPieceNextToThisPiece, futurePosition,
@@ -80,7 +80,8 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
                 ChessPiece chessPieceNextToThisPiece = isEnPassantMovePossible(boardGame, (chessPiece.getPiecePosition() + chessPiece.getPieceColor().getDirection()),
                         chessPiece.getPieceColor(), true);
                 if (chessPieceNextToThisPiece != null) {
-                    createAttackMovement(boardGame, chessPieceNextToThisPiece, futurePosition, legalMovements, verifyCheckAttack, enemyPieceColor, chessPiece);
+                    createAttackMovement(boardGame, chessPieceNextToThisPiece, futurePosition,
+                            legalMovements, verifyCheckAttack, enemyPieceColor, chessPiece);
                 }
 
                 if(boardGame.isCaseOccupied(futurePosition)){
@@ -144,13 +145,11 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
                 if (chessPieceAttacked instanceof Pawn && boardGame.getChessPieceSpecialMove() == chessPieceAttacked) {
                     // Chess piece attack pawn after he used special move "en passant"
                     AttackSpecialPawnMovement attackSpecialPawnMovement = new AttackSpecialPawnMovement(boardGame,
-                            chessPiece, futurePosition, chessPieceAttacked); //(chessPiece.getPiecePosition() + 1)
+                            chessPiece, (chessPiece.getPiecePosition() + 1), chessPieceAttacked);
                     addMovement(boardGame, legalMovements, attackSpecialPawnMovement, enemyPieceColor, verifyCheckAttack);
                 }
-                else {
-                    AttackMovement attackMovement = new AttackMovement(boardGame, chessPiece, futurePosition, chessPieceAttacked);
-                    addMovement(boardGame, legalMovements, attackMovement, enemyPieceColor, verifyCheckAttack);
-                }
+                AttackMovement attackMovement = new AttackMovement(boardGame, chessPiece, futurePosition, chessPieceAttacked);
+                addMovement(boardGame, legalMovements, attackMovement, enemyPieceColor, verifyCheckAttack);
             }
         }
     }

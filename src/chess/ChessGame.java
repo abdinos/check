@@ -8,6 +8,7 @@ import chess.chessPiece.Pawn;
 import chess.chessPiece.PieceColor;
 import chess.gui.BoardGameGUI;
 import chess.gui.ChessGameMainWindow;
+import chess.gui.MainWindow;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,13 +105,12 @@ public class ChessGame {
             if (movement.isPromoting()) {
                 boardGame.promotingPawn(chessPieceToMove, movement.getChessPiecePromoted(), futurePosition);
             }
-            else if(movement.isMoveSpecialPawn() && chessPieceToMove instanceof Pawn) {
+            else  if(movement.isMoveSpecialPawn() && chessPieceToMove instanceof Pawn) {
                 if (!movement.isAttacking()) {
                     boardGame.setChessPieceSpecialMove(chessPieceToMove);
                     ((Pawn)chessPieceToMove).setMoveEnPassantPossible();
                 }
                 else{
-                    boardGame.killPawnAfterSpecialMove(movement);
                     boardGame.setChessPieceSpecialMove(null);
                 }
             }
@@ -126,24 +126,21 @@ public class ChessGame {
                 boardGame.moveChessPiece(chessPieceToExchange,null, futurePositionToPieceExchanged,false);
             }
 
-            boardGame.findAllActiveChessPieces(false);
+            boardGame.findAllActiveChessPieces();
             Player enemyPlayer = players.get((indexCurrentPlayer + 1) % players.size());
             Player currentPlayer = players.get(indexCurrentPlayer);
-            boardGame.updateChessPiecesLegalMovements(enemyPlayer.getPlayerColor(), true, false);
-            boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor(),true,false);
+            boardGame.updateChessPiecesLegalMovements(enemyPlayer.getPlayerColor(), true);
+            boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor(),true);
 
             if(boardGame.isDraw()){
-                chessGameMainWindow.draw();
                 isDrawn = true;
             }
             else if (boardGame.isGameEnded(currentPlayer.getPlayerColor(), enemyPlayer)) {
-                    chessGameMainWindow.endGame();
                     isEndGame = true;
                 }
             else{
                 indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
-                chessGameMainWindow.kingCheckState(players.get(indexCurrentPlayer).isKingCheck());
-                chessGameMainWindow.setCurrentPieceColor(players.get(indexCurrentPlayer).getPlayerColor());
+                //chessGameMainWindow.setCurrentPieceColor(players.get(indexCurrentPlayer).getPlayerColor());
             }
         }
     }
@@ -152,8 +149,8 @@ public class ChessGame {
         return boardGame.getChessPieceAtPosition(position);
     }
 
-    public Collection<Movement> getMovementsForAPiece(ChessPiece chessPiece){
-        return boardGame.getChessPieceLegalMovements(chessPiece);
+    public Collection<Movement> getMovementsForAPiece(int position, PieceColor color){
+        return boardGame.getChessPieceLegalMovements(position, color);
     }
 
     /**
@@ -189,8 +186,8 @@ public class ChessGame {
                 System.out.println("Mouvement de " + chessPiece.chessPieceToString() + " : ");
                 int index = 1;
                 List<Movement> movements = new ArrayList<>();
-                if (boardGame.getChessPieceLegalMovements(chessPiece) != null) {
-                    movements = boardGame.getChessPieceLegalMovements(chessPiece).stream().toList();
+                if (boardGame.getChessPieceLegalMovements(position, players.get(indexCurrentPlayer).getPlayerColor()) != null) {
+                    movements = boardGame.getChessPieceLegalMovements(position, players.get(indexCurrentPlayer).getPlayerColor()).stream().toList();
 
                     for (Movement movement : movements) {
                         System.out.print(index++ + " : " + movement.getChessPieceMoved().getPiecePosition() + " --> " + movement.getFuturePosition());
@@ -252,18 +249,23 @@ public class ChessGame {
         }
     }
 
+    /**
+    public static void main(String[] args) {
+        ChessGame chessGame = new ChessGame();
+        chessGame.createPlayers();
+        chessGame.initChessGame();
+
+        chessGame.interfaceTest();
+    }
+     **/
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                ChessGame chessGame = new ChessGame();
-                chessGame.createPlayers();
-                chessGame.initChessGame();
+                new MainWindow().setVisible(true);
 
-                //chessGame.interfaceTest();
-
-                ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
-                chessGame.setChessGameMainWindow(chessGameMainWindow);
-                chessGameMainWindow.createAndShoPlayMenu();
+                //ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
+                //chessGame.setChessGameMainWindow(chessGameMainWindow);
+                //chessGameMainWindow.createAndShowGUI();
             }
         });
     }
