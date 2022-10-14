@@ -17,18 +17,20 @@ import java.util.Map;
  * LayeredPaneDemo2.java requires
  * images/dukeWaveRed.gif.
  */
-public class ChessGameDemo extends JPanel implements ActionListener, MouseListener {
+public class ChessGameMainWindow extends JPanel implements ActionListener, MouseListener {
 
     private JLayeredPane layeredPane;
     private final int windowHeight = 700;
     private final int windowWeight = 700;
-    private final int CASE_SIZE  = 20;
     private final int NUMBER_OF_LINE = 8;
     private final int NUMBER_OF_COLUMN = 8;
 
     private final String CURRENT_PATH = System.getProperty("user.dir");
     private final ChessGame chessGame;
-
+    private Map<Integer, JLabel> labels;
+    private ChessPiece chessPieceSelected;
+    private  Collection<Movement> chessPieceSelectedMovements;
+    private Map<Integer, Color> caseColorChessPieceSelectedMovements;
     private Icon white_rook, black_rook;
     private Icon white_knight, black_knight;
     private Icon white_bishop, black_bishop;
@@ -36,11 +38,13 @@ public class ChessGameDemo extends JPanel implements ActionListener, MouseListen
     private Icon white_king, black_king;
     private Icon white_pawn, black_pawn;
 
-    private Map<Integer, JLabel> labels;
 
-    public ChessGameDemo(ChessGame chessGame) {
+
+    public ChessGameMainWindow(ChessGame chessGame) {
         this.chessGame = chessGame;
         labels = new HashMap<>();
+        chessPieceSelected = null;
+        chessPieceSelectedMovements = null;
 
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -230,12 +234,27 @@ public class ChessGameDemo extends JPanel implements ActionListener, MouseListen
         ChessPiece chessPiece = chessGame.getChessPieceAtPosition(chessPiecePosition);
         System.out.println("test : " + chessPiece);
 
+        if(chessPieceSelected != null){
+            for(Movement movement : chessPieceSelectedMovements){
+                if(movement.getFuturePosition() == chessPiecePosition){
+                    //TODO : deplacer piece
+                }
+            }
+            for(Map.Entry<Integer, Color> entry : caseColorChessPieceSelectedMovements.entrySet()){
+                labels.get(entry.getKey()).setBackground(entry.getValue());
+            }
+        }
+
         if(chessPiece != null){
-            Collection<Movement> movements = chessGame.getMovementsForAPiece(chessPiecePosition,chessPiece.getPieceColor());
-            if(movements != null){
-                for(Movement movement : movements){
+            chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiecePosition,chessPiece.getPieceColor());
+            if(chessPieceSelectedMovements != null){
+                chessPieceSelected = chessPiece;
+                caseColorChessPieceSelectedMovements = new HashMap<>();
+                for(Movement movement : chessPieceSelectedMovements){
+                    int futurePosition = movement.getFuturePosition();
                     System.out.println(movement.getClass());
-                    labels.get(movement.getFuturePosition()).setBackground(Color.BLUE);
+                    caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
+                    labels.get(futurePosition).setBackground(Color.BLUE);
                 }
             }
         }

@@ -7,7 +7,7 @@ import chess.chessPiece.ChessPiece;
 import chess.chessPiece.Pawn;
 import chess.chessPiece.PieceColor;
 import chess.gui.BoardGameGUI;
-import chess.gui.ChessGameDemo;
+import chess.gui.ChessGameMainWindow;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -250,10 +250,10 @@ public class ChessGame {
                 chessGame.createPlayers();
                 chessGame.initChessGame();
 
-                chessGame.interfaceTest();
+                //chessGame.interfaceTest();
 
-                //ChessGameDemo chessGameDemo = new ChessGameDemo(chessGame);
-                //chessGameDemo.createAndShowGUI();
+                ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
+                chessGameMainWindow.createAndShowGUI();
             }
         });
     }
