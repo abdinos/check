@@ -80,7 +80,7 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
 
                 if(boardGame.isCaseOccupied(futurePosition)){
                     final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(futurePosition);
-                    if(chessPieceAttacked.getPieceColor() != chessPieceAttacked.getPieceColor()){
+                    if(chessPiece.getPieceColor() != chessPieceAttacked.getPieceColor()){
                         createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack,enemyPieceColor, chessPiece);
                     }
                 }
@@ -99,7 +99,7 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
 
                 if(boardGame.isCaseOccupied(futurePosition)){
                     final ChessPiece chessPieceAttacked = boardGame.getChessPieceAtPosition(futurePosition);
-                    if(chessPieceAttacked != null && chessPieceAttacked.getPieceColor() != chessPieceAttacked.getPieceColor()){
+                    if(chessPieceAttacked != null && chessPiece.getPieceColor() != chessPieceAttacked.getPieceColor()){
                         createAttackMovement(boardGame, chessPieceAttacked, futurePosition, legalMovements, verifyCheckAttack,enemyPieceColor, chessPiece);
                     }
                 }
