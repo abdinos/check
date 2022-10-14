@@ -3,6 +3,7 @@ package chess.gui;
 import chess.ChessGame;
 import chess.Movement.Movement;
 import chess.chessPiece.ChessPiece;
+import chess.chessPiece.PieceColor;
 
 import javax.swing.*;
 
@@ -26,6 +27,8 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     private final int NUMBER_OF_COLUMN = 8;
 
     private final String CURRENT_PATH = System.getProperty("user.dir");
+
+    private JLabel labelInformationCurrentPlayer;
     private final ChessGame chessGame;
     private Map<Integer, JLabel> labels;
     private ChessPiece chessPieceSelected;
@@ -38,10 +41,11 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     private Icon white_king, black_king;
     private Icon white_pawn, black_pawn;
 
-
+    private PieceColor currentPieceColor;
 
     public ChessGameMainWindow(ChessGame chessGame) {
         this.chessGame = chessGame;
+        currentPieceColor = chessGame.getPlayers().get(chessGame.getIndexCurrentPlayer()).getPlayerColor();
         labels = new HashMap<>();
         chessPieceSelected = null;
         chessPieceSelectedMovements = null;
@@ -206,10 +210,11 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
 
     //Create the control pane for the top of the frame.
     private JPanel createControlPanel() {
-        JLabel jLabel = new JLabel("Début de la partie");
+        labelInformationCurrentPlayer = new JLabel();
+        setCurrentPieceColor(currentPieceColor);
 
         JPanel controls = new JPanel();
-        controls.add(jLabel);
+        controls.add(labelInformationCurrentPlayer);
         return controls;
     }
 
@@ -234,49 +239,44 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         ChessPiece chessPiece = chessGame.getChessPieceAtPosition(chessPiecePosition);
         boolean isPieceMoved = false;
 
-        if(chessPieceSelected != null){
-            if(chessPieceSelected != chessPiece) {
-                for (Movement movement : chessPieceSelectedMovements) {
-                    if (movement.getFuturePosition() == chessPiecePosition) {
-                        updateChessPiece(movement.getFuturePosition(), chessPieceSelected.getPiecePosition(), chessPieceSelected);
-                        chessGame.executeChessPieceMovement(movement);
-                        chessPieceSelected = null;
-                        chessPieceSelectedMovements = null;
-                        isPieceMoved = true;
-                        break;
-                    }
+        if(chessPieceSelected != null && caseColorChessPieceSelectedMovements != null){
+            for (Movement movement : chessPieceSelectedMovements) {
+                if (movement.getFuturePosition() == chessPiecePosition) { // The chess piece is moved
+                    updateChessPiece(movement.getFuturePosition(), chessPieceSelected.getPiecePosition(), chessPieceSelected);
+                    chessGame.executeChessPieceMovement(movement);
+                    chessPieceSelected = null;
+                    chessPieceSelectedMovements = null;
+                    isPieceMoved = true;
+                    resetCaseColor();
+                    break;
                 }
-            }
-            else{
-                System.out.println("same piece");
             }
         }
 
         if(!isPieceMoved && caseColorChessPieceSelectedMovements != null){
-            System.out.println("enlever couleur bleu");
-            for(Map.Entry<Integer, Color> entry : caseColorChessPieceSelectedMovements.entrySet()){
-                System.out.println(entry.getKey() + " : " + entry.getValue());
-                labels.get(entry.getKey()).setBackground(entry.getValue());
-            }
+            resetCaseColor();
             chessPieceSelected = null;
             chessPieceSelectedMovements = null;
         }
-        else {
-            if (chessPiece != null) {
-                chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiecePosition, chessPiece.getPieceColor());
-                if (chessPieceSelectedMovements != null) {
-                    chessPieceSelected = chessPiece;
-                    caseColorChessPieceSelectedMovements = new HashMap<>();
-                    for (Movement movement : chessPieceSelectedMovements) {
-                        int futurePosition = movement.getFuturePosition();
-                        System.out.println("move : " + movement.getClass() + " vers " + movement.getFuturePosition());
-                        caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
-                        labels.get(futurePosition).setBackground(Color.BLUE);
-                    }
+
+        if (chessPiece != null && chessPiece.getPieceColor() == currentPieceColor) {
+            chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiecePosition, chessPiece.getPieceColor());
+            if (chessPieceSelectedMovements != null) {
+                chessPieceSelected = chessPiece;
+                caseColorChessPieceSelectedMovements = new HashMap<>();
+                for (Movement movement : chessPieceSelectedMovements) {
+                    int futurePosition = movement.getFuturePosition();
+                    caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
+                    labels.get(futurePosition).setBackground(Color.BLUE);
                 }
             }
         }
+    }
 
+    private void resetCaseColor(){
+        for(Map.Entry<Integer, Color> entry : caseColorChessPieceSelectedMovements.entrySet()){
+            labels.get(entry.getKey()).setBackground(entry.getValue());
+        }
     }
 
     public void mouseReleased(MouseEvent e){
@@ -341,5 +341,10 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         //Display the window.
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public void setCurrentPieceColor(PieceColor pieceColor){
+        currentPieceColor = pieceColor;
+        labelInformationCurrentPlayer.setText("C'est au tour de " + pieceColor);
     }
 }

@@ -24,6 +24,8 @@ public class ChessGame {
 
     private BoardGameGUI boardGameGUI;
 
+    private ChessGameMainWindow chessGameMainWindow;
+
     private boolean isEndGame;
 
     private boolean isDrawn;
@@ -132,10 +134,11 @@ public class ChessGame {
             if(boardGame.isDraw()){
                 isDrawn = true;
             }
-            else {
-                if (boardGame.isGameEnded(currentPlayer.getPlayerColor(), enemyPlayer)) {
+            else if (boardGame.isGameEnded(currentPlayer.getPlayerColor(), enemyPlayer)) {
                     isEndGame = true;
                 }
+            else{
+                chessGameMainWindow.setCurrentPieceColor(players.get((indexCurrentPlayer + 1) % players.size()).getPlayerColor());
             }
         }
     }
@@ -239,6 +242,12 @@ public class ChessGame {
         }
     }
 
+    public void setChessGameMainWindow(ChessGameMainWindow chessGameMainWindow){
+        if(chessGameMainWindow != null){
+            this.chessGameMainWindow = chessGameMainWindow;
+        }
+    }
+
     /**
     public static void main(String[] args) {
         ChessGame chessGame = new ChessGame();
@@ -255,10 +264,11 @@ public class ChessGame {
                 chessGame.createPlayers();
                 chessGame.initChessGame();
 
-                chessGame.interfaceTest();
+                //chessGame.interfaceTest();
 
-                //ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
-                //chessGameMainWindow.createAndShowGUI();
+                ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
+                chessGame.setChessGameMainWindow(chessGameMainWindow);
+                chessGameMainWindow.createAndShowGUI();
             }
         });
     }
