@@ -252,15 +252,6 @@ public class ChessGame {
         }
     }
 
-    /**
-    public static void main(String[] args) {
-        ChessGame chessGame = new ChessGame();
-        chessGame.createPlayers();
-        chessGame.initChessGame();
-
-        chessGame.interfaceTest();
-    }
-     **/
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
