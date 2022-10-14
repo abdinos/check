@@ -139,7 +139,7 @@ public class ChessGame {
                 }
             else{
                 indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
-                //chessGameMainWindow.setCurrentPieceColor(players.get(indexCurrentPlayer).getPlayerColor());
+                chessGameMainWindow.setCurrentPieceColor(players.get(indexCurrentPlayer).getPlayerColor());
             }
         }
     }
@@ -148,8 +148,8 @@ public class ChessGame {
         return boardGame.getChessPieceAtPosition(position);
     }
 
-    public Collection<Movement> getMovementsForAPiece(int position, PieceColor color){
-        return boardGame.getChessPieceLegalMovements(position, color);
+    public Collection<Movement> getMovementsForAPiece(ChessPiece chessPiece){
+        return boardGame.getChessPieceLegalMovements(chessPiece);
     }
 
     /**
@@ -185,8 +185,8 @@ public class ChessGame {
                 System.out.println("Mouvement de " + chessPiece.chessPieceToString() + " : ");
                 int index = 1;
                 List<Movement> movements = new ArrayList<>();
-                if (boardGame.getChessPieceLegalMovements(position, players.get(indexCurrentPlayer).getPlayerColor()) != null) {
-                    movements = boardGame.getChessPieceLegalMovements(position, players.get(indexCurrentPlayer).getPlayerColor()).stream().toList();
+                if (boardGame.getChessPieceLegalMovements(chessPiece) != null) {
+                    movements = boardGame.getChessPieceLegalMovements(chessPiece).stream().toList();
 
                     for (Movement movement : movements) {
                         System.out.print(index++ + " : " + movement.getChessPieceMoved().getPiecePosition() + " --> " + movement.getFuturePosition());
@@ -264,11 +264,11 @@ public class ChessGame {
                 chessGame.createPlayers();
                 chessGame.initChessGame();
 
-                chessGame.interfaceTest();
+                //chessGame.interfaceTest();
 
-                //ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
-                //chessGame.setChessGameMainWindow(chessGameMainWindow);
-                //chessGameMainWindow.createAndShowGUI();
+                ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
+                chessGame.setChessGameMainWindow(chessGameMainWindow);
+                chessGameMainWindow.createAndShoPlayMenu();
             }
         });
     }

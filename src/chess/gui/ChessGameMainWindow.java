@@ -34,6 +34,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     private ChessPiece chessPieceSelected;
     private  Collection<Movement> chessPieceSelectedMovements;
     private Map<Integer, Color> caseColorChessPieceSelectedMovements;
+    private Map<Integer, Color> caseColorChessPieceAfterMovements;
     private Icon white_rook, black_rook;
     private Icon white_knight, black_knight;
     private Icon white_bishop, black_bishop;
@@ -173,6 +174,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     }
 
     public Icon getImageToChessPiece(ChessPiece chessPiece){
+        if(chessPiece == null){
+            return null;
+        }
         switch (chessPiece.getName()){
             case "King":
                 if(chessPiece.getPieceColor().isWhite()){
@@ -237,36 +241,23 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         int chessPiecePosition = xCase+(8*yCase);
 
         ChessPiece chessPiece = chessGame.getChessPieceAtPosition(chessPiecePosition);
-        boolean isPieceMoved = false;
-
-        if(chessPieceSelected != null && caseColorChessPieceSelectedMovements != null){
-            for (Movement movement : chessPieceSelectedMovements) {
-                if (movement.getFuturePosition() == chessPiecePosition) { // The chess piece is moved
-                    updateChessPiece(movement.getFuturePosition(), chessPieceSelected.getPiecePosition(), chessPieceSelected);
-                    chessGame.executeChessPieceMovement(movement);
-                    chessPieceSelected = null;
-                    chessPieceSelectedMovements = null;
-                    isPieceMoved = true;
-                    resetCaseColor();
-                    break;
-                }
-            }
-        }
+        boolean isPieceMoved = verifyAndMoveChessPiece(chessPiecePosition);
 
         if(!isPieceMoved && caseColorChessPieceSelectedMovements != null){
-            resetCaseColor();
+            resetCaseColor(caseColorChessPieceSelectedMovements, false);
             chessPieceSelected = null;
             chessPieceSelectedMovements = null;
         }
 
         if (chessPiece != null && chessPiece.getPieceColor() == currentPieceColor) {
-            chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiecePosition, chessPiece.getPieceColor());
+            System.out.println("piece : " + chessPiece.chessPieceToString() + ", position = " + chessPiece.getPiecePosition());
+            chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiece);
+            System.out.println("move : " + chessPieceSelectedMovements);
+            System.out.println("-------------------------------------------------------------");
             if (chessPieceSelectedMovements != null) {
                 chessPieceSelected = chessPiece;
                 caseColorChessPieceSelectedMovements = new HashMap<>();
-                System.out.println("mouvement list : ");
                 for (Movement movement : chessPieceSelectedMovements) {
-                    System.out.println(movement.getChessPieceMoved().chessPieceToString() + " to " + movement.getFuturePosition());
                     int futurePosition = movement.getFuturePosition();
                     caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
                     labels.get(futurePosition).setBackground(Color.BLUE);
@@ -275,9 +266,47 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         }
     }
 
-    private void resetCaseColor(){
-        for(Map.Entry<Integer, Color> entry : caseColorChessPieceSelectedMovements.entrySet()){
-            labels.get(entry.getKey()).setBackground(entry.getValue());
+    public boolean verifyAndMoveChessPiece(int chessPiecePosition){
+        if(chessPieceSelected != null && caseColorChessPieceSelectedMovements != null){
+            for (Movement movement : chessPieceSelectedMovements) {
+                if (movement.getFuturePosition() == chessPiecePosition) { // The chess piece is moved
+                    resetCaseColor(caseColorChessPieceSelectedMovements, false);
+
+                    if(caseColorChessPieceAfterMovements != null){
+                        resetCaseColor(caseColorChessPieceAfterMovements, true);
+                    }
+
+                    int futurePositionChessPieceMoved = movement.getChessPieceMoved().getPiecePosition();
+
+                    caseColorChessPieceAfterMovements = new HashMap<>();
+                    caseColorChessPieceAfterMovements.put(movement.getFuturePosition(),labels.get(movement.getFuturePosition()).getBackground());
+                    caseColorChessPieceAfterMovements.put(futurePositionChessPieceMoved, labels.get(futurePositionChessPieceMoved).getBackground());
+
+                    labels.get(movement.getFuturePosition()).setBackground(Color.red);
+                    labels.get(futurePositionChessPieceMoved).setBackground(Color.red);
+
+                    chessGame.executeChessPieceMovement(movement);
+                    update();
+
+                    chessPieceSelected = null;
+                    chessPieceSelectedMovements = null;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void resetCaseColor(Map<Integer, Color> map, boolean resetRedCases){
+        for(Map.Entry<Integer, Color> entry : map.entrySet()){
+            if(!resetRedCases) {
+                if (labels.get(entry.getKey()).getBackground() != Color.red) {
+                    labels.get(entry.getKey()).setBackground(entry.getValue());
+                }
+            }
+            else{
+                labels.get(entry.getKey()).setBackground(entry.getValue());
+            }
         }
     }
 
@@ -293,44 +322,24 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
 
     }
 
-    public void mouseDragged(MouseEvent e) {} //do nothing
-
-    public void updateChessPiece(int newPosition, int oldPosition, ChessPiece chessPiece){
-        Icon icon = getImageToChessPiece(chessPiece);
-        if(icon != null){
-            labels.get(newPosition).setIcon(icon);
-            labels.get(oldPosition).setIcon(null);
+    private void update(){
+        for(int i = 0; i < (NUMBER_OF_COLUMN * NUMBER_OF_LINE); i++){
+            ChessPiece chessPiece = chessGame.getChessPieceAtPosition(i);
+            Icon icon = getImageToChessPiece(chessPiece);
+            labels.get(i).setIcon(icon);
         }
     }
 
     //Handle user interaction with the check box and combo box.
     public void actionPerformed(ActionEvent e) {
-        /**
-        String cmd = e.getActionCommand();
-
-        if (ON_TOP_COMMAND.equals(cmd)) {
-            if (onTop.isSelected())
-                layeredPane.moveToFront(dukeLabel);
-            else
-                layeredPane.moveToBack(dukeLabel);
-
-        } else if (LAYER_COMMAND.equals(cmd)) {
-            int position = onTop.isSelected() ? 0 : 1;
-            layeredPane.setLayer(dukeLabel,
-                    layerList.getSelectedIndex(),
-                    position);
-        }
-         **/
     }
 
     /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
+     * Create the play menu and show it.
      */
-    public void createAndShowGUI() {
+    public void createAndShoPlayMenu() {
         //Create and set up the window.
-        JFrame frame = new JFrame("LayeredPaneDemo2");
+        JFrame frame = new JFrame("Partie d\'échec");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
@@ -347,6 +356,6 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
 
     public void setCurrentPieceColor(PieceColor pieceColor){
         currentPieceColor = pieceColor;
-        labelInformationCurrentPlayer.setText("C'est au tour de " + pieceColor);
+        labelInformationCurrentPlayer.setText("C'est au tour du joueur " + pieceColor);
     }
 }

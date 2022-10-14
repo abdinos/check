@@ -80,8 +80,7 @@ public class CalculLegalMovementPawn implements InterfaceCalculLegalMovementChes
                 ChessPiece chessPieceNextToThisPiece = isEnPassantMovePossible(boardGame, (chessPiece.getPiecePosition() + chessPiece.getPieceColor().getDirection()),
                         chessPiece.getPieceColor(), true);
                 if (chessPieceNextToThisPiece != null) {
-                    createAttackMovement(boardGame, chessPieceNextToThisPiece, futurePosition,
-                            legalMovements, verifyCheckAttack, enemyPieceColor, chessPiece);
+                    createAttackMovement(boardGame, chessPieceNextToThisPiece, futurePosition, legalMovements, verifyCheckAttack, enemyPieceColor, chessPiece);
                 }
 
                 if(boardGame.isCaseOccupied(futurePosition)){

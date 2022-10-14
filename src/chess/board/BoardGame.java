@@ -64,7 +64,7 @@ public class BoardGame{
     protected Map<ChessPiece,Collection<Movement>> blackChessPieceLegalMovement;
 
     /**
-     * The interface to calculate if the king is in check state after a movement by an other chess piece
+     * The interface to calculate if the king is in check state after a movement by another chess piece
      */
     private InterfaceCalculKingCheck calculKingCheck;
 
@@ -77,6 +77,7 @@ public class BoardGame{
      * The pawn save after the special move "en passant" used
      */
     private ChessPiece chessPieceSpecialMove = null;
+
 
     /**
      * Create and return a table to indicate all case in a column given in parameter
@@ -343,12 +344,12 @@ public class BoardGame{
     /**
      * Get all legal movements for a piece color
      */
-    public Collection<Movement> getChessPieceLegalMovements(int position, PieceColor chessPieceColor){
-        ChessPiece chessPiece = board.get(position);
+    public Collection<Movement> getChessPieceLegalMovements(ChessPiece chessPiece){
         if(chessPiece != null) {
-            if (chessPieceColor.isBlack()) {
+            if (chessPiece.getPieceColor().isBlack()) {
                 return blackChessPieceLegalMovement.get(chessPiece);
             }
+            System.out.println("contenue ? : " + whiteChessPieceLegalMovement.containsKey(chessPiece));
             return whiteChessPieceLegalMovement.get(chessPiece);
         }
         return null;
