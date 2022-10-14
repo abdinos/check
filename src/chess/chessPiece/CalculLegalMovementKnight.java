@@ -33,10 +33,10 @@ public class CalculLegalMovementKnight implements InterfaceCalculLegalMovementCh
 
         for(final int vectorPosition : POSSIBLE_MOVEMENT_POSITION){
             int futurePosition = chessPiece.getPiecePosition();
-            if(isFirstColumnExclusionPosition(futurePosition, vectorPosition) ||
-                    isSecondColumnExclusionPosition(futurePosition, vectorPosition) ||
-                    isSeventhColumnExclusionPosition(futurePosition, vectorPosition) ||
-                    isEightColumnExclusionPosition(futurePosition, vectorPosition)){
+            if(isFirstColumnExclusionPosition(chessPiece.getPiecePosition(), vectorPosition) ||
+                    isSecondColumnExclusionPosition(chessPiece.getPiecePosition(), vectorPosition) ||
+                    isSeventhColumnExclusionPosition(chessPiece.getPiecePosition(), vectorPosition) ||
+                    isEightColumnExclusionPosition(chessPiece.getPiecePosition(), vectorPosition)){
                 continue;
             }
             futurePosition += vectorPosition;
