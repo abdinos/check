@@ -27,7 +27,6 @@ public class LearnChessWindow extends JFrame {
 
         // btn Mettre en place le plateau
         //setLayout( new GridBagLayout() );
-
         JButton btn1 = new JButton("Mettre en place le plateau");
         btn1.setBounds(250,650, 300,40);
         learn1(btn1);
@@ -39,6 +38,17 @@ public class LearnChessWindow extends JFrame {
         learn2(btn2);
         add(btn2);
 
+        // btn Effectuer des coups spéciaux
+        JButton btn3 = new JButton("Effectuer des coups spéciaux");
+        btn3.setBounds(250,750,300,40);
+        learn3(btn3);
+        add(btn3);
+
+        // btn Employer une stratégie gagnante
+        JButton btn4 = new JButton("Employer une stratégie gagnante");
+        btn4.setBounds(250,800,300,40);
+        learn4(btn4);
+        add(btn4);
 
 
 
@@ -73,6 +83,34 @@ public class LearnChessWindow extends JFrame {
         });
     }
 
+    public void learn3(JButton jButton){
+        jButton.addActionListener( new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
 
+                try {
+                    new ThirdLearningWindow().setVisible(true);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        });
+    }
+
+    public void learn4(JButton jButton){
+        jButton.addActionListener( new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                try {
+                    new FourthLearningWindow().setVisible(true);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
 
 }
