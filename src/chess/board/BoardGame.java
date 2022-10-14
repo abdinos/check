@@ -103,6 +103,11 @@ public class BoardGame{
         this.chessGame = chessGame;
         calculKingCheck = new StandardCalculKingCheck(this);
         interfaceDraw = new StandardDraw();
+
+        whiteChessPieceLegalMovementSimulation = new HashMap<>();
+        blackChessPieceLegalMovementSimulation = new HashMap<>();
+        whiteChessPiecesAlive = new ArrayList<>();
+        blackChessPiecesAlive = new ArrayList<>();
     }
 
     /**
@@ -122,6 +127,7 @@ public class BoardGame{
         if(board == null){
             createBoard();
         }
+
         // Black chess piece
         board.put(0, new Rook(0, PieceColor.BLACK, new CalculLegalMovementRook()));
         board.put(1, new Knight(1, PieceColor.BLACK, new CalculLegalMovementKnight()));
@@ -349,6 +355,9 @@ public class BoardGame{
     public void updateChessPiecesLegalMovements(PieceColor pieceColor, boolean isCheckKing, boolean isSimulating){
         if(pieceColor.isWhite()){
             if(isSimulating){
+                if(whiteChessPiecesAlive == null) {
+                    System.out.println("null !!!");
+                }
                 whiteChessPieceLegalMovementSimulation = findChessPieceLegalMovements(whiteChessPiecesAlive, isCheckKing);
             }
             else {
