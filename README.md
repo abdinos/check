@@ -1,16 +1,16 @@
-## PROJET GL M2 IDL
-# Description du projet 
+# PROJET GL M2 IDL
+## Description du projet 
 Le jeu d'échecs, ou les échecs, est un jeu de société opposant deux joueurs de part et d'autre d'un tablier appelé « échiquier » composé de soixante-quatre cases, 32 claires et 32 sombres nommées les cases blanches et les cases noires. <br/>
 Le jeu consiste à mettre l'autre joueur échec et mat, c'est-à-dire que son roi est en prise et qu'il n'y a aucun coup possible pour l'en sortir.<br/>
 
-# La Stack utilisée
+## La Stack utilisée
 <ul>
  <li>JAVA</li>
  <li>Swing pour l'interface graphique</li>
 </ul>
 
 
-# Pré-requis pour le bon fonctionnement du projet
+## Pré-requis pour le bon fonctionnement du projet
 -Mettre à jour le système Ubuntu
  <ul>
     <li> Ouvrez un terminal depuis le lanceur ou le menu d'applications. </li>
@@ -27,13 +27,13 @@ Le jeu consiste à mettre l'autre joueur échec et mat, c'est-à-dire que son ro
 echo $JAVA_HOME </strong> </li>
  </ul>
 
-# Pour lancer le projet
+## Pour lancer le projet
 <ul>
  <li> git clone https://github.com/abdinos/chess.git </li>
  <li> </li>
 </ul>
 
-# Réalisé par :
+## Réalisé par :
 <ul>
  <li>Loic FERY : <a href="https://github.com/loicfery"> https://github.com/loicfery </a> </li>
  <li>Yanis AMROUCHE <a href="https://github.com/yanisamrouche">https://github.com/yanisamrouche </a></li>
