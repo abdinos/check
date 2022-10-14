@@ -20,14 +20,15 @@ import java.util.Map;
  */
 public class ChessGameMainWindow extends JPanel implements ActionListener, MouseListener {
 
-    private JLayeredPane layeredPane;
+
     private final int windowHeight = 700;
     private final int windowWeight = 700;
     private final int NUMBER_OF_LINE = 8;
     private final int NUMBER_OF_COLUMN = 8;
 
     private final String CURRENT_PATH = System.getProperty("user.dir");
-
+    private JLayeredPane layeredPane;
+    private JLabel kingCheckState;
     private JLabel labelInformationCurrentPlayer;
     private final ChessGame chessGame;
     private Map<Integer, JLabel> labels;
@@ -35,6 +36,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     private  Collection<Movement> chessPieceSelectedMovements;
     private Map<Integer, Color> caseColorChessPieceSelectedMovements;
     private Map<Integer, Color> caseColorChessPieceAfterMovements;
+    private PieceColor currentPieceColor;
+    private boolean isGameEnded;
+
     private Icon white_rook, black_rook;
     private Icon white_knight, black_knight;
     private Icon white_bishop, black_bishop;
@@ -42,9 +46,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     private Icon white_king, black_king;
     private Icon white_pawn, black_pawn;
 
-    private PieceColor currentPieceColor;
 
-    private boolean isGameEnded;
 
     public ChessGameMainWindow(ChessGame chessGame) {
         this.chessGame = chessGame;
@@ -231,10 +233,19 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     //Create the control pane for the top of the frame.
     private JPanel createControlPanel() {
         labelInformationCurrentPlayer = new JLabel();
+        labelInformationCurrentPlayer.setVerticalAlignment(JLabel.CENTER);
+        labelInformationCurrentPlayer.setHorizontalAlignment(JLabel.CENTER);
+
+        kingCheckState = new JLabel();
+        kingCheckState.setVerticalAlignment(JLabel.CENTER);
+        kingCheckState.setHorizontalAlignment(JLabel.CENTER);
+
         setCurrentPieceColor(currentPieceColor);
 
         JPanel controls = new JPanel();
+        controls.setLayout(new GridLayout(2,1));
         controls.add(labelInformationCurrentPlayer);
+        controls.add(kingCheckState);
         return controls;
     }
 
@@ -263,10 +274,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         }
 
         if (chessPiece != null && chessPiece.getPieceColor() == currentPieceColor) {
-            System.out.println("piece : " + chessPiece.chessPieceToString() + ", position = " + chessPiece.getPiecePosition());
             chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiece);
-            System.out.println("move : " + chessPieceSelectedMovements);
-            System.out.println("-------------------------------------------------------------");
             if (chessPieceSelectedMovements != null) {
                 chessPieceSelected = chessPiece;
                 caseColorChessPieceSelectedMovements = new HashMap<>();
@@ -275,9 +283,6 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
                     if(labels.containsKey(futurePosition)) {
                         caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
                         labels.get(futurePosition).setBackground(Color.BLUE);
-                    }
-                    else{
-                        System.out.println("problemee");
                     }
                 }
             }
@@ -348,7 +353,6 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         }
     }
 
-    //Handle user interaction with the check box and combo box.
     public void actionPerformed(ActionEvent e) {
     }
 
@@ -392,5 +396,18 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     public void draw(){
         isGameEnded = true;
         labelInformationCurrentPlayer.setText("Egalité !");
+    }
+
+    public void kingCheckState(boolean isKingCheckState){
+        if(isKingCheckState){
+            String playerColor = "";
+            if(currentPieceColor.isWhite()){
+                playerColor = "Blanc";
+            }
+            else{
+                playerColor = "Noir";
+            }
+            kingCheckState.setText("Le roi du joueur " + playerColor + " est en échec");
+        }
     }
 }

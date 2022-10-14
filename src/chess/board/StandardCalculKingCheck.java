@@ -1,8 +1,7 @@
 package chess.board;
 
 import chess.Movement.Movement;
-import chess.chessPiece.ChessPiece;
-import chess.chessPiece.PieceColor;
+import chess.chessPiece.*;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -25,26 +24,28 @@ public class StandardCalculKingCheck implements InterfaceCalculKingCheck{
         ChessPiece chessPieceSave = boardGame.getBoard().get(movement.getFuturePosition());
 
         boardGame.moveChessPiece(movement.getChessPieceMoved(), null, movement.getFuturePosition(),true);
-        boardGame.findAllActiveChessPieces();
-        boardGame.updateChessPiecesLegalMovements(pieceColor, false);
+        boardGame.findAllActiveChessPieces(true);
+        boardGame.updateChessPiecesLegalMovements(pieceColor, false, true);
         Map<ChessPiece,Collection<Movement>> enemyChessPiecesMovements;
 
         if(pieceColor.isBlack()){
-            enemyChessPiecesMovements = boardGame.blackChessPieceLegalMovement;
+            enemyChessPiecesMovements = boardGame.blackChessPieceLegalMovementSimulation;
         }
         else{
-            enemyChessPiecesMovements = boardGame.whiteChessPieceLegalMovement;
+            enemyChessPiecesMovements = boardGame.whiteChessPieceLegalMovementSimulation;
         }
-        boardGame.moveChessPiece(movement.getChessPieceMoved(), chessPieceSave, chessPiecePosition,true);
-        boardGame.updateChessPiecesLegalMovements(pieceColor, false);
-        // End of the simulation
 
+        boolean isGood = false;
         for (Collection<Movement> movements : enemyChessPiecesMovements.values()) {
             if(searchCheckMovements(movements)){
-                return true;
+                isGood = true;
+                break;
             }
         }
-        return false;
+        boardGame.moveChessPiece(movement.getChessPieceMoved(), chessPieceSave, chessPiecePosition,true);
+        // End of the simulation
+
+        return isGood;
     }
 
     /**

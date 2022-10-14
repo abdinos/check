@@ -100,22 +100,16 @@ public class ChessGame {
             ChessPiece chessPieceToMove = movement.getChessPieceMoved();
             int futurePosition = movement.getFuturePosition();
             boardGame.moveChessPiece(chessPieceToMove,null, futurePosition,false);
-            System.out.println("move execute : " + movement.getClass() + " : " + movement.isMoveSpecialPawn());
-
 
             if (movement.isPromoting()) {
-                System.out.println("promotion");
                 boardGame.promotingPawn(chessPieceToMove, movement.getChessPiecePromoted(), futurePosition);
             }
             else if(movement.isMoveSpecialPawn() && chessPieceToMove instanceof Pawn) {
-                System.out.println("test en passant : " + chessPieceToMove.chessPieceToString());
                 if (!movement.isAttacking()) {
-                    System.out.println("possible coup en passant sur lui");
                     boardGame.setChessPieceSpecialMove(chessPieceToMove);
                     ((Pawn)chessPieceToMove).setMoveEnPassantPossible();
                 }
                 else{
-                    System.out.println("attack");
                     boardGame.killPawnAfterSpecialMove(movement);
                     boardGame.setChessPieceSpecialMove(null);
                 }
@@ -132,11 +126,11 @@ public class ChessGame {
                 boardGame.moveChessPiece(chessPieceToExchange,null, futurePositionToPieceExchanged,false);
             }
 
-            boardGame.findAllActiveChessPieces();
+            boardGame.findAllActiveChessPieces(false);
             Player enemyPlayer = players.get((indexCurrentPlayer + 1) % players.size());
             Player currentPlayer = players.get(indexCurrentPlayer);
-            boardGame.updateChessPiecesLegalMovements(enemyPlayer.getPlayerColor(), true);
-            boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor(),true);
+            boardGame.updateChessPiecesLegalMovements(enemyPlayer.getPlayerColor(), true, false);
+            boardGame.updateChessPiecesLegalMovements(currentPlayer.getPlayerColor(),true,false);
 
             if(boardGame.isDraw()){
                 chessGameMainWindow.draw();
@@ -148,6 +142,7 @@ public class ChessGame {
                 }
             else{
                 indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
+                chessGameMainWindow.kingCheckState(players.get(indexCurrentPlayer).isKingCheck());
                 chessGameMainWindow.setCurrentPieceColor(players.get(indexCurrentPlayer).getPlayerColor());
             }
         }
