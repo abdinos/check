@@ -232,29 +232,47 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         int chessPiecePosition = xCase+(8*yCase);
 
         ChessPiece chessPiece = chessGame.getChessPieceAtPosition(chessPiecePosition);
-        System.out.println("test : " + chessPiece);
+        boolean isPieceMoved = false;
 
         if(chessPieceSelected != null){
-            for(Movement movement : chessPieceSelectedMovements){
-                if(movement.getFuturePosition() == chessPiecePosition){
-                    //TODO : deplacer piece
+            if(chessPieceSelected != chessPiece) {
+                for (Movement movement : chessPieceSelectedMovements) {
+                    if (movement.getFuturePosition() == chessPiecePosition) {
+                        updateChessPiece(movement.getFuturePosition(), chessPieceSelected.getPiecePosition(), chessPieceSelected);
+                        chessGame.executeChessPieceMovement(movement);
+                        chessPieceSelected = null;
+                        chessPieceSelectedMovements = null;
+                        isPieceMoved = true;
+                        break;
+                    }
                 }
             }
-            for(Map.Entry<Integer, Color> entry : caseColorChessPieceSelectedMovements.entrySet()){
-                labels.get(entry.getKey()).setBackground(entry.getValue());
+            else{
+                System.out.println("same piece");
             }
         }
 
-        if(chessPiece != null){
-            chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiecePosition,chessPiece.getPieceColor());
-            if(chessPieceSelectedMovements != null){
-                chessPieceSelected = chessPiece;
-                caseColorChessPieceSelectedMovements = new HashMap<>();
-                for(Movement movement : chessPieceSelectedMovements){
-                    int futurePosition = movement.getFuturePosition();
-                    System.out.println(movement.getClass());
-                    caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
-                    labels.get(futurePosition).setBackground(Color.BLUE);
+        if(!isPieceMoved && caseColorChessPieceSelectedMovements != null){
+            System.out.println("enlever couleur bleu");
+            for(Map.Entry<Integer, Color> entry : caseColorChessPieceSelectedMovements.entrySet()){
+                System.out.println(entry.getKey() + " : " + entry.getValue());
+                labels.get(entry.getKey()).setBackground(entry.getValue());
+            }
+            chessPieceSelected = null;
+            chessPieceSelectedMovements = null;
+        }
+        else {
+            if (chessPiece != null) {
+                chessPieceSelectedMovements = chessGame.getMovementsForAPiece(chessPiecePosition, chessPiece.getPieceColor());
+                if (chessPieceSelectedMovements != null) {
+                    chessPieceSelected = chessPiece;
+                    caseColorChessPieceSelectedMovements = new HashMap<>();
+                    for (Movement movement : chessPieceSelectedMovements) {
+                        int futurePosition = movement.getFuturePosition();
+                        System.out.println("move : " + movement.getClass() + " vers " + movement.getFuturePosition());
+                        caseColorChessPieceSelectedMovements.put(futurePosition, labels.get(futurePosition).getBackground());
+                        labels.get(futurePosition).setBackground(Color.BLUE);
+                    }
                 }
             }
         }
@@ -274,6 +292,14 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     }
 
     public void mouseDragged(MouseEvent e) {} //do nothing
+
+    public void updateChessPiece(int newPosition, int oldPosition, ChessPiece chessPiece){
+        Icon icon = getImageToChessPiece(chessPiece);
+        if(icon != null){
+            labels.get(newPosition).setIcon(icon);
+            labels.get(oldPosition).setIcon(null);
+        }
+    }
 
     //Handle user interaction with the check box and combo box.
     public void actionPerformed(ActionEvent e) {

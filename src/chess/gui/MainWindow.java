@@ -11,6 +11,14 @@ import java.io.IOException;
 
 public class MainWindow extends JFrame {
 
+    private ChessGame chessGame = null;
+    private BoardGame boardGame;
+
+    private ChessWindow chessWindow;
+    private BoardGameGUI boardGameGUI = null;
+
+    private JFrame jFrame = this;;
+
     public MainWindow(){
         setTitle("Jeu d'échecs"); // titre de l'interface graphique
         setSize(800,1200); // dimension de l'interface 1200x800
@@ -45,9 +53,9 @@ public class MainWindow extends JFrame {
         background.setBounds(0,0,800,900);
         add(background);
 
-
-
+        //chessGame = new ChessGame();
     }
+
 
 
     public void play(JButton jButton){
@@ -56,13 +64,15 @@ public class MainWindow extends JFrame {
             public void actionPerformed(ActionEvent e)
             {
                 try {
-                    ChessGame chessGame = new ChessGame();
-                    BoardGame boardGame = new BoardGame(chessGame);
+                    boardGame = new BoardGame(chessGame);
                     boardGame.createBoard();
                     boardGame.initChessPieceOnBoard();
-                    new ChessWindow(new BoardGameGUI(boardGame.getBoard())).setVisible(true);
+                    chessWindow = new ChessWindow();
                     dispose();
-                } catch (IOException ex) {
+
+                    boardGameGUI = new BoardGameGUI(boardGame.getBoard());
+                }
+                catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -88,13 +98,32 @@ public class MainWindow extends JFrame {
         });
     }
 
+    public JFrame getJFrame(){
+        return this;
+    }
+
+    /**
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable(){
             @Override
             public void run() {
+                MainWindow mainWindow = new MainWindow();
                 UIManager.put("swing.boldMetal", Boolean.FALSE);
-                new MainWindow().setVisible(true);
+                //ChessGame chessGame = null;
+                //chessGame = new ChessGame();
+                //BoardGame boardGame = new BoardGame(chessGame);
+                //chessGame.initChessGame();
+                //boardGame.createBoard();
+                //boardGame.initChessPieceOnBoard();
+                //BoardGameGUI boardGameGUI = null;
+                try {
+                    boardGameGUI = new BoardGameGUI(boardGame.getBoard(),mainWindow.chessWindow.getJFrame());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                mainWindow.setVisible(true);
             }
         });
     }
+    **/
 }

@@ -160,7 +160,7 @@ public class ChessGame {
 
         System.out.println("Début de la partie \n");
 
-        while(!isEndGame){
+        while(!isEndGame && !isDrawn){
             do {
                 System.out.println(boardGame + "\n");
 
@@ -231,7 +231,12 @@ public class ChessGame {
                 }
             }
         }
-        System.out.println("\nVictoire de " + players.get(indexCurrentPlayer).getName());
+        if(isEndGame) {
+            System.out.println("\nVictoire de " + players.get(indexCurrentPlayer).getName());
+        }
+        if(isDrawn){
+            System.out.println("Match nul");
+        }
     }
 
     /**
@@ -250,10 +255,10 @@ public class ChessGame {
                 chessGame.createPlayers();
                 chessGame.initChessGame();
 
-                //chessGame.interfaceTest();
+                chessGame.interfaceTest();
 
-                ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
-                chessGameMainWindow.createAndShowGUI();
+                //ChessGameMainWindow chessGameMainWindow = new ChessGameMainWindow(chessGame);
+                //chessGameMainWindow.createAndShowGUI();
             }
         });
     }

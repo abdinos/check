@@ -4,9 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class ChessWindow extends JFrame {
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
-    public ChessWindow(BoardGameGUI boardGame) throws IOException {
+public class ChessWindow extends JFrame{
+
+    public ChessWindow() throws IOException {
+
         setTitle("Jeu d'échecs"); // titre de l'interface graphique
         setSize(800,1200); // dimension de l'interface 1200x800
         setResizable(false); // la fenetre ne sera pas redimensionnable par l'utilisateur
@@ -45,15 +48,14 @@ public class ChessWindow extends JFrame {
         add(tfCaseArrivée);
 
         //Echiquier
-        boardGame.setBounds(50,20,800,1200);
-        add(boardGame);
-
+        //boardGame.setBounds(50,20,800,1200);
+        //add(boardGame);
         //bg
         JLabel background;
         ImageIcon imageIcon = new ImageIcon("images/ppp.jpg");
         background = new JLabel("",imageIcon,JLabel.CENTER);
         background.setBounds(0,0,850,1300);
         add(background);
-
     }
+
 }
