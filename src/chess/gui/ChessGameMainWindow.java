@@ -73,10 +73,10 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
             for(int j = 0; j < NUMBER_OF_COLUMN; j++){
                 Color color;
                 if(isWhite){
-                    color = Color.ORANGE;
+                    color = new Color(102,51,0);
                 }
                 else{
-                    color = Color.lightGray;
+                    color = new Color(255,204,51);
                 }
                 JLabel label = createColoredLabel(color,index);
                 labels.put(index,label);
@@ -100,6 +100,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         add(layeredPane);
     }
 
+    /**
+     * Set the Icon with the image saved
+     */
     private void setupImageChessPiece(){
         try {
             white_rook = createImageIcon("/images/white_rook.png");
@@ -125,7 +128,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         }
     }
 
-    /** Returns an ImageIcon, or null if the path was invalid. */
+    /**
+     * Returns an ImageIcon, or null if the path was invalid.
+     */
     private Icon createImageIcon(String path) throws IOException {
         ImageIcon imageIcon = new ImageIcon(CURRENT_PATH + path);
 
@@ -138,7 +143,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         }
     }
 
-    //Create and set up a colored label.
+    /**
+     * Create and set up a colored label
+     */
     private JLabel createColoredLabel(Color color, int position) {
         JLabel label;
         ChessPiece chessPiece = chessGame.getChessPieceAtPosition(position);
@@ -164,6 +171,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         return label;
     }
 
+    /**
+     * Create the legend for the board
+     */
     private JLabel createLegendLabel(String text){
         JLabel label = new JLabel(text);
         label.setVerticalAlignment(JLabel.CENTER);
@@ -176,6 +186,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         return label;
     }
 
+    /**
+     * Return the Icon associated to the chess piece
+     */
     public Icon getImageToChessPiece(ChessPiece chessPiece){
         if(chessPiece == null){
             return null;
@@ -226,16 +239,9 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
     }
 
     //Make Duke follow the cursor.
-    public void mouseMoved(MouseEvent e) {
-        /**
-        dukeLabel.setLocation(e.getX()-dukeLabel.getWidth()/2,
-                e.getY()-dukeLabel.getHeight()/2);
-         **/
-    }
+    public void mouseMoved(MouseEvent e) {}
 
-    public void mousePressed(MouseEvent e){
-
-    }
+    public void mousePressed(MouseEvent e){}
 
     public void mouseClicked(MouseEvent e){
         if(isGameEnded){
@@ -245,7 +251,7 @@ public class ChessGameMainWindow extends JPanel implements ActionListener, Mouse
         int xCase = (e.getX()/80)-1;
         int yCase = (e.getY()/80);
 
-        int chessPiecePosition = xCase+(8*yCase);
+        int chessPiecePosition = xCase+(NUMBER_OF_LINE * yCase);
 
         ChessPiece chessPiece = chessGame.getChessPieceAtPosition(chessPiecePosition);
         boolean isPieceMoved = verifyAndMoveChessPiece(chessPiecePosition);
