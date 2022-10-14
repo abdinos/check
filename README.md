@@ -29,7 +29,7 @@ echo $JAVA_HOME </strong> </li>
 
 ## Pour lancer le projet
 <ul>
- <li> Lancer la commande : java -jar chess.jar </li>
+ <li> Lancer la commande : <strong> java -jar chess.jar </strong></li>
 </ul>
 
 ## Git
